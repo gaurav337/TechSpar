@@ -59,7 +59,7 @@ def resolve_llm_config(user_id: str | None = None) -> dict:
         return {
             "api_base": "https://integrate.api.nvidia.com/v1",
             "api_key": nvidia_key,
-            "model": "meta/llama-3.1-70b-instruct",
+            "model": "z-ai/glm-5.2",
             "temperature": temperature,
         }
 
