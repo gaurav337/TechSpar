@@ -13,10 +13,10 @@ const PAGE_CLASS = "flex-1 w-full max-w-[1600px] mx-auto px-4 py-6 md:px-7 md:py
 const SIMILARITY_THRESHOLD = 0.65;
 
 const SCORE_FILTERS = [
-  { key: "all", label: "全部" },
-  { key: "weak", label: "待补" },
-  { key: "mid", label: "临界" },
-  { key: "strong", label: "稳定" },
+  { key: "all", label: "All" },
+  { key: "weak", label: "To be replenished" },
+  { key: "mid", label: "critical" },
+  { key: "strong", label: "stable" },
 ];
 
 export default function Graph() {
@@ -155,7 +155,7 @@ export default function Graph() {
 
     const focusAreaMap = new Map();
     for (const node of nodes) {
-      const key = node.focus_area || "未标注";
+      const key = node.focus_area || "Not labeled";
       focusAreaMap.set(key, (focusAreaMap.get(key) || 0) + 1);
     }
 
@@ -287,16 +287,16 @@ export default function Graph() {
     <div className={PAGE_CLASS}>
       <div className="flex flex-col gap-3 xl:flex-row xl:items-end xl:justify-between">
         <div className="min-w-0">
-          <div className="text-3xl font-display font-bold tracking-tight md:text-4xl">题目图谱</div>
+          <div className="text-3xl font-display font-bold tracking-tight md:text-4xl">Question map</div>
           <div className="mt-2 max-w-3xl text-sm leading-6 text-dim">
-            这页不再只是展示气泡，而是用来定位薄弱题、查看关联题和决定下一步训练动作。
+            This page is no longer just for displaying bubbles, but for locating weak questions, viewing related questions, and deciding on the next training action.
           </div>
         </div>
 
         <div className="flex flex-wrap gap-2">
-          <SummaryChip label="领域" value={topicEntries.length} hint="可切换" />
-          <SummaryChip label="节点" value={graphInsights.nodeCount} hint={selectedTopic ? "当前筛选结果" : "待选择"} />
-          <SummaryChip label="连接" value={graphInsights.linkCount} hint="语义相似" />
+          <SummaryChip label="field" value={topicEntries.length} hint="switchable" />
+          <SummaryChip label="node" value={graphInsights.nodeCount} hint={selectedTopic ? "Current filter results" : "To be selected"} />
+          <SummaryChip label="connect" value={graphInsights.linkCount} hint="semantic similarity" />
         </div>
       </div>
 
@@ -304,11 +304,11 @@ export default function Graph() {
         <CardContent className="p-4 md:p-5">
           <div className="flex items-start justify-between gap-3">
             <div>
-              <div className="text-sm font-semibold text-text">领域切换</div>
-              <div className="mt-1 text-sm text-dim">横向滚动切换，避免领域标签换行打散布局。</div>
+              <div className="text-sm font-semibold text-text">Domain switching</div>
+              <div className="mt-1 text-sm text-dim">Horizontal scrolling switches to avoid field label wrapping and disrupting the layout.</div>
             </div>
             <div className="rounded-full border border-border/80 bg-background/70 px-3 py-1 text-xs text-dim">
-              当前支持拖拽、滚轮缩放、节点点击
+              Currently supports dragging, wheel zooming, and node clicks
             </div>
           </div>
 
@@ -342,7 +342,7 @@ export default function Graph() {
               value={searchQuery}
               disabled={!selectedTopic}
               onChange={(event) => setSearchQuery(event.target.value)}
-              placeholder={selectedTopic ? "搜索题目或 focus area" : "先选择领域，再搜索题目"}
+              placeholder={selectedTopic ? "Search topic or focus area" : "Select the field first, then search for the topic"}
             />
 
             <div className="flex flex-wrap gap-2">
@@ -374,7 +374,7 @@ export default function Graph() {
                 disabled={!selectedTopic}
                 onChange={(event) => setAreaFilter(event.target.value)}
               >
-                <option value="all">全部</option>
+                <option value="all">All</option>
                 {focusAreas.map((area) => (
                   <option key={area} value={area}>{area}</option>
                 ))}
@@ -394,14 +394,14 @@ export default function Graph() {
             {selectedTopic && graphHasData && (
               <>
                 <div className="pointer-events-none absolute left-3 top-3 z-10 max-w-[320px] rounded-[20px] border border-border/80 bg-background/82 px-4 py-3 shadow-sm backdrop-blur-sm">
-                  <div className="text-sm font-semibold text-text">图例</div>
+                  <div className="text-sm font-semibold text-text">Legend</div>
                   <div className="mt-2 space-y-2 text-xs leading-5 text-dim">
                     <div className="flex flex-wrap gap-x-4 gap-y-2">
                       {[
-                        { label: "待补题 <4", color: "bg-red" },
-                        { label: "临界题 4-6", color: "bg-orange" },
-                        { label: "熟悉题 6-8", color: "bg-primary" },
-                        { label: "稳定题 8+", color: "bg-green" },
+                        { label: "Questions to be answered <4", color: "bg-red" },
+                        { label: "critical question 4-6", color: "bg-orange" },
+                        { label: "Familiar questions 6-8", color: "bg-primary" },
+                        { label: "stable question 8+", color: "bg-green" },
                       ].map((item) => (
                         <div key={item.label} className="flex items-center gap-1.5">
                           <span className={cn("inline-block h-2.5 w-2.5 rounded-full", item.color)} />
@@ -409,23 +409,23 @@ export default function Graph() {
                         </div>
                       ))}
                     </div>
-                    <div>节点越大，题目难度越高。线越亮，题目语义越接近。</div>
-                    <div>滚轮缩放，拖动画布，点击节点锁定右侧详情。</div>
+                    <div>The larger the node, the higher the difficulty of the question. The brighter the line, the closer the semantics of the question are.</div>
+                    <div>Use the scroll wheel to zoom, drag the canvas, and click on the node to lock the details on the right.</div>
                   </div>
                 </div>
 
                 <div className="absolute right-3 top-3 z-10 flex flex-wrap gap-2">
-                  <Button variant="outline" size="sm" onClick={() => handleZoom(0.82)}>缩小</Button>
-                  <Button variant="outline" size="sm" onClick={() => handleZoom(1.22)}>放大</Button>
-                  <Button variant="outline" size="sm" onClick={handleResetView}>适配视图</Button>
+                  <Button variant="outline" size="sm" onClick={() => handleZoom(0.82)}>zoom out</Button>
+                  <Button variant="outline" size="sm" onClick={() => handleZoom(1.22)}>Zoom in</Button>
+                  <Button variant="outline" size="sm" onClick={handleResetView}>Adapt view</Button>
                 </div>
               </>
             )}
 
             {!selectedTopic && (
               <EmptyGraphState
-                title="先选择一个领域"
-                description="图谱只展示某个训练领域下的关联题。先切换领域，再看题目之间的相似关系。"
+                title="Choose an area first"
+                description="The map only displays related questions in a certain training field. Switch fields first, and then look at the similar relationships between the topics."
               />
             )}
 
@@ -433,17 +433,17 @@ export default function Graph() {
               <div className="flex min-h-[480px] items-center justify-center gap-2 text-sm text-dim">
                 <div className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse-dot" />
                 <div className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse-dot [animation-delay:0.2s]" />
-                正在构建图谱...
+                Building graph...
               </div>
             )}
 
             {selectedTopic && !loading && graphData && graphData.nodes.length === 0 && (
               <EmptyGraphState
-                title="该领域还没有图谱"
-                description="当前还没有可用于建图的已评分专项训练题。先完成几次专项训练，再回来查看关联图谱。"
+                title="There is no map of this field yet"
+                description="There are currently no scored specific training questions available for mapping. Complete a few special training sessions first, then come back and check the correlation map."
                 action={(
                   <Button variant="gradient" onClick={() => navigate("/")}>
-                    去开始专项训练
+                    Go start special training
                   </Button>
                 )}
               />
@@ -451,8 +451,8 @@ export default function Graph() {
 
             {selectedTopic && !loading && graphData && graphData.nodes.length > 0 && !graphHasData && (
               <EmptyGraphState
-                title="没有匹配的题目"
-                description="当前搜索或筛选条件把所有节点都排除了。清空条件后再看全图。"
+                title="No matching questions"
+                description="The current search or filter excludes all nodes. Clear the conditions and then view the whole picture."
                 action={(
                   <Button
                     variant="outline"
@@ -462,7 +462,7 @@ export default function Graph() {
                       setAreaFilter("all");
                     }}
                   >
-                    清空筛选
+                    Clear filter
                   </Button>
                 )}
               />
@@ -501,7 +501,7 @@ export default function Graph() {
                   <ScorePill score={hoveredPreview.score} compact />
                   {hoveredPreview.focus_area && <Badge variant="outline">{hoveredPreview.focus_area}</Badge>}
                   {hoveredPreview.date && <span>{hoveredPreview.date}</span>}
-                  <span>难度 {hoveredPreview.difficulty || 3}</span>
+                  <span>difficulty {hoveredPreview.difficulty || 3}</span>
                 </div>
               </div>
             )}
@@ -512,10 +512,10 @@ export default function Graph() {
           <Card className="rounded-[28px] border-border/80 bg-card/88">
             <CardContent className="p-5 md:p-6">
               <PanelHeader
-                title={selectedNode ? "节点详情" : "图谱摘要"}
+                title={selectedNode ? "Node details" : "Plot summary"}
                 caption={selectedNode
-                  ? "点击空白处可取消选中。"
-                  : "先从右侧看全局，再点击节点查看具体题目。"}
+                  ? "Click in an empty space to deselect."
+                  : "First look at the overall picture from the right side, and then click on the nodes to view specific questions."}
               />
 
               {selectedNode ? (
@@ -541,14 +541,14 @@ export default function Graph() {
           <Card className="rounded-[28px] border-border/80 bg-card/88">
             <CardContent className="p-5 md:p-6">
               <PanelHeader
-                title="操作提示"
-                caption="把这张图当工作台，不是海报。"
+                title="Operation tips"
+                caption="Think of this picture as a workbench, not a poster."
               />
 
               <div className="mt-4 space-y-3 text-sm leading-6 text-text">
-                <HintRow title="怎么读颜色" body="红色和橙色优先复盘，绿色表示已经相对稳定，黄色是还需要继续巩固的中间状态。" />
-                <HintRow title="怎么用点击" body="点击节点后，右侧会显示题目详情、出现次数、推荐动作和最近一次复盘入口。" />
-                <HintRow title="怎么收窄范围" body="优先用搜索 + 得分筛选，把图谱先压缩到你当前要处理的题目集合。" />
+                <HintRow title="How to read colors" body="Red and orange give priority to review, green indicates that it has been relatively stable, and yellow indicates an intermediate state that still needs to be consolidated." />
+                <HintRow title="How to use click" body="After clicking on the node, the question details, occurrence times, recommended actions and the latest review entry will be displayed on the right side." />
+                <HintRow title="How to narrow the scope" body="Prioritize search + Score screening, compress the map to the set of questions you currently want to deal with." />
               </div>
             </CardContent>
           </Card>
@@ -595,24 +595,24 @@ function GraphSummaryPanel({ graphInsights, selectedTopicInfo, scoreFilter, area
   return (
     <div className="mt-4 space-y-4">
       <div className="grid gap-3 sm:grid-cols-2">
-        <MetricTile label="平均得分" value={graphInsights.avgScore != null ? `${graphInsights.avgScore}/10` : "--"} />
-        <MetricTile label="待补题数" value={graphInsights.weakCount} valueClassName={graphInsights.weakCount ? "text-red" : "text-text"} />
-        <MetricTile label="稳定题数" value={graphInsights.stableCount} valueClassName={graphInsights.stableCount ? "text-green" : "text-text"} />
-        <MetricTile label="语义连接" value={graphInsights.linkCount} />
+        <MetricTile label="average score" value={graphInsights.avgScore != null ? `${graphInsights.avgScore}/10` : "--"} />
+        <MetricTile label="Number of questions to be filled" value={graphInsights.weakCount} valueClassName={graphInsights.weakCount ? "text-red" : "text-text"} />
+        <MetricTile label="Stable number of questions" value={graphInsights.stableCount} valueClassName={graphInsights.stableCount ? "text-green" : "text-text"} />
+        <MetricTile label="Semantic connection" value={graphInsights.linkCount} />
       </div>
 
       <div className="rounded-[22px] border border-border/80 bg-background/70 p-4">
-        <div className="text-sm font-semibold text-text">当前上下文</div>
+        <div className="text-sm font-semibold text-text">current context</div>
         <div className="mt-2 flex flex-wrap gap-2 text-xs text-dim">
-          <Badge variant="outline">{selectedTopicInfo?.name || "未选择领域"}</Badge>
-          <Badge variant="outline">得分筛选 {buildScoreFilterLabel(scoreFilter)}</Badge>
-          <Badge variant="outline">Focus Area {areaFilter === "all" ? "全部" : areaFilter}</Badge>
-          {hasActiveFilters && <Badge variant="secondary">已启用筛选</Badge>}
+          <Badge variant="outline">{selectedTopicInfo?.name || "No field selected"}</Badge>
+          <Badge variant="outline">Score filter {buildScoreFilterLabel(scoreFilter)}</Badge>
+          <Badge variant="outline">Focus Area {areaFilter === "all" ? "All" : areaFilter}</Badge>
+          {hasActiveFilters && <Badge variant="secondary">Filtering enabled</Badge>}
         </div>
       </div>
 
       <div className="rounded-[22px] border border-border/80 bg-background/70 p-4">
-        <div className="text-sm font-semibold text-text">高频 Focus Area</div>
+        <div className="text-sm font-semibold text-text">high frequency Focus Area</div>
         <div className="mt-3 space-y-2">
           {graphInsights.topAreas.length > 0 ? graphInsights.topAreas.map((item) => (
             <div key={item.label} className="flex items-center justify-between gap-3 text-sm">
@@ -620,7 +620,7 @@ function GraphSummaryPanel({ graphInsights, selectedTopicInfo, scoreFilter, area
               <Badge variant="secondary">{item.count}</Badge>
             </div>
           )) : (
-            <div className="text-sm text-dim">选择领域后，这里会显示节点最集中的 focus area。</div>
+            <div className="text-sm text-dim">After selecting an area, the focus area with the most concentrated nodes will be displayed here.</div>
           )}
         </div>
       </div>
@@ -635,24 +635,24 @@ function NodeDetailPanel({ node, relatedNodes, zoomLevel, onOpenReview, onClear 
         <div className="text-sm leading-7 text-text">{node.question}</div>
         <div className="mt-3 flex flex-wrap gap-2">
           <ScorePill score={node.score} />
-          <Badge variant="outline">平均 {node.avg_score}/10</Badge>
-          <Badge variant="outline">最高 {node.best_score}/10</Badge>
-          <Badge variant="outline">出现 {node.attempts || 1} 次</Badge>
-          <Badge variant="outline">难度 {node.difficulty || 3}</Badge>
+          <Badge variant="outline">average {node.avg_score}/10</Badge>
+          <Badge variant="outline">highest {node.best_score}/10</Badge>
+          <Badge variant="outline">appear {node.attempts || 1} times</Badge>
+          <Badge variant="outline">difficulty {node.difficulty || 3}</Badge>
           {node.focus_area && <Badge variant="outline">{node.focus_area}</Badge>}
         </div>
         <div className="mt-3 text-xs text-dim">
-          最近出现 {node.date || "--"} · 当前画布缩放 {zoomLevel}x
+          Recently appeared {node.date || "--"} · Current canvas zoom {zoomLevel}x
         </div>
       </div>
 
       <div className="rounded-[22px] border border-primary/20 bg-primary/8 p-4">
-        <div className="text-sm font-semibold text-text">推荐动作</div>
+        <div className="text-sm font-semibold text-text">Recommended actions</div>
         <div className="mt-2 text-sm leading-6 text-text">{buildNodeRecommendation(node)}</div>
       </div>
 
       <div className="rounded-[22px] border border-border/80 bg-background/70 p-4">
-        <div className="text-sm font-semibold text-text">关联题</div>
+        <div className="text-sm font-semibold text-text">Related questions</div>
         <div className="mt-3 space-y-2">
           {relatedNodes.length > 0 ? relatedNodes.map((item) => (
             <div key={item.id} className="rounded-2xl border border-border/70 bg-card/80 px-3 py-2.5">
@@ -663,16 +663,16 @@ function NodeDetailPanel({ node, relatedNodes, zoomLevel, onOpenReview, onClear 
               </div>
             </div>
           )) : (
-            <div className="text-sm text-dim">当前节点没有达到阈值的相似题。</div>
+            <div className="text-sm text-dim">The current node has no similar questions that reach the threshold.</div>
           )}
         </div>
       </div>
 
       <div className="flex flex-wrap gap-2">
-        <Button variant="outline" onClick={onClear}>取消选中</Button>
+        <Button variant="outline" onClick={onClear}>Uncheck</Button>
         {node.session_id && (
           <Button variant="gradient" onClick={onOpenReview}>
-            查看最近一次复盘
+            View the latest review
           </Button>
         )}
       </div>
@@ -733,20 +733,20 @@ function matchesScoreFilter(node, filter) {
 }
 
 function buildScoreFilterLabel(filter) {
-  return SCORE_FILTERS.find((item) => item.key === filter)?.label || "全部";
+  return SCORE_FILTERS.find((item) => item.key === filter)?.label || "All";
 }
 
 function buildNodeRecommendation(node) {
   if (node.score < 4) {
-    return "这是明确的薄弱题。先看最近一次复盘，按复盘建议把答案重讲一遍，再补一题同 focus area 的题验证是否真的补上。";
+    return "This is a clear weak question. First read the most recent review, repeat the answers according to the review suggestions, and then fill in a question with the same focus area to verify whether it is really filled in.";
   }
   if (node.score < 6) {
-    return "这题处于临界区，不是完全不会，而是表达和结构还不稳定。建议先压缩成 1 分钟答案，再补充关键遗漏点。";
+    return "This question is in the critical area. It's not that I can't do it at all, but the expression and structure are still unstable. It is recommended to condense the answer into a 1-minute answer first, and then add the key missing points.";
   }
   if (node.score < 8) {
-    return "这题已经有基础，但还不够稳。建议把答案做成固定结构，重点补上反例、边界和工程取舍，防止下一次掉分。";
+    return "There is a foundation for this question, but it is not stable enough. It is recommended to make the answers into a fixed structure and focus on adding counterexamples, boundaries and engineering trade-offs to prevent points from dropping next time.";
   }
-  return "这题已经比较稳定，可以保留为优势模板。下一步不是继续磨同一题，而是用它去带动相邻题型，验证知识迁移。";
+  return "This question is already relatively stable and can be retained as an advantage template. The next step is not to continue working on the same question, but to use it to drive adjacent question types and verify knowledge transfer.";
 }
 
 function getEntityId(value) {

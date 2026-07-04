@@ -1,4 +1,4 @@
-"""Intent Classifier — embedding 匹配 + 规则兜底，不调 LLM。"""
+"""Intent Classifier — embedding match + The rules are in place and LLM will not be adjusted."""
 import re
 import logging
 
@@ -18,7 +18,7 @@ _INTENT_KEYWORDS = {
 
 
 def rule_based_classify(utterance: str) -> str:
-    """关键词规则分类，作为 embedding 匹配的兜底。"""
+    """Keyword rule classification serves as the basis for embedding matching."""
     text = utterance.lower()
     best_intent, best_count = "technical", 0
     for intent, keywords in _INTENT_KEYWORDS.items():
@@ -34,10 +34,10 @@ async def classify_intent(
     navigator: StrategyTreeNavigator,
     last_node_id: str | None = None,
 ) -> dict:
-    """分类 HR 发言意图，返回 {intent, node_id, confidence, utterance_embedding}。
+    """Category HR speaking intention, return {intent, node_id, confidence, utterance_embedding}.
 
-    优先 embedding 匹配策略树节点，匹配不上则规则兜底。
-    低置信度时 fallback 到 last_node_id（追问场景）。
+    Priority is given to embedding matching policy tree nodes. If no matching is found, the rules will be discarded.
+    Fallback arrives when confidence level is low last_node_id (questioning scenario).
     """
     embed_model = get_embedding()
     try:
@@ -48,7 +48,7 @@ async def classify_intent(
 
     node_id, intent, score = navigator.match_utterance(utt_emb)
 
-    # 低置信度 + 有上一轮节点 → 视为追问，沿用上一个节点
+    # low confidence + There are nodes in the previous round → Treat it as a follow-up question and use the previous node.
     if (node_id is None or score < 0.5) and last_node_id:
         prev_node = navigator.get_node(last_node_id)
         if prev_node:

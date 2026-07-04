@@ -1,4 +1,4 @@
-"""面试记录持久化 (SQLite)."""
+"""Interview record persistence (SQLite)."""
 import json
 import sqlite3
 from datetime import datetime
@@ -125,7 +125,7 @@ def reset_stale_reviewing() -> int:
     cursor = conn.execute(
         "UPDATE sessions SET status = ?, review_error = ?, updated_at = CURRENT_TIMESTAMP "
         "WHERE status = ?",
-        (STATUS_REVIEW_FAILED, "服务重启导致复盘中断，请重新生成", STATUS_REVIEWING),
+        (STATUS_REVIEW_FAILED, "The service restart caused the recovery to be interrupted. Please regenerate.", STATUS_REVIEWING),
     )
     conn.commit()
     conn.close()
@@ -147,7 +147,7 @@ def expire_stale_reviewing(*, user_id: str | None = None,
         "WHERE status = ? AND updated_at < datetime('now', ?)"
     )
     params: list = [
-        STATUS_REVIEW_FAILED, "复盘生成超时，请重新生成",
+        STATUS_REVIEW_FAILED, "The review generation timed out, please generate it again.",
         STATUS_REVIEWING, f"-{int(max_age_seconds)} seconds",
     ]
     if user_id is not None:
@@ -298,7 +298,7 @@ def list_recent_questions(topic: str, *, user_id: str, session_limit: int = 5,
     those questions even if the session was abandoned.
     """
     conn = _get_conn()
-    # rowid 决胜: created_at 秒级粒度,同秒创建的 session 排序不稳定
+    # rowid decisive victory: created_at second-level granularity, the sorting of sessions created in the same second is unstable
     rows = conn.execute(
         "SELECT questions FROM sessions WHERE topic = ? AND user_id = ? "
         "ORDER BY created_at DESC, rowid DESC LIMIT ?",

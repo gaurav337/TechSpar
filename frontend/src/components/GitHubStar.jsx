@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 const REPO = "AnnaSuSu/TechSpar";
 const CACHE_KEY = "gh-stars";
 
-// GitHub 星标胶囊:实时拉 star 数,先用本地缓存的上次值渲染再后台刷新,避免闪动。
+// GitHub star capsule: Pull the star number in real time, first render it with the last value of the local cache and then refresh it in the background to avoid flickering.
 export default function GitHubStar({ className }) {
   const [stars, setStars] = useState(() => {
     const c = Number(localStorage.getItem(CACHE_KEY));

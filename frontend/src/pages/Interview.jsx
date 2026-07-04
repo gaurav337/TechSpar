@@ -42,7 +42,7 @@ export default function Interview() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState({});
   const [drillInput, setDrillInput] = useState("");
-  // 每题自评(有把握/没把握),喂给后端做元认知校准;可关闭,偏好存 localStorage
+  // Self-evaluation for each question(sure/Not sure), feed to the backend for metacognitive calibration; can be turned off, preference storage localStorage
   const [confidences, setConfidences] = useState({});
   const [selfAssess, setSelfAssess] = useState(() => localStorage.getItem("drill-self-assess") !== "off");
   const [submitting, setSubmitting] = useState(false);
@@ -113,10 +113,10 @@ export default function Interview() {
         if (data.status === "reviewing") {
           const type = data.mode === "resume" ? "resume_review"
             : data.mode === "jd_prep" ? "jd_review" : "drill_review";
-          startTask(sessionId, type, "复盘生成中");
+          startTask(sessionId, type, "The review is being generated");
         }
       } catch (err) {
-        if (!cancelled) setBootstrapError(err.message || "无法加载面试");
+        if (!cancelled) setBootstrapError(err.message || "Unable to load interview");
       }
     })();
     return () => { cancelled = true; };
@@ -200,11 +200,11 @@ export default function Interview() {
       setSubmitted(true);
       setFinished(true);
       setSessionStatus("reviewing");  // clear any stale review_failed so the retry UI resets
-      const label = isJobPrep ? "JD 备面复盘生成中" : "专项训练复盘生成中";
+      const label = isJobPrep ? "JD backup copy is being generated" : "Special training review is being generated";
       const type = isJobPrep ? "jd_review" : "drill_review";
       startTask(sessionId, type, label);
     } catch (err) {
-      alert("提交失败: " + err.message);
+      alert("Submission failed: " + err.message);
     } finally {
       setSubmitting(false);
     }
@@ -238,7 +238,7 @@ export default function Interview() {
         onError: (err) => {
           setMessages((prev) => {
             const updated = [...prev];
-            updated[updated.length - 1] = { role: "assistant", content: `[错误] ${err.message}` };
+            updated[updated.length - 1] = { role: "assistant", content: `[Error] ${err.message}` };
             return updated;
           });
         },
@@ -256,7 +256,7 @@ export default function Interview() {
       } catch (err) {
         setMessages((prev) => {
           const updated = [...prev];
-          updated[updated.length - 1] = { role: "assistant", content: `[错误] ${err.message}` };
+          updated[updated.length - 1] = { role: "assistant", content: `[Error] ${err.message}` };
           return updated;
         });
       }
@@ -271,7 +271,7 @@ export default function Interview() {
     setFinished(true);
     setSessionStatus("reviewing");
     setResumeError("");
-    startTask(sessionId, "resume_review", "简历面试复盘生成中");
+    startTask(sessionId, "resume_review", "Resume interview review is being generated");
   };
 
   const handleEndResume = async () => {
@@ -279,21 +279,21 @@ export default function Interview() {
     try {
       await startResumeReview();
     } catch (err) {
-      alert("结束面试失败: " + err.message);
+      alert("Failed to end interview: " + err.message);
     } finally {
       setReviewing(false);
     }
   };
 
   // Auto-end path: interview finished on its own. Lock the chat regardless, then
-  // dispatch the review; on failure the "生成复盘" button lets the user retry.
+  // dispatch the review; on failure the "Generate review" button lets the user retry.
   const finishAndReview = async () => {
     setFinished(true);
     setReviewing(true);
     try {
       await startResumeReview();
     } catch {
-      // Surfaced via the manual "生成复盘" button.
+      // Surfaced via the manual "Generate review" button.
     } finally {
       setReviewing(false);
     }
@@ -305,9 +305,9 @@ export default function Interview() {
       await retryReview(sessionId);
       setSessionStatus("reviewing");
       setResumeError("");
-      startTask(sessionId, "resume_review", "简历面试复盘生成中");
+      startTask(sessionId, "resume_review", "Resume interview review is being generated");
     } catch (err) {
-      alert("重新生成失败: " + err.message);
+      alert("Regeneration failed: " + err.message);
     } finally {
       setReviewing(false);
     }
@@ -321,10 +321,10 @@ export default function Interview() {
   };
 
   const modeBadge = isJobPrep
-    ? { text: "JD 备面", variant: "blue" }
+    ? { text: "JD preparation", variant: "blue" }
     : initData?.mode === "topic_drill"
-      ? { text: "专项训练", variant: "success" }
-      : { text: "简历面试", variant: "default" };
+      ? { text: "Special training", variant: "success" }
+      : { text: "resume interview", variant: "default" };
 
   const MicButton = ({ voice }) => (
     <button
@@ -335,7 +335,7 @@ export default function Interview() {
       )}
       onClick={voice.toggle}
       disabled={voice.isTranscribing}
-      title={voice.isListening ? "停止录音" : voice.isTranscribing ? "正在识别..." : "语音输入"}
+      title={voice.isListening ? "Stop recording" : voice.isTranscribing ? "Recognizing..." : "Voice input"}
     >
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
@@ -354,7 +354,7 @@ export default function Interview() {
         {bootstrapError ? (
           <>
             <div className="text-[15px] text-red">{bootstrapError}</div>
-            <Button variant="outline" onClick={() => navigate("/history")}>返回历史记录</Button>
+            <Button variant="outline" onClick={() => navigate("/history")}>Return to history</Button>
           </>
         ) : (
           <>
@@ -376,11 +376,11 @@ export default function Interview() {
             {isJobPrep
               ? (
                 <span className="text-sm text-dim">
-                  {initData?.company ? `${initData.company} · ` : ""}{initData?.position || "目标岗位"}
+                  {initData?.company ? `${initData.company} · ` : ""}{initData?.position || "target position"}
                 </span>
               )
               : initData?.topic && <span className="text-sm text-dim">{initData.topic}</span>}
-            <span className="text-[13px] text-dim">{answeredCount}/{totalQ} 已答</span>
+            <span className="text-[13px] text-dim">{answeredCount}/{totalQ} Answered</span>
           </div>
           {(() => {
             const task = tasks.find((t) => t.id === sessionId);
@@ -388,7 +388,7 @@ export default function Interview() {
             const headerDisabled = submitting || (submitted && !headerTaskError);
             return (
               <Button variant="destructive" size="sm" onClick={handleEndBatch} disabled={headerDisabled}>
-                {submitting ? "评估中..." : headerTaskError ? "重新评估" : finished ? "查看评估" : isJobPrep ? "结束备面" : "结束训练"}
+                {submitting ? "Under evaluation..." : headerTaskError ? "reassess" : finished ? "View assessment" : isJobPrep ? "End preparation" : "end training"}
               </Button>
             );
           })()}
@@ -402,18 +402,18 @@ export default function Interview() {
                 <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse-dot [animation-delay:0.2s]" />
                 <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse-dot [animation-delay:0.4s]" />
               </div>
-              <span>{isJobPrep ? "正在生成岗位匹配复盘..." : "正在批量评估你的回答..."}</span>
+              <span>{isJobPrep ? "Generating job matching review..." : "Your answers are being evaluated in batches..."}</span>
               <span className="text-[13px] text-dim opacity-60">
-                {isJobPrep ? "AI 会结合 JD 判断你的真实匹配度" : `AI 将对 ${totalQ} 道题逐一点评`}
+                {isJobPrep ? "AI will combine with JD to determine your true match" : `AI will ${totalQ} Comment on each question one by one`}
               </span>
             </div>
           ) : finished ? (
             <div className="w-full max-w-[720px]">
               <Card className="mb-5">
                 <CardContent className="p-6 md:p-8 text-center">
-                  <div className="text-xl font-semibold mb-3">{isJobPrep ? "定向备面完成" : "训练完成"}</div>
+                  <div className="text-xl font-semibold mb-3">{isJobPrep ? "Orientation preparation completed" : "Training completed"}</div>
                   <div className="text-[15px] text-dim mb-6 leading-relaxed">
-                    共 {totalQ} 题，已回答 {answeredCount} 题，跳过 {totalQ - answeredCount} 题
+                    total {totalQ} Question, answered {answeredCount} question, skip {totalQ - answeredCount} question
                   </div>
                   {(() => {
                     const task = tasks.find((t) => t.id === sessionId);
@@ -435,17 +435,17 @@ export default function Interview() {
                           }
                           disabled={submitting || (submitted && !taskDone && !taskError)}
                         >
-                          {submitting ? "提交中..." : !submitted ? "提交评估" : taskDone ? "查看复盘" : taskError ? "重新评估" : "复盘生成中..."}
+                          {submitting ? "Submitting..." : !submitted ? "Submit assessment" : taskDone ? "View review" : taskError ? "reassess" : "The review is being generated..."}
                         </Button>
                         {submitted && !taskDone && !taskError && (
                           <div className="flex items-center gap-2 mt-3 text-[13px] text-dim">
                             <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse-dot" />
-                            AI 正在生成复盘报告，请稍候
+                            AI is generating the review report, please wait.
                           </div>
                         )}
                         {taskError && (
                           <div className="mt-3 text-[13px] text-red">
-                            评估生成失败，点击上方按钮可重新提交
+                            Assessment generation failed, click the button above to resubmit
                           </div>
                         )}
                       </>
@@ -504,7 +504,7 @@ export default function Interview() {
                   </div>
                   {isJobPrep && currentQ.intent && (
                     <div className="mt-4 rounded-xl bg-blue-500/8 border border-blue-500/15 px-4 py-3 text-sm leading-relaxed text-dim">
-                      <span className="text-blue-300 font-medium">面试官在看什么：</span> {currentQ.intent}
+                      <span className="text-blue-300 font-medium">What the interviewer is looking at:</span> {currentQ.intent}
                     </div>
                   )}
                 </CardContent>
@@ -518,7 +518,7 @@ export default function Interview() {
                     value={drillInput}
                     onChange={(e) => setDrillInput(e.target.value)}
                     onKeyDown={handleKeyDown}
-                    placeholder={drillVoice.isListening ? "正在录音..." : drillVoice.isTranscribing ? "正在识别语音..." : "输入你的回答... (Enter 提交)"}
+                    placeholder={drillVoice.isListening ? "Recording..." : drillVoice.isTranscribing ? "Recognizing speech..." : "Enter your answer... (Enter Submit)"}
                     rows={3}
                   />
                   {drillVoice.isSupported && (
@@ -530,10 +530,10 @@ export default function Interview() {
                 <div className="flex items-center justify-end gap-3">
                   {isDrill && (selfAssess ? (
                     <div className="mr-auto flex items-center gap-2">
-                      <span className="text-[12px] text-dim">这题有把握吗？</span>
+                      <span className="text-[12px] text-dim">Are you sure about this question?</span>
                       {[
-                        { key: "high", label: "有把握" },
-                        { key: "low", label: "没把握" },
+                        { key: "high", label: "sure" },
+                        { key: "low", label: "Not sure" },
                       ].map(({ key, label }) => (
                         <button
                           key={key}
@@ -556,7 +556,7 @@ export default function Interview() {
                         type="button"
                         onClick={toggleSelfAssess}
                         className="text-[12px] text-dim/50 hover:text-dim transition-colors cursor-pointer"
-                        title="关闭答题自评"
+                        title="Close self-assessment"
                       >
                         ✕
                       </button>
@@ -567,14 +567,14 @@ export default function Interview() {
                       onClick={toggleSelfAssess}
                       className="mr-auto text-[11px] text-dim/50 hover:text-dim transition-colors cursor-pointer"
                     >
-                      开启答题自评
+                      Start self-assessment
                     </button>
                   ))}
                   <Button variant="ghost" size="sm" onClick={handleSkip}>
-                    跳过
+                    skip
                   </Button>
                   <Button variant="gradient" className="px-7 py-3.5 text-[15px]" disabled={!drillInput.trim()} onClick={handleDrillSubmit}>
-                    {currentIndex < totalQ - 1 ? "下一题" : "完成"}
+                    {currentIndex < totalQ - 1 ? "Next question" : "Complete"}
                   </Button>
                 </div>
               </div>
@@ -582,7 +582,7 @@ export default function Interview() {
               {currentIndex > 0 && (
                 <div className="w-full max-w-[720px]">
                   <button className="py-1.5 text-dim text-[13px] hover:text-text transition-colors cursor-pointer" onClick={handlePrev}>
-                    ← 上一题
+                    ← Previous question
                   </button>
                 </div>
               )}
@@ -602,7 +602,7 @@ export default function Interview() {
           {progress && (
             <span className="text-[13px] text-dim flex items-center gap-1.5">
               <span className="text-border">|</span>
-              进度: {progress}
+              Progress: {progress}
             </span>
           )}
         </div>
@@ -621,19 +621,19 @@ export default function Interview() {
           let label;
           if (taskDone) {
             handler = () => navigate(`/review/${sessionId}`);
-            label = "查看复盘";
+            label = "View review";
           } else if (taskError) {
             handler = handleRetryResumeReview;
-            label = reviewing ? "重新生成中..." : "重新生成复盘";
+            label = reviewing ? "Regenerating..." : "Regenerate the review";
           } else if (reviewInFlight) {
             handler = undefined;
-            label = "复盘生成中...";
+            label = "The review is being generated...";
           } else if (!finished) {
             handler = handleEndResume;
-            label = reviewing ? "生成复盘中..." : "结束面试";
+            label = reviewing ? "Generating review..." : "end interview";
           } else {
             handler = handleEndResume;
-            label = reviewing ? "生成复盘中..." : "生成复盘";
+            label = reviewing ? "Generating review..." : "Generate review";
           }
           return (
             <Button
@@ -651,9 +651,9 @@ export default function Interview() {
       <div className="flex-1 overflow-y-auto px-4 py-6 md:px-6 md:py-8 flex flex-col gap-7 max-w-3xl w-full mx-auto">
         {sessionStatus === "review_failed" && (
           <div className="rounded-xl border border-red/20 bg-red/5 px-4 py-3 text-[13px] leading-6 text-red/90">
-            <div className="font-medium">复盘生成失败</div>
+            <div className="font-medium">Failed to generate backup disk</div>
             {resumeError && <div className="mt-1 text-red/80">{resumeError}</div>}
-            <div className="mt-1 text-dim">面试问答已保存；点击右上角"重新生成复盘"再次尝试。</div>
+            <div className="mt-1 text-dim">Interview questions and answers have been saved; click on the upper right corner"Regenerate the review"Try again.</div>
           </div>
         )}
         {messages.map((msg, i) => (
@@ -664,7 +664,7 @@ export default function Interview() {
             <div className="w-5 h-5 flex items-center justify-center shrink-0">
               <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse-dot" />
             </div>
-            <span className="text-[13px] font-medium text-primary tracking-wide">AI 面试官正在思考回复中...</span>
+            <span className="text-[13px] font-medium text-primary tracking-wide">The AI interviewer is thinking about the reply...</span>
           </div>
         )}
         <div ref={chatEndRef} />
@@ -678,7 +678,7 @@ export default function Interview() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder={chatVoice.isListening ? "正在录音..." : finished ? "面试已结束" : "输入你的回答... (Enter 发送)"}
+              placeholder={chatVoice.isListening ? "Recording..." : finished ? "The interview has ended" : "Enter your answer... (Enter Send)"}
               disabled={finished || sending}
               rows={3}
             />

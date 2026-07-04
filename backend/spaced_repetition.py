@@ -1,9 +1,9 @@
-"""间隔重复系统 — SM-2 算法。
+"""spaced repetition system — SM-2 algorithm.
 
-为每个薄弱点维护复习调度：
-- 答对了 → 间隔拉长（1天 → 3天 → 7天 → ...）
-- 答错了 → 间隔重置到 1 天
-- 每次出题时优先出"到期需要复习"的知识点
+Maintain review schedule for each weak point:
+- Correct answer → Extended interval (1 day → 3 days → 7 days → ...)
+- Wrong answer → Interval reset to 1 day
+- Give priority every time a question is asked"Need to review when due"knowledge points
 """
 from datetime import date, timedelta
 
@@ -70,7 +70,7 @@ def get_due_reviews(user_id: str, topic: str = None) -> list[dict]:
     for wp in profile.get("weak_points", []):
         if wp.get("improved") or wp.get("archived"):
             continue
-        # 跨领域规律不是可复习的知识点;老数据的表现轴条目同样排除
+        # Cross-domain rules are not knowledge points that can be reviewed; the performance axis items of old data are also excluded
         if wp.get("source") == "consolidated" or wp.get("axis") == "performance":
             continue
         if topic and wp.get("topic") != topic:

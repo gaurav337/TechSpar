@@ -14,18 +14,18 @@ export default class ErrorBoundary extends Component {
 
     return (
       <div className="flex flex-col items-center justify-center p-10 md:p-15 gap-4 min-h-[60vh]">
-        <div className="text-2xl font-bold text-text">出了点问题</div>
+        <div className="text-2xl font-bold text-text">something went wrong</div>
         <div className="text-sm text-dim max-w-[400px] text-center break-words">
-          {this.state.error?.message || "未知错误"}
+          {this.state.error?.message || "unknown error"}
         </div>
         <Button
           variant="gradient"
           className="mt-2"
           onClick={() => this.setState({ error: null })}
         >
-          重试
+          Try again
         </Button>
-        <Link to="/" className="text-sm text-primary hover:underline">返回首页</Link>
+        <Link to="/" className="text-sm text-primary hover:underline">Return to homepage</Link>
       </div>
     );
   }

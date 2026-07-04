@@ -16,18 +16,18 @@ function getScoreColor(score) {
 }
 
 const RESUME_DIMENSION_LABELS = {
-  technical_depth: "技术深度",
-  project_articulation: "项目表达",
-  communication: "表达能力",
-  problem_solving: "问题解决",
+  technical_depth: "Technical depth",
+  project_articulation: "project expression",
+  communication: "expressive ability",
+  problem_solving: "problem solving",
 };
 
 const JOB_PREP_DIMENSION_LABELS = {
-  role_fit: "岗位匹配",
-  technical_depth: "技术深度",
-  project_relevance: "项目相关性",
-  engineering_quality: "工程质量",
-  communication: "表达能力",
+  role_fit: "Job matching",
+  technical_depth: "Technical depth",
+  project_relevance: "project relevance",
+  engineering_quality: "Project quality",
+  communication: "expressive ability",
 };
 
 function ScorePill({ score }) {
@@ -49,9 +49,9 @@ function DimensionScores({ dimensionScores, avgScore, labels }) {
     <Card className="mb-6">
       <CardContent className="p-5 md:p-7">
         <div className="text-lg font-semibold mb-4">
-          维度评分
+          Dimension score
           {avgScore != null && (
-            <span className="text-sm font-normal text-dim ml-3">综合 <ScorePill score={avgScore} /></span>
+            <span className="text-sm font-normal text-dim ml-3">comprehensive <ScorePill score={avgScore} /></span>
           )}
         </div>
         {entries.map(([key, label]) => {
@@ -100,7 +100,7 @@ function SoloRecordingReview({ topicsCovered, overall }) {
     <>
       <Card className="mb-6">
         <CardContent className="p-5 md:p-8">
-          <div className="text-lg font-semibold mb-3">整体评价</div>
+          <div className="text-lg font-semibold mb-3">Overall rating</div>
           <div>
             <span className="inline-block text-[32px] font-bold mr-2" style={{ color: typeof avgScore === "number" ? getScoreColor(avgScore).color : "var(--foreground)" }}>
               {avgScore}
@@ -113,24 +113,24 @@ function SoloRecordingReview({ topicsCovered, overall }) {
         </CardContent>
       </Card>
 
-      <PointList title="薄弱点" items={overall?.new_weak_points} />
-      <PointList title="亮点" items={overall?.new_strong_points} tone="green" />
+      <PointList title="weak point" items={overall?.new_weak_points} />
+      <PointList title="Highlights" items={overall?.new_strong_points} tone="green" />
 
       {topicsCovered?.length > 0 && (
         <div className="mb-6">
-          <div className="text-base font-semibold mb-3 text-text">涉及知识点</div>
+          <div className="text-base font-semibold mb-3 text-text">Involving knowledge points</div>
           <div className="flex flex-col gap-4">
             {topicsCovered.map((t, i) => (
               <Card key={i} className="animate-fade-in">
                 <CardContent className="p-4 md:p-6">
                   <div className="flex items-center justify-between mb-3">
-                    <span className="text-[15px] font-medium">{t.topic || "未知知识点"}</span>
+                    <span className="text-[15px] font-medium">{t.topic || "Unknown knowledge points"}</span>
                     <ScorePill score={t.score} />
                   </div>
                   {t.assessment && <div className="text-sm leading-[1.7] text-text mb-2">{t.assessment}</div>}
-                  {t.understanding && <div className="text-[13px] text-dim italic mb-1">理解程度: {t.understanding}</div>}
-                  {t.errors?.length > 0 && <div className="text-[13px] text-red leading-normal">错误: {t.errors.join("、")}</div>}
-                  {t.missing?.length > 0 && <div className="text-[13px] text-dim leading-normal">遗漏: {t.missing.join("、")}</div>}
+                  {t.understanding && <div className="text-[13px] text-dim italic mb-1">level of understanding: {t.understanding}</div>}
+                  {t.errors?.length > 0 && <div className="text-[13px] text-red leading-normal">Error: {t.errors.join(",")}</div>}
+                  {t.missing?.length > 0 && <div className="text-[13px] text-dim leading-normal">Omission: {t.missing.join(",")}</div>}
                 </CardContent>
               </Card>
             ))}
@@ -143,12 +143,12 @@ function SoloRecordingReview({ topicsCovered, overall }) {
           <CardContent className="p-5 md:p-7">
             {overall.communication_observations && (
               <div className="mb-4">
-                <div className="text-base font-semibold mb-3">沟通表达</div>
+                <div className="text-base font-semibold mb-3">communication expression</div>
                 {overall.communication_observations.style_update && (
                   <div className="text-sm leading-[1.7] text-text mb-2">{overall.communication_observations.style_update}</div>
                 )}
                 {overall.communication_observations.new_habits?.length > 0 && (
-                  <div className="text-[13px] text-dim mb-1">表达习惯: {overall.communication_observations.new_habits.join("、")}</div>
+                  <div className="text-[13px] text-dim mb-1">Expression habits: {overall.communication_observations.new_habits.join(",")}</div>
                 )}
                 {overall.communication_observations.new_suggestions?.length > 0 && (
                   <div className="mt-2">
@@ -161,15 +161,15 @@ function SoloRecordingReview({ topicsCovered, overall }) {
             )}
             {overall.thinking_patterns && (
               <div>
-                <div className="text-base font-semibold mb-3">思维模式</div>
+                <div className="text-base font-semibold mb-3">thinking pattern</div>
                 {overall.thinking_patterns.new_strengths?.length > 0 && (
                   <div className="text-[13px] text-text mb-1">
-                    <span className="text-dim">优势: </span>{overall.thinking_patterns.new_strengths.join("、")}
+                    <span className="text-dim">Advantages: </span>{overall.thinking_patterns.new_strengths.join(",")}
                   </div>
                 )}
                 {overall.thinking_patterns.new_gaps?.length > 0 && (
                   <div className="text-[13px] text-text">
-                    <span className="text-dim">待提升: </span>{overall.thinking_patterns.new_gaps.join("、")}
+                    <span className="text-dim">To be promoted: </span>{overall.thinking_patterns.new_gaps.join(",")}
                   </div>
                 )}
               </div>
@@ -196,7 +196,7 @@ function DrillReview({ scores, overall, questions, answers, topic, sessionId, in
       const data = await getReferenceAnswer(sessionId, qId);
       setRefAnswers((p) => ({ ...p, [qId]: data.reference_answer }));
     } catch (e) {
-      setRefAnswers((p) => ({ ...p, [qId]: "生成失败: " + e.message }));
+      setRefAnswers((p) => ({ ...p, [qId]: "Build failed: " + e.message }));
     }
     setRefLoading((p) => ({ ...p, [qId]: false }));
   };
@@ -207,7 +207,7 @@ function DrillReview({ scores, overall, questions, answers, topic, sessionId, in
     <>
       <Card className="mb-6">
         <CardContent className="p-5 md:p-8">
-          <div className="text-lg font-semibold mb-3">整体评价</div>
+          <div className="text-lg font-semibold mb-3">Overall rating</div>
           <div className="flex items-center gap-1 mb-2">
             <span className="inline-block text-[32px] font-bold" style={{ color: typeof avgScore === "number" ? getScoreColor(avgScore).color : "var(--foreground)" }}>
               {avgScore}
@@ -218,16 +218,16 @@ function DrillReview({ scores, overall, questions, answers, topic, sessionId, in
             <div className="mt-4 text-[15px] leading-[1.8] text-text">{overall.summary}</div>
           )}
           <div className="flex flex-wrap gap-3 mt-4">
-            <Badge variant="secondary">共 {questions?.length || 0} 题</Badge>
-            <Badge variant="secondary">已答 {answers?.filter((a) => a.answer).length || 0} 题</Badge>
+            <Badge variant="secondary">total {questions?.length || 0} question</Badge>
+            <Badge variant="secondary">Answered {answers?.filter((a) => a.answer).length || 0} question</Badge>
           </div>
         </CardContent>
       </Card>
 
-      <PointList title="薄弱点" items={overall?.new_weak_points} />
-      <PointList title="亮点" items={overall?.new_strong_points} tone="green" />
+      <PointList title="weak point" items={overall?.new_weak_points} />
+      <PointList title="Highlights" items={overall?.new_strong_points} tone="green" />
 
-      <div className="text-base font-semibold mb-3 text-text">逐题复盘</div>
+      <div className="text-base font-semibold mb-3 text-text">Review question by question</div>
       <div className="flex flex-col gap-4">
         {(questions || []).map((q) => {
           const s = scoreMap[q.id] || {};
@@ -242,7 +242,7 @@ function DrillReview({ scores, overall, questions, answers, topic, sessionId, in
                     <Badge variant="outline" className="text-primary border-primary/30">Q{q.id}</Badge>
                     <span className="text-sm text-dim">{q.question.slice(0, 50)}{q.question.length > 50 ? "..." : ""}</span>
                   </div>
-                  <span className="text-[13px] text-dim">未作答</span>
+                  <span className="text-[13px] text-dim">No answer</span>
                 </CardContent>
               </Card>
             );
@@ -262,28 +262,28 @@ function DrillReview({ scores, overall, questions, answers, topic, sessionId, in
                 <div className="text-[15px] font-medium leading-relaxed mb-3">{q.question}</div>
 
                 <div className="bg-hover rounded-lg px-3 py-3 md:px-4 mb-3">
-                  <div className="text-xs font-semibold text-dim mb-1.5 opacity-70">你的回答</div>
+                  <div className="text-xs font-semibold text-dim mb-1.5 opacity-70">your answer</div>
                   <div className="text-sm leading-relaxed whitespace-pre-wrap">{answer}</div>
                 </div>
 
-                {s.assessment && s.assessment !== "未作答" && (
+                {s.assessment && s.assessment !== "No answer" && (
                   <div className="text-sm leading-[1.7] text-text mb-2">
-                    <strong className="text-xs opacity-60">点评: </strong>{s.assessment}
+                    <strong className="text-xs opacity-60">Review: </strong>{s.assessment}
                   </div>
                 )}
 
                 {s.improvement && (
                   <div className="text-sm leading-[1.7] text-primary bg-primary/8 rounded-lg px-3 py-2.5 mb-2">
-                    <strong className="text-xs opacity-70">改进建议: </strong>{s.improvement}
+                    <strong className="text-xs opacity-70">Improvement suggestions: </strong>{s.improvement}
                   </div>
                 )}
 
-                {s.understanding && s.understanding !== "未作答" && (
-                  <div className="text-[13px] text-dim italic mt-1">理解程度: {s.understanding}</div>
+                {s.understanding && s.understanding !== "No answer" && (
+                  <div className="text-[13px] text-dim italic mt-1">level of understanding: {s.understanding}</div>
                 )}
 
                 {s.key_missing?.length > 0 && (
-                  <div className="text-[13px] text-red leading-normal">遗漏关键点: {s.key_missing.join("、")}</div>
+                  <div className="text-[13px] text-red leading-normal">Missing key points: {s.key_missing.join(",")}</div>
                 )}
 
                 {topic && (
@@ -291,7 +291,7 @@ function DrillReview({ scores, overall, questions, answers, topic, sessionId, in
                     {refAnswers[q.id] ? (
                       <div className="text-sm leading-[1.8]">
                         <div className="text-xs font-semibold text-dim mb-2 flex items-center gap-1.5">
-                          <BookOpen size={13} /> 参考答案
+                          <BookOpen size={13} /> Reference answer
                         </div>
                         <div className="md-content bg-hover rounded-lg px-3.5 py-3">
                           <ReactMarkdown>{refAnswers[q.id]}</ReactMarkdown>
@@ -306,7 +306,7 @@ function DrillReview({ scores, overall, questions, answers, topic, sessionId, in
                         disabled={refLoading[q.id]}
                       >
                         <BookOpen size={13} />
-                        {refLoading[q.id] ? "正在生成参考答案..." : "查看参考答案"}
+                        {refLoading[q.id] ? "Generating reference answers..." : "View reference answers"}
                       </Button>
                     )}
                   </div>
@@ -322,12 +322,12 @@ function DrillReview({ scores, overall, questions, answers, topic, sessionId, in
           <CardContent className="p-5 md:p-7">
             {overall.communication_observations && (
               <div className="mb-4">
-                <div className="text-base font-semibold mb-3">沟通表达</div>
+                <div className="text-base font-semibold mb-3">communication expression</div>
                 {overall.communication_observations.style_update && (
                   <div className="text-sm leading-[1.7] text-text mb-2">{overall.communication_observations.style_update}</div>
                 )}
                 {overall.communication_observations.new_habits?.length > 0 && (
-                  <div className="text-[13px] text-dim mb-1">表达习惯: {overall.communication_observations.new_habits.join("、")}</div>
+                  <div className="text-[13px] text-dim mb-1">Expression habits: {overall.communication_observations.new_habits.join(",")}</div>
                 )}
                 {overall.communication_observations.new_suggestions?.length > 0 && (
                   <div className="mt-2">
@@ -340,15 +340,15 @@ function DrillReview({ scores, overall, questions, answers, topic, sessionId, in
             )}
             {overall.thinking_patterns && (
               <div>
-                <div className="text-base font-semibold mb-3">思维模式</div>
+                <div className="text-base font-semibold mb-3">thinking pattern</div>
                 {overall.thinking_patterns.new_strengths?.length > 0 && (
                   <div className="text-[13px] text-text mb-1">
-                    <span className="text-dim">优势: </span>{overall.thinking_patterns.new_strengths.join("、")}
+                    <span className="text-dim">Advantages: </span>{overall.thinking_patterns.new_strengths.join(",")}
                   </div>
                 )}
                 {overall.thinking_patterns.new_gaps?.length > 0 && (
                   <div className="text-[13px] text-text">
-                    <span className="text-dim">待提升: </span>{overall.thinking_patterns.new_gaps.join("、")}
+                    <span className="text-dim">To be promoted: </span>{overall.thinking_patterns.new_gaps.join(",")}
                   </div>
                 )}
               </div>
@@ -376,7 +376,7 @@ function JobPrepReview({ scores, overall, questions, answers, meta }) {
               <div className="flex items-center gap-2 mb-2">
                 <BriefcaseBusiness size={18} className="text-blue-400" />
                 <span className="text-lg font-semibold">
-                  {meta?.company ? `${meta.company} · ` : ""}{meta?.position || "目标岗位"}
+                  {meta?.company ? `${meta.company} · ` : ""}{meta?.position || "target position"}
                 </span>
               </div>
               {meta?.preview?.role_summary && (
@@ -396,15 +396,15 @@ function JobPrepReview({ scores, overall, questions, answers, meta }) {
           )}
           {overall?.role_fit_summary && (
             <div className="rounded-xl bg-blue-500/8 border border-blue-500/15 px-4 py-3 text-sm leading-relaxed">
-              <div className="text-[13px] font-semibold text-blue-300 mb-1.5">岗位匹配判断</div>
+              <div className="text-[13px] font-semibold text-blue-300 mb-1.5">Job matching judgment</div>
               {overall.role_fit_summary}
             </div>
           )}
 
           <div className="flex flex-wrap gap-3 mt-4">
-            <Badge variant="secondary">共 {questions?.length || 0} 题</Badge>
-            <Badge variant="secondary">已答 {answers?.filter((a) => a.answer).length || 0} 题</Badge>
-            <Badge variant={meta?.use_resume ? "blue" : "secondary"}>{meta?.use_resume ? "JD + 简历联动" : "仅 JD"}</Badge>
+            <Badge variant="secondary">total {questions?.length || 0} question</Badge>
+            <Badge variant="secondary">Answered {answers?.filter((a) => a.answer).length || 0} question</Badge>
+            <Badge variant={meta?.use_resume ? "blue" : "secondary"}>{meta?.use_resume ? "JD + Resume linkage" : "only JD"}</Badge>
           </div>
         </CardContent>
       </Card>
@@ -415,12 +415,12 @@ function JobPrepReview({ scores, overall, questions, answers, meta }) {
         labels={JOB_PREP_DIMENSION_LABELS}
       />
 
-      <PointList title="高风险追问点" items={overall?.interviewer_hotspots} tone="blue" />
-      <PointList title="面试前优先补强" items={overall?.prep_priorities} />
-      <PointList title="薄弱点" items={overall?.new_weak_points} />
-      <PointList title="亮点" items={overall?.new_strong_points} tone="green" />
+      <PointList title="High-risk questioning points" items={overall?.interviewer_hotspots} tone="blue" />
+      <PointList title="Prioritize reinforcement before the interview" items={overall?.prep_priorities} />
+      <PointList title="weak point" items={overall?.new_weak_points} />
+      <PointList title="Highlights" items={overall?.new_strong_points} tone="green" />
 
-      <div className="text-base font-semibold mb-3 text-text">逐题复盘</div>
+      <div className="text-base font-semibold mb-3 text-text">Review question by question</div>
       <div className="flex flex-col gap-4">
         {(questions || []).map((q) => {
           const s = scoreMap[q.id] || {};
@@ -443,39 +443,39 @@ function JobPrepReview({ scores, overall, questions, answers, meta }) {
 
                 {q.intent && (
                   <div className="mb-3 rounded-lg bg-hover px-3.5 py-3 text-sm text-dim leading-relaxed">
-                    <span className="font-medium text-text">面试官在看什么：</span> {q.intent}
+                    <span className="font-medium text-text">What the interviewer is looking at:</span> {q.intent}
                   </div>
                 )}
 
                 {isSkipped ? (
-                  <div className="text-[13px] text-dim">未作答</div>
+                  <div className="text-[13px] text-dim">No answer</div>
                 ) : (
                   <>
                     <div className="bg-hover rounded-lg px-3 py-3 md:px-4 mb-3">
-                      <div className="text-xs font-semibold text-dim mb-1.5 opacity-70">你的回答</div>
+                      <div className="text-xs font-semibold text-dim mb-1.5 opacity-70">your answer</div>
                       <div className="text-sm leading-relaxed whitespace-pre-wrap">{answer}</div>
                     </div>
 
                     {s.role_expectation && (
                       <div className="text-sm leading-[1.7] text-dim mb-2">
-                        <strong className="text-xs opacity-60">岗位在看什么: </strong>{s.role_expectation}
+                        <strong className="text-xs opacity-60">What are you looking for in the position?: </strong>{s.role_expectation}
                       </div>
                     )}
                     {s.assessment && (
                       <div className="text-sm leading-[1.7] text-text mb-2">
-                        <strong className="text-xs opacity-60">点评: </strong>{s.assessment}
+                        <strong className="text-xs opacity-60">Review: </strong>{s.assessment}
                       </div>
                     )}
                     {s.improvement && (
                       <div className="text-sm leading-[1.7] text-primary bg-primary/8 rounded-lg px-3 py-2.5 mb-2">
-                        <strong className="text-xs opacity-70">改进建议: </strong>{s.improvement}
+                        <strong className="text-xs opacity-70">Improvement suggestions: </strong>{s.improvement}
                       </div>
                     )}
                     {s.understanding && (
-                      <div className="text-[13px] text-dim italic mb-1">理解程度: {s.understanding}</div>
+                      <div className="text-[13px] text-dim italic mb-1">level of understanding: {s.understanding}</div>
                     )}
                     {s.key_missing?.length > 0 && (
-                      <div className="text-[13px] text-red leading-normal">遗漏关键点: {s.key_missing.join("、")}</div>
+                      <div className="text-[13px] text-red leading-normal">Missing key points: {s.key_missing.join(",")}</div>
                     )}
                   </>
                 )}
@@ -529,18 +529,18 @@ export default function Review() {
       if (currentMode === "jd_prep") {
         const m = meta || stateData.meta || {};
         data = await startJobPrep({
-          jd_text: m.jd_text || m.jd_excerpt,  // jd_excerpt: 兼容修复前创建的旧会话
+          jd_text: m.jd_text || m.jd_excerpt,  // jd_excerpt: Compatible with old sessions created before repair
           company: m.company,
           position: m.position,
           use_resume: m.use_resume,
-          preview_data: m.preview,             // 复用已有分析,省掉一次 LLM 拆解
+          preview_data: m.preview,             // Reuse existing analysis and save an LLM disassembly
         });
       } else {
         data = await startInterview(currentMode, topic || stateData.topic);
       }
       navigate(`/interview/${data.session_id}`, { state: { ...data, mode: currentMode, topic: topic || stateData.topic, meta: data.meta || meta || stateData.meta } });
     } catch (err) {
-      alert("启动失败: " + err.message);
+      alert("Startup failed: " + err.message);
     } finally {
       setRestarting(false);
     }
@@ -571,7 +571,7 @@ export default function Review() {
             setAnswers(inferAnswers(data.questions || [], data.transcript || []));
           }
         })
-        .catch((err) => setReview("加载失败: " + err.message))
+        .catch((err) => setReview("Loading failed: " + err.message))
         .finally(() => setLoading(false));
     }
   }, [sessionId, review, scores]);
@@ -585,7 +585,7 @@ export default function Review() {
             <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse-dot [animation-delay:0.2s]" />
             <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse-dot [animation-delay:0.4s]" />
           </div>
-          <span className="text-sm">加载复盘报告中...</span>
+          <span className="text-sm">Loading review report...</span>
         </div>
       </div>
     );
@@ -596,7 +596,7 @@ export default function Review() {
   const isJobPrep = currentMode === "jd_prep";
   const isRecordingDual = isRecording && (stateData.recording_mode === "dual" || questions.length > 0);
   const showDrill = currentMode === "topic_drill" || isRecordingDual;
-  const title = isRecording ? "录音复盘" : isJobPrep ? "JD 备面复盘" : showDrill ? "训练复盘" : "面试复盘";
+  const title = isRecording ? "Recording review" : isJobPrep ? "JD preparation review" : showDrill ? "Training review" : "Interview review";
 
   return (
     <div className="flex-1 px-4 py-8 md:px-6 md:py-10 max-w-3xl mx-auto w-full">
@@ -635,7 +635,7 @@ export default function Review() {
             {messages.length > 0 && (
               <div className="mb-6">
                 <Button variant="outline" onClick={() => setShowTranscript(!showTranscript)} className="mr-3">
-                  {showTranscript ? "收起面试记录" : "查看面试记录"}
+                  {showTranscript ? "Close interview record" : "View interview records"}
                 </Button>
                 {showTranscript && (
                   <Card className="mt-4">
@@ -643,7 +643,7 @@ export default function Review() {
                       {messages.map((msg, i) => (
                         <div key={i} className="py-2 border-b border-border text-sm leading-relaxed last:border-0">
                           <strong style={{ color: msg.role === "user" ? "var(--ai-glow)" : "var(--success)" }}>
-                            {msg.role === "user" ? "你" : "面试官"}:
+                            {msg.role === "user" ? "you" : "interviewer"}:
                           </strong>{" "}
                           {msg.content}
                         </div>
@@ -661,11 +661,11 @@ export default function Review() {
         {currentMode && currentMode !== "recording" && (
           <Button variant="gradient" onClick={handleRestart} disabled={restarting}>
             <RotateCcw size={15} className={restarting ? "animate-spin" : ""} />
-            {restarting ? "正在生成题目..." : "再次练习"}
+            {restarting ? "Generating questions..." : "practice again"}
           </Button>
         )}
         <Button variant="outline" onClick={() => navigate("/")}>
-          返回首页
+          Return to homepage
         </Button>
       </div>
     </div>

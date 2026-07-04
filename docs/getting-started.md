@@ -1,61 +1,61 @@
-# 新手上手
+# Getting Started
 
-本文默认你已经可以登录系统。如果项目还没跑起来，先看 [部署说明](deployment.md)。
+This article assumes that you can already log in to the system. If the project is not running yet, take a look first [Deployment instructions](deployment.md).
 
-### 第一次使用，建议按这个顺序玩
+### If you are using it for the first time, it is recommended to play in this order.
 
-1. **先在首页做一场简历模拟面试**
+1. **First do a resume mock interview on the homepage**
 
-   首页默认就是最适合新手的入口。上传一份 PDF 简历，直接开始第一轮模拟，先让系统建立你的第一批训练数据。
+   The home page is by default the most suitable entrance for novices. Upload a PDF resume to start the first round of simulations and let the system build your first batch of training data.
 
-2. **打完第一场后，先看复盘，不要急着继续下一场**
+2. **After playing the first game, watch the replay first and don’t rush to the next game.**
 
-   重点看三样东西：
-   - 整体评价和平均分
-   - 每道题的点评、改进建议
-   - 你到底卡在“不会”“答不深”还是“表达不清”
+   Focus on three things:
+   - Overall rating and average score
+   - Comments and improvement suggestions for each question
+   - Where are you stuck?“No”“Not a deep answer”Still“Can't express clearly”
 
-3. **再去“我的画像”和“历史记录”看长期信号**
+3. **Go again“my portrait”and“History”Look at long-term signals**
 
-   “我的画像”不是让你手动填写资料的地方，它会根据你完成过的训练自动沉淀结果；“历史记录”更适合横向对比最近几轮练习。如果某个主题已经练过几次，再点进对应领域详情，看掌握度、持续薄弱点和阶段回顾。
+   “my portrait”It is not a place where you manually fill in the information, it will automatically precipitate the results based on the training you have completed;“History”More suitable for horizontal comparison of recent rounds of practice. If you have practiced a certain topic several times, click on the details of the corresponding area to see the level of mastery, persistent weak points, and stage review.
 
-4. **如果已经知道自己的薄弱领域，再去“题库”补内容**
+4. **If you already know your weak areas, then go“question bank”Supplementary content**
 
-   题库页不是单独上传一个“知识库项目”，而是按训练领域维护资料。系统已经内置了一批默认领域，你可以直接修改默认内容；不够的话再新增自定义领域。这里补的不是“静态题单”，而是下一轮动态出题要参考的知识边界、高频考点和训练依据。
+   The question bank page is not uploaded separately.“Knowledge Base Project”, instead maintaining data by training area. The system has built-in a number of default fields, and you can directly modify the default content; if it is not enough, add a new custom field. What is being supplemented here is not“static question sheet”, but the knowledge boundaries, high-frequency test points and training basis that will be referenced in the next round of dynamic questions.
 
-5. **然后回首页做“专项强化训练”**
+5. **Then go back to the homepage and do it“Special intensive training”**
 
-   这一步适合你已经知道自己要补什么，比如 “MySQL 索引”“React 性能优化”“操作系统并发模型”。不要一开始就练得太泛。
+   This step is suitable if you already know what you want to make up for, such as “MySQL index”“React performance optimization”“Operating system concurrency model”. Don't practice too much at the beginning.
 
-6. **如果已经做过几轮专项训练，再去“图谱”看关联题**
+6. **If you have done several rounds of special training before going“Atlas”Look at related questions**
 
-   图谱不是装饰页。它适合你已经有一批已评分专项训练题之后，回头定位哪些题互相关联、哪些低分题值得一起处理。
+   Charts are not decorative pages. It is suitable for you to go back and identify which questions are related to each other and which low-scoring questions are worth processing together after you have a batch of scored special training questions.
 
-7. **面试前一天，再用 “JD 定向备面”**
+7. **The day before the interview, use “JD orientation preparation”**
 
-   把真实岗位 JD 贴进去，先做岗位拆解，再开始训练。这个模式更适合临近真实面试时做针对性冲刺。
+   Paste the JD of the real position and do the job dismantling first before starting training. This mode is more suitable for targeted sprints close to the real interview.
 
-8. **如果要做实时辅助，再进入 “面试 Copilot”**
+8. **If you want real-time assistance, enter again “interview Copilot”**
 
-   Copilot 不是替代前面几种训练模式的入口。它更适合你已经有明确目标 JD、简历和一定画像数据之后，用来做面试前准备和实时追问辅助。
+   Copilot is not a replacement for the previous training modes. It is more suitable for pre-interview preparation and real-time questioning assistance after you already have a clear target JD, resume and certain portrait data.
 
-9. **有真实录音或转写稿时，再用“录音复盘”**
+9. **Use it again when you have real recordings or transcriptions“Recording review”**
 
-   录音复盘适合真实面试后的复盘，不是第一次体验项目的首选入口。
+   Recording review is suitable for review after real interviews and is not the first choice for experiencing the project for the first time.
 
-### 几类入口怎么选
+### How to choose between several types of entrances
 
-* **简历模拟面试**：你想先知道自己项目经历会被怎么追问。
-* **专项强化训练**：你已经知道薄弱主题，想集中补一个点。
-* **JD 定向备面**：你手上有明确岗位 JD，想做定向冲刺。
-* **面试 Copilot**：你已经准备好目标 JD，想提前看 HR 追问策略，或在实时场景里拿辅助建议。
-* **录音复盘**：你已经有一段录音或逐字稿，想做事后分析。
+* **Resume Mock Interview**: You want to know first how you will be asked about your project experience.
+* **Special intensive training**: You already know the weak topic and want to focus on making up one point.
+* **JD orientation preparation**: You have a clear position JD and want to do a directional sprint.
+* **interview Copilot**: You have prepared the target JD and want to see HR questioning strategies in advance, or get auxiliary suggestions in real-time scenarios.
+* **Recording review**: You already have a recording or verbatim transcript and want to do a post-mortem analysis.
 
-### 新手最容易走偏的地方
+### The most likely place for novices to go astray
 
-* 不要先去找“个人资料配置页”。当前系统的重点是先训练，再生成画像。
-* 不要把 Copilot 当成第一入口。它依赖 JD、简历和画像联动，准备越完整越有价值。
-* 不要一上来就堆很多领域。先把一个主题练明白，再扩展。
-* 不要把题库理解成固定题单。它更像动态出题的底座，补得越准确，后面题目越有针对性。
-* 不要只盯着分数。分数是结果，逐题点评和薄弱点才是下一轮训练的输入。
-* 浏览器麦克风权限不是强制项。大多数输入框都可以直接打字回答；你想用语音时再开麦即可。
+* Don't look for it first“Profile configuration page”. The focus of the current system is to train first and then generate the portrait.
+* Don’t think of Copilot as your first entry point. It relies on the linkage of JD, resume and portrait. The more complete the preparation, the more valuable it is.
+* Don’t pile up a lot of fields right off the bat. Practice a topic clearly first, and then expand on it.
+* Don’t understand the question bank as a fixed list of questions. It is more like a base for dynamic question generation. The more accurate you are, the more targeted the subsequent questions will be.
+* Don't just focus on the score. The score is the result, and the question-by-question comments and weak points are the input for the next round of training.
+* Browser microphone permission is not mandatory. Most input boxes can be typed directly to answer; if you want to use voice, just turn on the microphone.

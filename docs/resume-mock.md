@@ -1,24 +1,24 @@
-# 简历模拟面试
+# Resume Mock Interview
 
-简历是最容易被深挖的地方，所以这个模式最适合做你的第一轮体验。
+The resume is the easiest place to dig deep, so this mode is best for your first round of experience.
 
-### 适合什么时候用
+### When is it suitable to use
 
-1. 你想知道面试官会如何围绕你的项目经历追问。
-2. 你不确定自己的项目描述是不是太空、太虚、太像背稿。
-3. 你想先拿到一份基线复盘，再决定后面该补哪些专项主题。
+1. You want to know how the interviewer will ask questions about your project experience.
+2. You are not sure whether your project description is too empty, too vague, or too memorized.
+3. You want to get a baseline review first, and then decide which special topics to cover later.
 
-### 正确使用方式
+### Correct use
 
-1. 在首页选择 **简历模拟面试**。
-2. 上传一份 **PDF 简历**。
-3. 开始面试，按问题逐个作答。
-4. 你可以直接键盘输入，也可以在浏览器支持时使用语音输入。
-5. 结束后进入复盘页，看整体评价、逐题点评和改进建议。
+1. Select on the homepage **Resume Mock Interview**.
+2. Upload a copy **PDF Resume**.
+3. Start the interview and answer the questions one by one.
+4. You can enter directly with the keyboard or use voice input if the browser supports it.
+5. After finishing, enter the review page to see the overall evaluation, topic-by-topic comments and suggestions for improvement.
 
-### 想要效果更好，注意这几点
+### If you want better results, pay attention to these points
 
-* 上传你真正准备投递的版本，而不是很多信息都没收口的草稿。
-* 项目回答尽量说清楚：背景、目标、方案、取舍、结果。
-* 不要只背术语。面试官更关心你为什么这么做、做完效果怎样、遇到过什么问题。
-* 如果某个项目反复被追问卡住，下一步应该去题库补这个主题，再做专项训练。
+* Upload the version you are actually ready to deliver, not a rough draft with a lot of information missing.
+* Try to be as clear as possible in your project answers: background, goals, plans, trade-offs, and results.
+* Don’t just memorize jargon. The interviewer is more concerned about why you did what you did, how effective it was, and what problems you encountered.
+* If a certain item is stuck by repeated questioning, the next step should be to go to the question bank to make up for this topic and then do special training.

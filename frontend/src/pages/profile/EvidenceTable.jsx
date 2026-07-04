@@ -11,7 +11,7 @@ export default function EvidenceTable({ weakItems, strongItems, improvedItems })
   const [typeFilter, setTypeFilter] = useState(EVIDENCE_TYPE_ALL);
   const [topicFilter, setTopicFilter] = useState(EVIDENCE_TYPE_ALL);
   const [expanded, setExpanded] = useState(false);
-  // 用户对 consolidated 规律的反馈,乐观更新,失败回滚
+  // User feedback on consolidated rules, optimistic updates, and rollback on failure
   const [patternFeedback, setPatternFeedback] = useState({});
   const LIMIT = 8;
 
@@ -101,7 +101,7 @@ export default function EvidenceTable({ weakItems, strongItems, improvedItems })
       </div>
 
       {filtered.length === 0 ? (
-        <div className="py-6 text-center text-sm text-dim">暂无匹配的证据条目。</div>
+        <div className="py-6 text-center text-sm text-dim">There are no matching evidence entries yet.</div>
       ) : (
         <div className="rounded-lg border border-border overflow-hidden">
           {visible.map((item, index) => {
@@ -133,14 +133,14 @@ export default function EvidenceTable({ weakItems, strongItems, improvedItems })
                       variant="secondary"
                       className="shrink-0 text-[10px] bg-accent/15 text-accent border-accent/30"
                     >
-                      ✦ 系统观察
+                      ✦ systematic observation
                     </Badge>
                   )}
                   {item.topic && !isConsolidated && (
                     <Badge variant="outline" className="shrink-0 text-[11px]">{item.topic}</Badge>
                   )}
                   {item._type === "weak" && !isConsolidated && (item.times_seen || 1) > 1 && (
-                    <span className="shrink-0 text-xs text-dim">{item.times_seen}次</span>
+                    <span className="shrink-0 text-xs text-dim">{item.times_seen}times</span>
                   )}
                   <span className="shrink-0 text-xs text-dim w-12 text-right">
                     {formatShortDate(
@@ -154,7 +154,7 @@ export default function EvidenceTable({ weakItems, strongItems, improvedItems })
                 {isConsolidated && sourceList.length > 0 && (
                   <div className="mt-2 ml-5 pl-3 border-l-2 border-accent/30 space-y-0.5">
                     <div className="text-[11px] text-dim/70">
-                      基于 {sourceList.length} 条具体观察整合
+                      Based on {sourceList.length} Integration of specific observations
                     </div>
                     {sourceList.map((source, sourceIndex) => (
                       <div key={sourceIndex} className="text-[11px] text-dim/80 truncate">
@@ -167,23 +167,23 @@ export default function EvidenceTable({ weakItems, strongItems, improvedItems })
                 {isConsolidated && item._type === "weak" && (
                   <div className="mt-2 ml-5 flex items-center gap-2">
                     {patternFeedback[item.point] === "inaccurate" ? (
-                      <span className="text-[11px] text-dim/70">已标记不准，这条规律不再展示</span>
+                      <span className="text-[11px] text-dim/70">Marked as incorrect, this rule will no longer be displayed</span>
                     ) : patternFeedback[item.point] === "accurate" || item.user_acknowledged ? (
-                      <span className="text-[11px] text-dim/70">✓ 已确认</span>
+                      <span className="text-[11px] text-dim/70">✓ Confirmed</span>
                     ) : (
                       <>
-                        <span className="text-[11px] text-dim/60">这条规律准吗？</span>
+                        <span className="text-[11px] text-dim/60">Is this rule accurate?</span>
                         <button
                           onClick={() => handlePatternFeedback(item.point, "accurate")}
                           className="rounded-full border border-border px-2.5 py-0.5 text-[11px] text-dim transition-colors cursor-pointer hover:border-green/40 hover:text-green"
                         >
-                          准
+                          Accurate
                         </button>
                         <button
                           onClick={() => handlePatternFeedback(item.point, "inaccurate")}
                           className="rounded-full border border-border px-2.5 py-0.5 text-[11px] text-dim transition-colors cursor-pointer hover:border-red/40 hover:text-red"
                         >
-                          不准
+                          Not allowed
                         </button>
                       </>
                     )}
@@ -200,7 +200,7 @@ export default function EvidenceTable({ weakItems, strongItems, improvedItems })
           onClick={() => setExpanded(!expanded)}
           className="text-primary text-[13px] cursor-pointer hover:underline"
         >
-          {expanded ? "收起" : `展开更多 (+${filtered.length - LIMIT})`}
+          {expanded ? "close" : `Expand more (+${filtered.length - LIMIT})`}
         </button>
       )}
     </div>

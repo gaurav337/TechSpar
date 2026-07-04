@@ -1,51 +1,51 @@
-# 设置
+# settings
 
-设置页只放当前系统真实可调的内容，不写“未来也许会支持”的参数。
+The settings page only displays the actual adjustable content of the current system and does not write“It may be supported in the future”parameters.
 
-### 当前可以调什么
+### What can be adjusted currently?
 
-#### 1. LLM 服务配置
+#### 1. LLM service configuration
 
-你可以直接在页面里修改：
+You can modify it directly on the page:
 
 * `API Base`
 * `API Key`
 * `Model`
 * `Temperature`
 
-这些配置保存后会立即生效，不需要手动重启后端。
+These configurations will take effect immediately after being saved, and there is no need to manually restart the backend.
 
-#### 2. 专项训练默认参数
+#### 2. Default parameters for special training
 
-当前页面支持两类专项训练默认值：
+The current page supports two types of special training default values:
 
-* **每轮题目数**
-* **题目发散度**
+* **Number of questions per round**
+* **topic divergence**
 
-它们影响的是你之后新开的专项训练，不会回头改已经开始的旧会话。
+They affect new training sessions you start in the future and will not change old sessions you have already started.
 
-#### 3. Copilot 预测 Agent
+#### 3. Copilot prediction Agent
 
-你可以在设置页勾选面试 Copilot 要启用的预测 Agent。当前重点不是“开越多越好”，而是开对。
+You can check the prediction agent to be enabled in Interview Copilot on the settings page. The current focus is not“The more you open, the better”, but open the right one.
 
-更直接的理解是：
+A more direct understanding is:
 
-* `技术追问`：继续往底层和细节深挖
-* `项目经验`：转向真实项目场景
-* `压力质疑`：模拟挑战和反驳
-* `行为考察`：转向沟通、协作和行为问题
-* `横向扩展`：从当前问题扩到相关领域
+* `Technical questions`: Continue to dig deeper into the underlying layers and details.
+* `Project experience`: Turning to real project scenarios
+* `pressure question`: Simulation challenges and rebuttals
+* `behavioral examination`: Shift to communication, collaboration and behavioral issues
+* `Scale out`:Expand from current issues to related areas
 
-### 正确使用方式
+### Correct use
 
-1. 如果你只是想把系统跑起来，优先先在 `.env` 里配通最小配置。
-2. 跑通以后，再到页面里的 **设置** 做日常调整。
-3. 改 LLM 配置前，先确认新模型和接口确实可用。
-4. 改专项训练参数时，别一次把题目数和发散度一起拉满。
-5. 改 Copilot Agent 时，按你的真实面试场景选，不要为了“看起来更强”全开。
+1. If you just want to run the system, first `.env` The minimum configuration is provided here.
+2. After running through, go to the page **settings** Make daily adjustments.
+3. Before changing the LLM configuration, first confirm that the new model and interface are indeed available.
+4. When changing the special training parameters, do not fill up the number of questions and divergence at once.
+5. When changing Copilot Agent, select according to your real interview scenario, do not“look stronger”Fully open.
 
-### 使用建议
+### Usage suggestions
 
-* 日常训练想更稳，优先改题目数和发散度，不要先频繁换模型。
-* 如果 Copilot 的建议太散，先减少预测 Agent，再看结果是否更聚焦。
-* 设置页解决的是“怎么调当前系统”，不是替代部署配置页。
+* If you want to make daily training more stable, give priority to changing the number of questions and divergence, and don’t change models frequently first.
+* If Copilot's recommendations are too scattered, reduce the number of prediction agents first, and then see if the results are more focused.
+* The settings page solves“How to adjust the current system”, is not an alternative to the deployment configuration page.

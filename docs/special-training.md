@@ -1,29 +1,29 @@
-# 专项训练怎么玩
+# How to play special training
 
-“专项强化训练”适合你已经知道自己要补什么，而不是还在广撒网。
+“Special intensive training”It’s suitable for you to already know what you want to make up for, rather than still casting a wide net.
 
-### 什么时候用它
+### when to use it
 
-* 你已经明确某个薄弱主题，比如 `Redis 持久化`、`React 渲染机制`、`Linux 进程调度`。
-* 你不想再做一整套简历面试，只想集中补一个方向。
-* 你希望连续几轮都围绕同一个主题训练，而不是每次都换话题。
+* You have identified a weak theme, e.g. `Redis persistence`,`React rendering mechanism`,`Linux process scheduling`.
+* You don’t want to do a whole set of resume interviews, you just want to focus on one direction.
+* You want to train on the same topic for several rounds in a row, rather than changing the topic each time.
 
-### 正确流程
+### Correct process
 
-1. 先去 **题库** 页面，直接选系统内置的默认训练领域。
-2. 如果默认内容不够，就补一点最基础的核心知识内容；确实没有对应方向时，再新增自定义领域。
-3. 回到首页，选择 **专项强化训练**。
-4. 选中这个领域，开始一轮训练。
-5. 结束后先看复盘，再决定是继续同一主题，还是回题库补材料。
+1. Go first **question bank** page, directly select the default training area built into the system.
+2. If the default content is not enough, add some basic core knowledge content; if there is indeed no corresponding direction, add a new custom field.
+3. Return to the homepage and select **Special intensive training**.
+4. Select this field to start a round of training.
+5. After finishing, read the review first, and then decide whether to continue with the same topic or go back to the question bank to supplement materials.
 
-这里要注意一件事：题库不是固定题单。你在题库里补的核心知识、高频考点和术语边界，会直接影响后面专项训练的动态出题和评分参考。
+One thing to note here: the question bank is not a fixed list of questions. The core knowledge, high-frequency test points and term boundaries you add to the question bank will directly affect the dynamic question setting and scoring reference for subsequent special training.
 
-### 使用建议
+### Usage suggestions
 
-* 主题名称尽量具体。`Java 并发` 比 `Java 面试` 更有训练价值。
-* 第一轮不要追求覆盖面，先把一个主题练透。
-* 连续几轮都在同一个领域练，才能看到“历史弱点有没有改善”。
-* 如果复盘里反复出现同一类遗漏，优先回题库补内容，而不是盲目再开一轮。
-* 回题库补材料时，优先补核心概念、常见误区和高频追问，不要只是机械堆题。
+* Make topic names as specific as possible.`Java concurrency` Than `Java interview` More training value.
+* Don’t pursue coverage in the first round. Practice a topic thoroughly first.
+* Only by practicing in the same area for several consecutive rounds can you see“Have historical weaknesses been improved?”.
+* If the same type of omission appears repeatedly in the review, give priority to going back to the question bank to make up the content instead of blindly starting another round.
+* When returning to the question bank to supplement materials, give priority to core concepts, common misunderstandings and high-frequency questioning, and don’t just pile on mechanical questions.
 
-当前系统会根据题目和回答情况动态控制训练节奏，你不需要先手动配置一堆参数再开始。
+The current system will dynamically control the training pace based on the questions and answers. You do not need to manually configure a bunch of parameters before starting.

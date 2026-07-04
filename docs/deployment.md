@@ -1,25 +1,25 @@
-# 部署说明
+# Deployment instructions
 
-这页只写当前仓库真实可用的启动方式。
+This page only describes the actual startup methods available for the current warehouse.
 
-### 环境要求
+### Environmental requirements
 
 * Python `3.11+`
 * Node.js `18+`
-* 一个可用的 **OpenAI 兼容 LLM 接口**
-* 一个可用的 **Embedding 接口**，或者本地 Embedding 模型
+* an available **OpenAI compatible LLM interface**
+* an available **Embedding interface**, or a local Embedding model
 
-录音上传转写不是必需功能；如果你要用它，再额外配置语音相关环境变量。
+Recording upload and transcription is not a required function; if you want to use it, configure additional voice-related environment variables.
 
-### 1. 复制环境变量
+### 1. Copy environment variables
 
 ```bash
 cp .env.example .env
 ```
 
-### 2. 最小可运行配置
+### 2. Minimum runnable configuration
 
-如果你想先把项目跑起来，推荐先用 **API Embedding** 模式。如果你使用远程 Embedding API，最小可运行配置如下：
+If you want to run the project first, it is recommended to use **API Embedding** mode. If you use the remote Embedding API, the minimum runnable configuration is as follows:
 
 ```env
 API_BASE=https://your-llm-api-base/v1
@@ -31,27 +31,27 @@ EMBEDDING_API_KEY=sk-your-embedding-key
 EMBEDDING_API_MODEL=your-embedding-model
 ```
 
-这些变量分别是：
+These variables are:
 
-* `API_BASE`：主 LLM 的 OpenAI 兼容接口地址。面试、复盘、JD 分析都会走它。
-* `API_KEY`：上面这个 LLM 接口的密钥。
-* `MODEL`：主 LLM 模型名。
-* `EMBEDDING_BACKEND`：Embedding 走哪条路，只能是 `api` 或 `local`。
-* `EMBEDDING_API_BASE`：Embedding 接口地址。如果你用官方 OpenAI Embedding，这个值可以留空。
-* `EMBEDDING_API_KEY`：Embedding 接口密钥。
-* `EMBEDDING_API_MODEL`：Embedding 模型名。这里不要照抄示例，应该改成你的服务实际支持的模型。
+* `API_BASE`: The OpenAI compatible interface address of the main LLM. It will be used in interviews, reviews, and JD analysis.
+* `API_KEY`: The key of the above LLM interface.
+* `MODEL`: Main LLM model name.
+* `EMBEDDING_BACKEND`: Embedding Which way to go, it can only be `api` or `local`.
+* `EMBEDDING_API_BASE`: Embedding interface address. If you use the official OpenAI Embedding, this value can be left blank.
+* `EMBEDDING_API_KEY`: Embedding interface key.
+* `EMBEDDING_API_MODEL`: Embedding model name. Don't copy the example here, change it to the model your service actually supports.
 
-如果你只是想先把项目跑起来，不一定要先购买模型服务。一个简单的免费示例是：
+If you just want to get the project running first, you don’t have to purchase the model service first. A simple free example is:
 
-* 主 LLM：ModelScope 的 `ZhipuAI/GLM-5`
-* Embedding：SiliconFlow 的 `BAAI/bge-large-zh-v1.5`
+* Master LLM: ModelScope `ZhipuAI/GLM-5`
+* Embedding: SiliconFlow `BAAI/bge-large-zh-v1.5`
 
-注册入口：
+Registration entrance:
 
 * ModelScope: <https://modelscope.cn/home>
 * SiliconFlow: <https://cloud.siliconflow.cn/>
 
-配置示例：
+Configuration example:
 
 ```env
 API_BASE=https://api-inference.modelscope.cn/v1
@@ -64,9 +64,9 @@ EMBEDDING_API_KEY=sk-your-siliconflow-key
 EMBEDDING_API_MODEL=BAAI/bge-large-zh-v1.5
 ```
 
-`API_KEY` 填 ModelScope 的 SDK Token，`EMBEDDING_API_KEY` 填 SiliconFlow 的 API Key。主 LLM 和 Embedding 可以分开用不同服务商，不需要来自同一家。
+`API_KEY` Fill in the SDK Token of ModelScope,`EMBEDDING_API_KEY` Fill in SiliconFlow’s API Key. The main LLM and Embedding can use different service providers separately and do not need to be from the same one.
 
-默认认证配置如下；如果不改，启动后可以直接登录：
+The default authentication configuration is as follows; if not changed, you can log in directly after startup:
 
 ```env
 DEFAULT_EMAIL=admin@techspar.local
@@ -74,9 +74,9 @@ DEFAULT_PASSWORD=admin123
 ALLOW_REGISTRATION=false
 ```
 
-### 3. 如果你想用本地 Embedding
+### 3. If you want to use local Embedding
 
-如果你不想走远程 Embedding API，可以改成：
+If you don't want to use the remote Embedding API, you can change it to:
 
 ```env
 EMBEDDING_BACKEND=local
@@ -84,23 +84,23 @@ LOCAL_EMBEDDING_MODEL=BAAI/bge-m3
 LOCAL_EMBEDDING_PATH=
 ```
 
-说明：
+Description:
 
-* `LOCAL_EMBEDDING_MODEL`：本地 Embedding 模型名。
-* `LOCAL_EMBEDDING_PATH`：如果你已经把模型下载到本地，可以直接写本地路径。
-* `LOCAL_EMBEDDING_MODEL` 和 `LOCAL_EMBEDDING_PATH` 二选一即可。
-* 本地模式需要额外安装依赖：`pip install -r requirements.local-embedding.txt`
+* `LOCAL_EMBEDDING_MODEL`: Local Embedding model name.
+* `LOCAL_EMBEDDING_PATH`: If you have downloaded the model locally, you can directly write the local path.
+* `LOCAL_EMBEDDING_MODEL` and `LOCAL_EMBEDDING_PATH` Just choose one of the two.
+* Local mode requires additional installation of dependencies:`pip install -r requirements.local-embedding.txt`
 
-### 4. 本地手动启动
+### 4. Local manual startup
 
-后端：
+Backend:
 
 ```bash
 pip install -r requirements.txt
 uvicorn backend.main:app --reload --port 8000
 ```
 
-前端：
+Frontend:
 
 ```bash
 cd frontend
@@ -108,27 +108,27 @@ npm install
 npm run dev
 ```
 
-启动后访问：
+After startup visit:
 
 ```text
 http://localhost:5173
 ```
 
-### 5. Docker 启动
+### 5. Docker startup
 
 ```bash
 docker compose up --build
 ```
 
-启动后访问：
+After startup visit:
 
 ```text
 http://localhost
 ```
 
-### 6. 面试 Copilot 的额外配置
+### 6. Interviewing additional configurations of Copilot
 
-如果你要启用 Copilot 的独立模型、实时语音识别或联网公司搜索，还需要补齐这些可选项：
+If you want to enable Copilot's standalone model, real-time speech recognition, or online company search, you also need to complete these options:
 
 ```env
 COPILOT_API_BASE=
@@ -138,13 +138,13 @@ DASHSCOPE_API_KEY=
 TAVILY_API_KEY=
 ```
 
-这些变量的作用分别是：
+The functions of these variables are:
 
-* `COPILOT_API_BASE` / `COPILOT_API_KEY` / `COPILOT_MODEL`：给 Copilot 单独指定一套 OpenAI 兼容模型配置。不填时会回退到主 LLM。
-* `DASHSCOPE_API_KEY`：给 Copilot 的**实时语音识别**使用（模型 `qwen3-asr-flash-realtime`，走 OpenAI Realtime 兼容 WebSocket 协议，自带服务端 VAD）。同一个 key 也承担"录音上传批量转写"用途。不配时，Copilot 仍可用，但只能手动输入 HR 的问题。
-* `TAVILY_API_KEY`：给 Copilot Prep 阶段的**公司联网搜索**使用。不配时不会整段报废，但公司情报会退化成"跳过联网搜索"。
+* `COPILOT_API_BASE` / `COPILOT_API_KEY` / `COPILOT_MODEL`: Specify a separate set of OpenAI compatible model configurations for Copilot. If not filled in, it will fall back to the main LLM.
+* `DASHSCOPE_API_KEY`: for Copilot**Real-time speech recognition**use (model `qwen3-asr-flash-realtime`, adopts OpenAI Realtime and is compatible with WebSocket protocol, and comes with its own server VAD). The same key also assumes"Recording upload and batch transcription"Purpose. When not matched, Copilot can still be used, but only HR questions can be entered manually.
+* `TAVILY_API_KEY`: For the Copilot Prep stage**Company Internet Search**Use. If it is not suitable, the entire section will not be scrapped, but the company information will be degraded into"Skip online search".
 
-如果你还想让 Copilot **自动区分 HR 与候选人**（无需手动按钮切换），再补上腾讯云 VPR 声纹识别（可选）：
+if you still want Copilot **Automatically differentiate between HR and candidates**(No manual button switching required), plus Tencent Cloud VPR voiceprint recognition (optional):
 
 ```env
 TENCENT_SECRET_ID=
@@ -152,30 +152,30 @@ TENCENT_SECRET_KEY=
 TENCENT_VPR_APP_ID=
 ```
 
-配好后进入 Copilot 设置页的"声纹识别（可选）"卡片录制 6-15 秒候选人语音完成注册，实时面试就会自动打角色标签。不配置时一切功能照旧，只是角色需要手动切换。
+After configuration, enter the Copilot settings page."Voiceprint recognition (optional)"The card records the candidate's voice for 6-15 seconds to complete the registration, and the real-time interview will automatically add role tags. When not configured, all functions remain the same, but roles need to be switched manually.
 
-额外注意：
+Additional Notes:
 
-* 如果你只是想先用 Copilot，看 JD 分析、匹配分析和策略树，`DASHSCOPE_API_KEY`、`TAVILY_API_KEY`、`TENCENT_*` 都不是强制项。
-* 这些值怎么申请、控制台里去哪里找，统一看 [外部服务配置](external-services.md)。
+* If you just want to use Copilot first, see JD Analysis, Match Analysis, and Strategy Trees,`DASHSCOPE_API_KEY`,`TAVILY_API_KEY`,`TENCENT_*` None are mandatory.
+* How to apply for these values, where to find them in the console, check them all together [External service configuration](external-services.md).
 
-### 7. 录音转写的额外配置
+### 7. Additional configurations for recording and transcription
 
-语音转写现在拆成两条链路，需要配什么取决于你要开哪一条：
+Speech transcription is now split into two links. What you need to configure depends on which one you want to open:
 
-**短音频（答题时语音输入、几秒~几分钟）**
+**Short audio (voice input when answering questions, a few seconds~few minutes)**
 
-只需要 `DASHSCOPE_API_KEY`，不需要任何对象存储。走 DashScope 同步 `chat/completions`，base64 直传。
+Just need `DASHSCOPE_API_KEY`, does not require any object storage. Go DashScope Sync `chat/completions`, base64 direct transmission.
 
 ```env
 DASHSCOPE_API_KEY=
 ```
 
-> 留空时若 `COPILOT_API_KEY` 指向 `https://dashscope.aliyuncs.com/compatible-mode/v1`，会自动复用那个 key，避免一套 DashScope 账号配两次。
+> If left blank `COPILOT_API_KEY` point to `https://dashscope.aliyuncs.com/compatible-mode/v1`, the key will be automatically reused to avoid configuring a DashScope account twice.
 
-**长音频（录音复盘上传整段面试录音，可能几十分钟）**
+**Long audio (recording copy and upload the entire interview recording, which may be tens of minutes)**
 
-除了上面那个 key，还要补齐阿里云 OSS。走 `qwen3-asr-flash-filetrans` 异步接口，它只接受公网 URL，所以必须先把音频传上 OSS 拿到签名 URL：
+In addition to the key above, Alibaba Cloud OSS must also be completed. go `qwen3-asr-flash-filetrans` Asynchronous interface, it only accepts public URLs, so you must first upload the audio to OSS to get the signed URL:
 
 ```env
 ALIYUN_OSS_ACCESS_KEY_ID=
@@ -184,17 +184,17 @@ ALIYUN_OSS_BUCKET=
 ALIYUN_OSS_ENDPOINT=oss-cn-shanghai.aliyuncs.com
 ```
 
-* `ALIYUN_OSS_ACCESS_KEY_ID` / `SECRET`：阿里云 RAM 子账号（或主账号）AK/SK。
-* `ALIYUN_OSS_BUCKET`：目标 OSS 存储桶名。桶**可以保持私有**，代码里用 1 小时过期的签名 URL 让 DashScope 拉文件，无需公开读。
-* `ALIYUN_OSS_ENDPOINT`：桶所在区域的 endpoint，如 `oss-cn-shanghai.aliyuncs.com` / `oss-cn-beijing.aliyuncs.com`。
+* `ALIYUN_OSS_ACCESS_KEY_ID` / `SECRET`: Alibaba Cloud RAM sub-account (or main account)AK/SK.
+* `ALIYUN_OSS_BUCKET`: Target OSS bucket name. bucket**can remain private**, the code uses a signed URL that expires in 1 hour to let DashScope pull the file without public reading.
+* `ALIYUN_OSS_ENDPOINT`: The endpoint of the area where the bucket is located, such as `oss-cn-shanghai.aliyuncs.com` / `oss-cn-beijing.aliyuncs.com`.
 
-如果这些都没配，也不影响主要训练流程 —— 录音复盘可以直接粘贴逐字稿文本。
+If none of these are configured, it will not affect the main training process. —— The verbatim text can be directly pasted into the recording copy.
 
-这些值怎么申请、控制台里去哪里找，统一看 [外部服务配置](external-services.md)。
+How to apply for these values, where to find them in the console, check them all together [External service configuration](external-services.md).
 
-### 8. 线上部署注意事项
+### 8. Precautions for online deployment
 
-* 手动开发模式下，前端默认是 `5173`，后端是 `8000`。
-* Docker 模式下，前端默认对外暴露 `80` 端口。
-* 如果你在线上要使用麦克风或录音相关能力，建议启用 HTTPS；浏览器对非 `localhost` 的音频权限更严格。
-* 线上环境不要保留默认的 `JWT_SECRET`、`DEFAULT_PASSWORD`。
+* In manual development mode, the front end defaults to `5173`, the backend is `8000`.
+* In Docker mode, the front end is exposed to the outside world by default. `80` port.
+* If you want to use the microphone or recording-related capabilities online, it is recommended to enable HTTPS; the browser does not `localhost` The audio permissions are more restrictive.
+* Do not keep the default online environment `JWT_SECRET`,`DEFAULT_PASSWORD`.

@@ -1,10 +1,10 @@
-"""数据迁移端点：导出/导入当前登录用户的数据。
+"""Data migration endpoint: export/Import the data of the currently logged in user.
 
-与 CLI (scripts/export_data.py、scripts/import_data.py) 共用
-backend.storage.data_migration 中的核心实现。
+with CLI (scripts/export_data.py、scripts/import_data.py) share
+backend.storage.data_Core implementation in migration.
 
-HTTP 入口始终把数据归到当前登录用户（rebind_user_id=user_id），防止
-跨用户写入或泄露。
+The HTTP portal always attributes data to the currently logged in user (rebind_user_id=user_id), to prevent
+Written or leaked across users.
 """
 from __future__ import annotations
 
@@ -25,12 +25,12 @@ from backend.storage.data_migration import (
 
 router = APIRouter(prefix="/api/data")
 
-# 单次上传的硬上限——防御性，避免临时盘被占满
+# Hard cap for single upload——Defensive to prevent the temporary disk from being filled up
 MAX_UPLOAD_BYTES = 500 * 1024 * 1024  # 500 MB
 
 
 def _cleanup_dir(path: Path) -> None:
-    # 用 rmtree 而非 rmdir：Windows 下若残留文件，rmdir 会失败
+    # Use rmtree instead of rmdir: rmdir will fail if there are residual files under Windows
     shutil.rmtree(path, ignore_errors=True)
 
 
@@ -39,7 +39,7 @@ def export_data(
     background: BackgroundTasks,
     user_id: str = Depends(get_current_user),
 ):
-    """以 tar.gz 形式返回当前用户的全部数据。"""
+    """Returns all data of the current user in tar.gz format."""
     ts = datetime.now().strftime("%Y%m%d-%H%M%S")
     tmp_dir = Path(tempfile.mkdtemp(prefix="techspar-export-"))
     archive_path = tmp_dir / f"techspar-backup-{ts}.tar.gz"
@@ -70,7 +70,7 @@ async def import_data(
     overwrite_files: bool = Form(False),
     user_id: str = Depends(get_current_user),
 ):
-    """导入上传的备份归档。所有数据归到当前登录用户。"""
+    """Import the uploaded backup archive. All data belongs to the currently logged in user."""
     if db_strategy not in {"skip", "overwrite"}:
         raise HTTPException(400, "db_strategy must be 'skip' or 'overwrite'")
 
@@ -90,7 +90,7 @@ async def import_data(
                     break
                 total += len(chunk)
                 if total > MAX_UPLOAD_BYTES:
-                    raise HTTPException(413, f"归档过大（上限 {MAX_UPLOAD_BYTES // 1024 // 1024} MB）")
+                    raise HTTPException(413, f"Archive too large (upper limit {MAX_UPLOAD_BYTES // 1024 // 1024} MB)")
                 out.write(chunk)
 
         try:
@@ -101,7 +101,7 @@ async def import_data(
                 rebind_user_id=user_id,
             )
         except (RuntimeError, ValueError) as e:
-            raise HTTPException(400, f"归档解析失败: {e}")
+            raise HTTPException(400, f"Archive parsing failed: {e}")
     finally:
         background.add_task(_cleanup_dir, tmp_dir)
 

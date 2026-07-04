@@ -1,7 +1,7 @@
 import { MODE_META, TRAINING_MODE_META, PERFORMANCE_DIMENSIONS } from "./meta";
 
-// 知识轴 weak/strong 过滤:排除老数据里的 axis=performance 条目
-// (表现轴现在走 behavior_signals,不再混进 weak_points)
+// knowledge axis weak/strong filtering: exclude old data axis=performance entry
+// (Performance axis now goes behavior_signals, no longer mix in weak_points)
 export function isKnowledgeAxis(item) {
   return item?.axis !== "performance";
 }
@@ -18,9 +18,9 @@ function toTimestamp(value) {
   return Number.isNaN(timestamp) ? 0 : timestamp;
 }
 
-// 显著性:recency × frequency 衰减,与后端 _weak_point_weight 对齐。
-// 知识轴 weak_points 和表现轴 behavior_signals 字段同构,共用这个权重。
-// 长期不再暴露的点逐渐沉底而非被硬切,纯排序信号。
+// Significance:recency × frequency attenuation, and backend _weak_point_weight alignment.
+// knowledge axis weak_points and performance axes behavior_The signals fields are isomorphic and share this weight.
+// Points that are no longer exposed for a long time gradually sink to the bottom instead of being cut hard, which is a pure sorting signal.
 const WEAK_POINT_HALF_LIFE_DAYS = 30;
 
 export function weakPointWeight(item, now = Date.now()) {
@@ -56,9 +56,9 @@ export function buildPriorityWeaknesses(weakPoints, masteryMap) {
   return [...weakPoints]
     .map((item) => {
       const masteryScore = getMasteryScore(masteryMap[item.topic]);
-      const reasons = [`重复出现 ${item.times_seen || 1} 次`];
+      const reasons = [`recurring ${item.times_seen || 1} times`];
       if (item.last_seen || item.first_seen) {
-        reasons.push(`最近暴露 ${formatShortDate(item.last_seen || item.first_seen)}`);
+        reasons.push(`recently exposed ${formatShortDate(item.last_seen || item.first_seen)}`);
       }
 
       return {
@@ -80,15 +80,15 @@ export function buildPriorityWeaknesses(weakPoints, masteryMap) {
     });
 }
 
-// 表现轴: 从 profile.behavior_signals 派生分组视图
+// Performance axis: from profile.behavior_signals derived grouped view
 //
-// 返回:
+// Return:
 //   - byNamespace: { [namespace]: { negative: [], positive: [], improved: [] } }
-//                  每个数组已按 (times_seen desc, last_seen desc) 排序
-//   - namespaces: Object.keys(PERFORMANCE_DIMENSIONS) 顺序的数组,
-//                 即使该 namespace 没有数据也保留一个空槽,方便前端按四个固定卡渲染
-//   - featured: 最显著的活跃负向信号(times_seen 最高的那条),或 null
-//   - activeNegativeCount / activePositiveCount / improvedCount: 顶级摘要数字
+//                  Each array has been pressed (times_seen desc, last_seen desc) sort
+//   - namespaces: Object.keys(PERFORMANCE_DIMENSIONS) sequential array,
+//                 Even if the namespace has no data, an empty slot is reserved to facilitate front-end rendering according to four fixed cards.
+//   - featured: the most significant active negative signals(times_seen the highest one), or null
+//   - activeNegativeCount / activePositiveCount / improvedCount: top summary number
 export function buildBehaviorSignals(profile) {
   const raw = profile?.behavior_signals || {};
   const ids = Object.keys(raw);
@@ -106,7 +106,7 @@ export function buildBehaviorSignals(profile) {
     const data = raw[id] || {};
     const ns = data.namespace || "other";
     if (!byNamespace[ns]) {
-      // 异常 namespace 也保留,但前端只渲染 PERFORMANCE_DIMENSIONS 里有的那四个
+      // Exception namespace is also retained, but the front end only renders PERFORMANCE_The four in DIMENSIONS
       byNamespace[ns] = { negative: [], positive: [], improved: [] };
     }
     const signal = { id, ...data };
@@ -122,7 +122,7 @@ export function buildBehaviorSignals(profile) {
     }
   }
 
-  // 时近衰减排序,与后端 _top_behavior_signals 对齐:旧高频信号不再永远压住新信号
+  // Time-near decay sorting, and backend _top_behavior_Signals alignment: Old high-frequency signals no longer suppress new signals forever
   const now = Date.now();
   const sortSignals = (list) =>
     list.sort((a, b) => weakPointWeight(b, now) - weakPointWeight(a, now));
@@ -133,7 +133,7 @@ export function buildBehaviorSignals(profile) {
     sortSignals(byNamespace[ns].improved);
   }
 
-  // featured 在所有 namespace 的活跃负向里挑显著性最高的一条
+  // Featured selects the most significant one among all the active negative directions of the namespace.
   let featured = null;
   for (const ns of Object.keys(byNamespace)) {
     const top = byNamespace[ns].negative[0];
@@ -159,8 +159,8 @@ export function buildBehaviorSignals(profile) {
   };
 }
 
-// "自上次访问"delta: 与后端 view_marker 基线对比,全部确定性派生,不依赖 LLM。
-// 返回 null 表示没有基线或没有任何变化(首次访问 / 两次访问之间没训练)。
+// "since last visit"delta: with the backend view_marker baseline comparison, all deterministically derived, does not rely on LLM.
+// Return null if there is no baseline or no changes(first visit / No training between visits).
 export function buildVisitDelta(profile, canonicalTopics) {
   const marker = profile?.view_marker;
   const since = toTimestamp(marker?.at);

@@ -1,34 +1,34 @@
-# 录音复盘
+# Recording review
 
-录音复盘是一个独立工作区，用来分析**真实面试录音或已有逐字稿**，不是去历史记录里回放旧音频。
+Recording review is an independent workspace used for analysis**Real interview recording or verbatim transcript available**, instead of playing back old audio in history.
 
-### 先分清两种模式
+### Let’s first distinguish between the two modes
 
-* **双人对话**：录音里同时有面试官和你，系统会尽量还原问答结构。
-* **单人录音**：只有你自己，比如自我介绍演练、复盘独白、技术表达练习。
+* **two-person dialogue**: There are both the interviewer and you in the recording, and the system will try to restore the question and answer structure.
+* **Single recording**: Only you, such as self-introduction drills, review monologues, and technical expression exercises.
 
-### 正确流程
+### Correct process
 
-1. 进入左侧导航的 **录音复盘**。
-2. 选择 **双人对话** 或 **单人录音**。
-3. 公司、岗位可以填，也可以不填；填了有助于结果更聚焦。
-4. 选择输入方式：
-   - 上传录音
-   - 直接粘贴转写文本
-5. 如果你上传的是录音，先执行转写；拿到文本后再开始分析。
-6. 提交后系统会异步生成复盘，完成后可以从通知或历史记录进入结果页。
+1. Enter the left navigation **Recording review**.
+2. Select **two-person dialogue** or **Single recording**.
+3. You may or may not fill in the company and position; filling them in will help the results to be more focused.
+4. Select input method:
+   - Upload recordings
+   - Paste transcribed text directly
+5. If you are uploading a recording, perform transcription first; start analyzing after getting the text.
+6. After submission, the system will generate a review asynchronously. After completion, you can enter the result page from the notification or history record.
 
-### 如果录音转写用不了
+### If the recording cannot be used for transcription
 
-上传录音转写依赖额外的语音服务配置。如果你没有配置相关环境变量，最稳妥的方式是直接粘贴逐字稿文本。
+Uploading recordings for transcription relies on additional voice service configuration. If you have not configured the relevant environment variables, the safest way is to paste the verbatim text directly.
 
-如果你要走“上传录音 -> 自动转写”这条链路，相关环境变量怎么申请和验证，统一看 [外部服务配置](external-services.md)。
+if you want to leave“Upload recording -> automatic transcription”This link, how to apply for and verify related environment variables, see them together [External service configuration](external-services.md).
 
-### 怎么看结果
+### How to see the results
 
-* **整体评价 / 平均分**：先看这场表现处在什么水平。
-* **薄弱点 / 亮点**：看哪些问题在重复出现。
-* **双人对话模式**：重点看逐题问答、每题评分和改进建议。
-* **单人录音模式**：重点看表达是否清楚、结构是否完整、内容是否空泛。
+* **Overall rating / average score**: Let’s first look at the level of this performance.
+* **weak point / Highlights**: See which problems are recurring.
+* **Two-person conversation mode**: Focus on question-by-question questions, scores for each question and suggestions for improvement.
+* **Single recording mode**: Focus on whether the expression is clear, whether the structure is complete, and whether the content is vague.
 
-录音复盘的核心价值是把“我感觉答得一般”变成可定位的问题，而不是单纯留一段音频存档。
+The core value of recording and replaying is to“I feel like the answer is average”It becomes a problem that can be located, rather than simply leaving an audio archive.

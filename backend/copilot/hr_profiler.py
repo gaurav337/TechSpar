@@ -1,6 +1,6 @@
-"""HR Profiler — 后台 agent，分析 HR 沟通风格和偏好。
+"""HR Profiler — Backend agent, analyzes HR communication style and preferences.
 
-每 3-4 轮对话触发一次，累积分析 HR 的说话模式、关注点、满意度信号。
+Triggered every 3-4 rounds of dialogue, HR’s speaking patterns, concerns, and satisfaction signals are cumulatively analyzed.
 """
 import logging
 import json

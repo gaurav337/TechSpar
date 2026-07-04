@@ -1,12 +1,12 @@
-"""腾讯云 VPR (Voice Print Recognition) 客户端封装。
+"""Tencent Cloud VPR (Voice Print Recognition) Client encapsulation.
 
-通过 tencentcloud-sdk-python-common 的 CommonClient 调用，避免引入 asr 专用 SDK。
-接口文档：https://cloud.tencent.com/document/api/1093
+Call the CommonClient of tencentcloud-sdk-python-common to avoid introducing the asr-specific SDK.
+Interface documentation:https://cloud.tencent.com/document/api/1093
 
-设计约束：
-- 异步对外；底层 Tencent SDK 是同步的，用 asyncio.to_thread 包装
-- 未配置凭据时所有方法直接返回失败，由调用方决定是否降级
-- PCM 16kHz mono 输入会被包成 WAV 再发送，减少与 Tencent 格式枚举的耦合
+Design constraints:
+- Asynchronous external; the underlying Tencent SDK is synchronous, use asyncio.to_thread packaging
+- When credentials are not configured, all methods directly return failure, and the caller decides whether to downgrade.
+- PCM 16kHz mono input will be packaged into WAV and then sent, reducing coupling with Tencent format enumeration
 """
 from __future__ import annotations
 
@@ -19,13 +19,13 @@ from dataclasses import dataclass
 
 logger = logging.getLogger("uvicorn")
 
-# Tencent VPR 通用参数
+# Tencent VPR general parameters
 _PRODUCT = "asr"
 _API_VERSION = "2019-06-14"
 _REGION = "ap-shanghai"
 _ENDPOINT = "asr.tencentcloudapi.com"
 
-# 音频格式枚举（腾讯云 VPR）：0=wav, 1=mp3, 2=m4a（我们统一走 wav）
+# Audio format enumeration (Tencent Cloud VPR):0=wav, 1=mp3, 2=m4a (we all use wav)
 _VOICE_FORMAT_WAV = 0
 _SAMPLE_RATE_16K = 16000
 
@@ -42,7 +42,7 @@ def extract_pcm_from_wav(wav_bytes: bytes) -> bytes:
     if len(wav_bytes) < 44 or wav_bytes[:4] != b"RIFF" or wav_bytes[8:12] != b"WAVE":
         raise ValueError("Not a valid WAV file")
 
-    # 查找 "data" 块位置（跳过可能的 LIST/INFO 等辅助块）
+    # Find "data" block position (skipping possible LIST/INFO and other auxiliary blocks)
     offset = 12
     while offset + 8 <= len(wav_bytes):
         chunk_id = wav_bytes[offset:offset + 4]
@@ -50,11 +50,11 @@ def extract_pcm_from_wav(wav_bytes: bytes) -> bytes:
         if chunk_id == b"data":
             return wav_bytes[offset + 8:offset + 8 + chunk_size]
         offset += 8 + chunk_size
-    raise ValueError("WAV 文件中未找到 data 块")
+    raise ValueError("data block not found in WAV file")
 
 
 def _wrap_pcm_to_wav(pcm: bytes, sample_rate: int = 16000) -> bytes:
-    """把 16-bit mono PCM 打包成 WAV 字节流（44-byte 头 + PCM 数据）。"""
+    """Pack 16-bit mono PCM into a WAV byte stream (44-byte header + PCM data)."""
     num_channels = 1
     bits_per_sample = 16
     byte_rate = sample_rate * num_channels * bits_per_sample // 8
@@ -80,20 +80,20 @@ def _wrap_pcm_to_wav(pcm: bytes, sample_rate: int = 16000) -> bytes:
 
 
 class VoiceprintClient:
-    """腾讯云 VPR 客户端。异步接口，同步底层。"""
+    """Tencent Cloud VPR client. Asynchronous interface, synchronous bottom layer."""
 
     def __init__(self, secret_id: str, secret_key: str, app_id: str = ""):
         self._secret_id = secret_id
         self._secret_key = secret_key
         self._app_id = app_id
-        self._client = None  # 懒初始化
+        self._client = None  # Lazy initialization
 
     @property
     def is_configured(self) -> bool:
         return bool(self._secret_id and self._secret_key)
 
     def _get_client(self):
-        """懒加载 Tencent CommonClient（避免启动时强依赖 SDK）。"""
+        """Lazy loading of Tencent CommonClient (avoiding strong dependence on SDK at startup)."""
         if self._client is not None:
             return self._client
         try:
@@ -103,8 +103,8 @@ class VoiceprintClient:
             from tencentcloud.common.common_client import CommonClient
         except ImportError as e:
             raise RuntimeError(
-                "tencentcloud-sdk-python-common 未安装。"
-                "运行：pip install tencentcloud-sdk-python-common"
+                "tencentcloud-sdk-python-common is not installed."
+                "Run:pip install tencentcloud-sdk-python-common"
             ) from e
 
         cred = credential.Credential(self._secret_id, self._secret_key)
@@ -116,17 +116,17 @@ class VoiceprintClient:
         return self._client
 
     def _call_sync(self, action: str, params: dict) -> dict:
-        """同步调用腾讯 CommonClient。"""
+        """Synchronously call Tencent CommonClient."""
         client = self._get_client()
         return client.call_json(action, params)
 
     async def _call(self, action: str, params: dict) -> dict:
         return await asyncio.to_thread(self._call_sync, action, params)
 
-    # ---------- 对外 API ----------
+    # ---------- External API ----------
 
     async def ping(self) -> bool:
-        """连通性 & 凭据有效性检查。调用轻量接口 VoicePrintCount。"""
+        """connectivity & Credential validity check. Call the lightweight interface VoicePrintCount."""
         if not self.is_configured:
             return False
         try:
@@ -137,11 +137,11 @@ class VoiceprintClient:
             return False
 
     async def enroll(self, speaker_nick: str, pcm_bytes: bytes) -> str | None:
-        """注册候选人声纹。返回腾讯分配的 VoicePrintId；失败返回 None。
+        """Register the candidate’s voiceprint. Returns the VoicePrintId assigned by Tencent; returns None on failure.
 
         Args:
-            speaker_nick: 用户侧命名（TechSpar 里用 techspar_<user_id>）
-            pcm_bytes: 16kHz mono 16-bit PCM，建议 ≥6 秒（≤30 秒）
+            speaker_nick: user-side naming (used in TechSpar techspar_<user_id>)
+            pcm_bytes: 16kHz mono 16-bit PCM, recommended ≥6 seconds (≤30 seconds)
         """
         if not self.is_configured:
             return None
@@ -156,7 +156,7 @@ class VoiceprintClient:
         }
         try:
             resp = await self._call("VoicePrintEnroll", params)
-            # 响应结构：{"Response": {"Data": {"VoicePrintId": "...", ...}, "RequestId": "..."}}
+            # Response structure:{"Response": {"Data": {"VoicePrintId": "...", ...}, "RequestId": "..."}}
             inner = resp.get("Response", resp)
             data = inner.get("Data") or {}
             vpid = data.get("VoicePrintId") or inner.get("VoicePrintId")
@@ -170,11 +170,11 @@ class VoiceprintClient:
             return None
 
     async def verify(self, voice_print_id: str, pcm_bytes: bytes) -> VerifyResult | None:
-        """1:1 验证。返回 None 表示调用失败。
+        """1:1 verification. Returning None indicates that the call failed.
 
         Args:
-            voice_print_id: enroll 时拿到的 VoicePrintId
-            pcm_bytes: 2-5 秒的 16kHz mono PCM
+            voice_print_id: obtained when enrolling VoicePrintId
+            pcm_bytes: 2-5 seconds 16kHz mono PCM
         """
         if not self.is_configured:
             return None
@@ -191,7 +191,7 @@ class VoiceprintClient:
             resp = await self._call("VoicePrintVerify", params)
             inner = resp.get("Response", resp)
             data = inner.get("Data") or inner
-            # 腾讯返回：Decision (0/1) + Score (0-100)
+            # Tencent returns:Decision (0/1) + Score (0-100)
             decision = data.get("Decision")
             score = float(data.get("Score", 0.0) or 0.0)
             matched = bool(decision) if decision is not None else score >= 60.0

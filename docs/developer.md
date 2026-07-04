@@ -1,39 +1,39 @@
-# 开发者说明
+# Developer Notes
 
-这页只描述当前仓库的真实结构，方便贡献者快速定位代码。
+This page only describes the actual structure of the current warehouse, making it easier for contributors to quickly locate the code.
 
-### 技术栈
+### technology stack
 
-* **前端**：React 19、React Router 7、Vite、Tailwind CSS 4、Radix UI
-* **后端**：FastAPI、LangGraph、LangChain
-* **存储**：SQLite + `data/` 目录下的用户隔离数据
-* **可选外部服务**：OpenAI 兼容 LLM / Embedding、DashScope ASR（批量 + 实时 qwen3-asr-flash-realtime）、腾讯云 VPR（声纹识别）、阿里云 OSS（仅录音复盘长音频）、Tavily
+* **front end**: React 19, React Router 7, Vite, Tailwind CSS 4,Radix UI
+* **backend**：FastAPI、LangGraph、LangChain
+* **storage**:SQLite + `data/` User quarantine data under directory
+* **Optional external services**: OpenAI compatible LLM / Embedding, DashScope ASR (batch + Real-time qwen3-asr-flash-realtime), Tencent Cloud VPR (voiceprint recognition), Alibaba Cloud OSS (only long audio recording and replaying),Tavily
 
-### 目录结构
+### Directory structure
 
-* `frontend/src/pages/`：页面级路由，例如首页、画像、题库、图谱、Copilot、设置、复盘页
-* `frontend/src/components/`：通用组件和 UI 组合
-* `frontend/src/api/`：前端请求封装
-* `frontend/src/contexts/`、`frontend/src/hooks/`：全局状态和交互逻辑
-* `backend/main.py`：FastAPI 入口和主要接口
-* `backend/graphs/`：不同训练模式的流程逻辑
-* `backend/copilot/`：实时辅助相关的策略预测、方向判断、回答建议和语音流处理
-* `backend/config.py`、`backend/models.py`、`backend/llm_provider.py`：配置、数据模型和模型接入
-* `backend/prompts/`：提示词定义
-* `backend/storage/`：会话和存储层
-* `data/`：数据库、用户简历、题库、画像等运行时数据
+* `frontend/src/pages/`: Page-level routing, such as home page, portrait, question bank, map, Copilot, settings, review page
+* `frontend/src/components/`:Common components and UI composition
+* `frontend/src/api/`: Front-end request encapsulation
+* `frontend/src/contexts/`,`frontend/src/hooks/`: Global state and interaction logic
+* `backend/main.py`: FastAPI entrance and main interface
+* `backend/graphs/`: Process logic of different training modes
+* `backend/copilot/`: Real-time assistance related strategy prediction, direction judgment, answer suggestions and voice stream processing
+* `backend/config.py`,`backend/models.py`,`backend/llm_provider.py`: Configuration, data model and model access
+* `backend/prompts/`: Prompt word definition
+* `backend/storage/`:session and storage layer
+* `data/`: Database, user resume, question bank, portrait and other runtime data
 
-### 本地开发
+### local development
 
-本地启动方式以 [部署说明](deployment.md) 为准。当前仓库是前后端分离结构，不是根目录单个 `npm run dev` 就能跑起来的项目。
+Start locally with [Deployment instructions](deployment.md) shall prevail. The current warehouse has a separate front-end and back-end structure, not a single root directory. `npm run dev` A project that can be run quickly.
 
-### 贡献建议
+### Contribution suggestions
 
-* 改文档时，优先和真实 UI、真实接口保持一致。
-* 改导航、页面入口或新增能力时，同时检查 `README.md` 和 `docs/` 索引有没有一起更新。
-* 改训练流程时，同时检查前端文案、接口返回和复盘页展示有没有一起更新。
-* 提 PR 前，至少自己走一遍对应功能路径，避免“文档和代码各说各话”。
+* When modifying the document, give priority to keeping it consistent with the real UI and real interface.
+* When changing navigation, page entry or adding new capabilities, check at the same time `README.md` and `docs/` Have the indexes been updated together?
+* When changing the training process, also check whether the front-end copywriting, interface return, and review page display have been updated together.
+* Before submitting a PR, at least walk through the corresponding functional path yourself to avoid“Documentation and code each have their own say.”.
 
-### 反馈方式
+### Feedback method
 
-欢迎提交 Issue 和 PR。对这个项目最有价值的反馈，不是“感觉不错”，而是明确指出哪里误导、哪里跑不通、哪里真的帮到了用户。
+Issues and PRs are welcome. The most valuable feedback on this project is not“feels good”, but clearly point out where it is misleading, where it doesn’t work, and where it really helps users.

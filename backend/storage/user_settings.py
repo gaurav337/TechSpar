@@ -47,7 +47,7 @@ def save_user_provider(
 
 
 def load_index_meta(user_id: str) -> dict:
-    """向量索引元数据,目前仅 {last_rebuild_at}。未重建过时为空 dict。"""
+    """Vector index metadata, currently only {last_rebuild_at}. Empty dict if not rebuilt."""
     path = settings.user_index_meta_path(user_id)
     if path.exists():
         return json.loads(path.read_text(encoding="utf-8"))

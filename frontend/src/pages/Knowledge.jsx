@@ -84,7 +84,7 @@ export default function Knowledge() {
       await updateCoreKnowledge(selected, filename, editContent[filename] || "");
       setCoreFiles((prev) => prev.map((f) => f.filename === filename ? { ...f, content: editContent[filename] } : f));
       setCoreEditing(null);
-    } catch (e) { alert("保存失败: " + e.message); }
+    } catch (e) { alert("Save failed: " + e.message); }
     setTimeout(() => setCoreSaving(null), 1500);
   };
 
@@ -94,7 +94,7 @@ export default function Knowledge() {
       await updateHighFreq(selected, highFreqDraft);
       setHighFreq(highFreqDraft);
       setHfEditing(false);
-    } catch (e) { alert("保存失败: " + e.message); }
+    } catch (e) { alert("Save failed: " + e.message); }
     setTimeout(() => setHfSaving(false), 1500);
   };
 
@@ -107,16 +107,16 @@ export default function Knowledge() {
       setNewFileName("");
       setShowNewFile(false);
       loadCore(selected);
-    } catch (e) { alert("创建失败: " + e.message); }
+    } catch (e) { alert("Creation failed: " + e.message); }
   };
 
   const handleDeleteFile = async (filename) => {
-    if (!confirm(`确定删除「${filename}」？此操作不可撤销。`)) return;
+    if (!confirm(`Confirm to delete "${filename}”? This action cannot be undone.`)) return;
     try {
       await deleteCoreKnowledge(selected, filename);
       setCoreFiles((prev) => prev.filter((f) => f.filename !== filename));
       if (expandedFile === filename) setExpandedFile(null);
-    } catch (e) { alert("删除失败: " + e.message); }
+    } catch (e) { alert("Delete failed: " + e.message); }
   };
 
   const handleGenerate = async () => {
@@ -125,7 +125,7 @@ export default function Knowledge() {
       await generateKnowledge(selected);
       await loadCore(selected);
       setExpandedFile("README.md");
-    } catch (e) { alert("生成失败: " + e.message); }
+    } catch (e) { alert("Build failed: " + e.message); }
     setGenerating(false);
   };
 
@@ -141,17 +141,17 @@ export default function Knowledge() {
       setShowAddTopic(false);
       await refreshTopics();
       setSelected(result.key);
-    } catch (e) { alert("添加失败: " + e.message); }
+    } catch (e) { alert("Add failed: " + e.message); }
   };
 
   const handleDeleteTopic = async (key) => {
-    if (!confirm(`确定删除「${topics[key]?.name || key}」？`)) return;
+    if (!confirm(`Confirm to delete "${topics[key]?.name || key}”?`)) return;
     try {
       await deleteTopic(key);
       const t = await refreshTopics();
       const keys = Object.keys(t);
       if (selected === key) setSelected(keys.length > 0 ? keys[0] : null);
-    } catch (e) { alert("删除失败: " + e.message); }
+    } catch (e) { alert("Delete failed: " + e.message); }
   };
 
   const topicKeys = Object.keys(topics);
@@ -172,8 +172,8 @@ export default function Knowledge() {
         sidebarOpen ? "translate-x-0" : "-translate-x-full"
       )}>
         <div className="flex justify-between items-center mb-3 px-2">
-          <div className="text-[13px] font-semibold text-dim">专项领域</div>
-          <Button variant="ghost" size="icon" className="w-6 h-6 text-base" title="新增领域" onClick={() => setShowAddTopic(true)}>+</Button>
+          <div className="text-[13px] font-semibold text-dim">Special areas</div>
+          <Button variant="ghost" size="icon" className="w-6 h-6 text-base" title="New areas" onClick={() => setShowAddTopic(true)}>+</Button>
         </div>
         <div className="flex-1 overflow-y-auto">
           {topicKeys.map((key) => (
@@ -190,7 +190,7 @@ export default function Knowledge() {
               </button>
               <button
                 className="absolute right-2 top-1/2 -translate-y-1/2 text-dim text-sm px-1.5 py-1 rounded opacity-0 group-hover:opacity-100 hover:text-red hover:bg-red/10 transition-all cursor-pointer"
-                title="删除领域"
+                title="Delete realm"
                 onClick={() => handleDeleteTopic(key)}
               ><X size={14} /></button>
             </div>
@@ -206,13 +206,13 @@ export default function Knowledge() {
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 animate-fade-in" onClick={() => setShowAddTopic(false)}>
           <Card className="w-[380px] max-w-[90vw] animate-bounce-in" onClick={(e) => e.stopPropagation()}>
             <CardContent className="p-6 md:p-8">
-              <div className="text-lg font-semibold mb-5">新增训练领域</div>
+              <div className="text-lg font-semibold mb-5">New training areas</div>
               <div className="mb-3.5 space-y-1.5">
-                <Label>名称</Label>
-                <Input placeholder="Docker 容器化" value={newTopicName} onChange={(e) => setNewTopicName(e.target.value)} autoFocus />
+                <Label>Name</Label>
+                <Input placeholder="Docker containerization" value={newTopicName} onChange={(e) => setNewTopicName(e.target.value)} autoFocus />
               </div>
               <div className="mb-3.5 space-y-1.5">
-                <Label>图标</Label>
+                <Label>icon</Label>
                 <div className="grid grid-cols-8 gap-1.5">
                   {ICON_OPTIONS.map(({ name, Icon }) => (
                     <button
@@ -231,8 +231,8 @@ export default function Knowledge() {
                 </div>
               </div>
               <div className="flex gap-2.5 justify-end mt-6">
-                <Button variant="outline" onClick={() => { setShowAddTopic(false); setNewTopicName(""); setNewTopicIcon("FileText"); }}>取消</Button>
-                <Button variant="gradient" onClick={handleAddTopic} disabled={!newTopicName.trim()}>添加</Button>
+                <Button variant="outline" onClick={() => { setShowAddTopic(false); setNewTopicName(""); setNewTopicIcon("FileText"); }}>Cancel</Button>
+                <Button variant="gradient" onClick={handleAddTopic} disabled={!newTopicName.trim()}>add</Button>
               </div>
             </CardContent>
           </Card>
@@ -250,32 +250,32 @@ export default function Knowledge() {
               )}
               onClick={() => setTab(t)}
             >
-              {t === "core" ? "核心知识库" : "高频题库"}
+              {t === "core" ? "core knowledge base" : "High frequency question bank"}
             </button>
           ))}
         </div>
 
         <div className="flex-1 overflow-y-auto p-4 md:p-6">
           {!selected ? (
-            <div className="text-center py-15 text-dim text-sm">选择一个领域</div>
+            <div className="text-center py-15 text-dim text-sm">Choose a field</div>
           ) : tab === "core" ? (
             <div>
               <div className="text-[13px] text-dim mb-3">
-                AI 出题和评分的参考依据，编辑后影响该领域的题目质量。支持 Markdown 格式。
+                The reference basis for AI question setting and scoring will affect the quality of questions in this field after editing. Markdown format is supported.
               </div>
               <div className="flex gap-2 mb-4">
                 {showNewFile ? (
                   <div className="flex gap-2 flex-1">
-                    <Input className="flex-1" placeholder="文件名 (例: 装饰器.md)" value={newFileName} onChange={(e) => setNewFileName(e.target.value)} onKeyDown={(e) => e.key === "Enter" && handleCreateFile()} />
-                    <Button variant="gradient" size="sm" onClick={handleCreateFile}>创建</Button>
-                    <Button variant="outline" size="sm" onClick={() => { setShowNewFile(false); setNewFileName(""); }}>取消</Button>
+                    <Input className="flex-1" placeholder="file name (Example: decorator.md)" value={newFileName} onChange={(e) => setNewFileName(e.target.value)} onKeyDown={(e) => e.key === "Enter" && handleCreateFile()} />
+                    <Button variant="gradient" size="sm" onClick={handleCreateFile}>create</Button>
+                    <Button variant="outline" size="sm" onClick={() => { setShowNewFile(false); setNewFileName(""); }}>Cancel</Button>
                   </div>
                 ) : (
                   <div className="flex gap-2">
-                    <Button variant="outline" size="sm" onClick={() => setShowNewFile(true)}>+ 新增文件</Button>
+                    <Button variant="outline" size="sm" onClick={() => setShowNewFile(true)}>+ Add new file</Button>
                     {coreIsEmpty && (
                       <Button variant="outline" size="sm" className="border-primary/40 text-primary" onClick={handleGenerate} disabled={generating}>
-                        {generating ? "正在生成..." : <><Sparkles size={14} /> AI 生成基础内容</>}
+                        {generating ? "Generating..." : <><Sparkles size={14} /> AI generates basic content</>}
                       </Button>
                     )}
                   </div>
@@ -283,7 +283,7 @@ export default function Knowledge() {
               </div>
 
               {coreFiles.length === 0 ? (
-                <div className="text-center py-15 text-dim text-sm">该领域暂无知识文件</div>
+                <div className="text-center py-15 text-dim text-sm">There is currently no knowledge document in this field</div>
               ) : (
                 <div className="flex flex-col gap-3 stagger-children">
                   {coreFiles.map((f) => (
@@ -294,10 +294,10 @@ export default function Knowledge() {
                       >
                         <span>{f.filename}</span>
                         <div className="flex items-center gap-2">
-                          <span className="text-xs text-dim flex items-center gap-1">{expandedFile === f.filename ? <ChevronDown size={14} /> : <ChevronRight size={14} />} {(f.content?.length || 0)} 字</span>
+                          <span className="text-xs text-dim flex items-center gap-1">{expandedFile === f.filename ? <ChevronDown size={14} /> : <ChevronRight size={14} />} {(f.content?.length || 0)} word</span>
                           <button
                             className="text-dim cursor-pointer p-1 rounded opacity-50 hover:text-red hover:opacity-100 transition-all"
-                            title="删除文件"
+                            title="Delete files"
                             onClick={(e) => { e.stopPropagation(); handleDeleteFile(f.filename); }}
                           ><X size={14} /></button>
                         </div>
@@ -313,8 +313,8 @@ export default function Knowledge() {
                                 autoFocus
                               />
                               <div className="flex gap-2 mt-3 justify-end">
-                                <Button variant="outline" size="sm" onClick={() => { setEditContent((prev) => ({ ...prev, [f.filename]: f.content })); setCoreEditing(null); }}>取消</Button>
-                                <Button variant="gradient" size="sm" onClick={() => handleSaveCore(f.filename)}>保存</Button>
+                                <Button variant="outline" size="sm" onClick={() => { setEditContent((prev) => ({ ...prev, [f.filename]: f.content })); setCoreEditing(null); }}>Cancel</Button>
+                                <Button variant="gradient" size="sm" onClick={() => handleSaveCore(f.filename)}>save</Button>
                               </div>
                             </>
                           ) : (
@@ -324,11 +324,11 @@ export default function Knowledge() {
                                   <ReactMarkdown>{editContent[f.filename] ?? f.content}</ReactMarkdown>
                                 </div>
                               ) : (
-                                <div className="text-dim text-sm py-6 text-center">空文件，点「编辑」添加内容</div>
+                                <div className="text-dim text-sm py-6 text-center">Empty file, click "Edit" to add content</div>
                               )}
                               <div className="flex gap-2 mt-3 justify-end items-center">
-                                {coreSaving === f.filename && <span className="text-xs text-green mr-1">已保存</span>}
-                                <Button variant="outline" size="sm" onClick={() => setCoreEditing(f.filename)}>编辑</Button>
+                                {coreSaving === f.filename && <span className="text-xs text-green mr-1">saved</span>}
+                                <Button variant="outline" size="sm" onClick={() => setCoreEditing(f.filename)}>Edit</Button>
                               </div>
                             </>
                           )}
@@ -342,7 +342,7 @@ export default function Knowledge() {
           ) : (
             <div>
               <div className="text-[13px] text-dim mb-3">
-                标记的高频面试考点，出题时会优先覆盖。建议一行一题，或一个「##」标题一题，方便出题精准覆盖。
+                The marked high-frequency interview test points will be covered first when questions are set. It is recommended to have one question per line, or one "##"The title is one question, which facilitates accurate coverage of the questions.
               </div>
               {hfEditing ? (
                 <>
@@ -350,16 +350,16 @@ export default function Knowledge() {
                     className="w-full min-h-[500px] p-3 rounded-xl border border-border bg-bg text-text text-[13px] font-mono leading-relaxed resize-y focus:outline-none focus:border-primary"
                     value={highFreqDraft}
                     onChange={(e) => setHighFreqDraft(e.target.value)}
-                    placeholder={"# 高频题\n\n## 1. xxx原理是什么？为什么这样设计？\n\n## 2. 实际项目中遇到xxx问题怎么解决？"}
+                    placeholder={"# High frequency questions\n\n## 1. What is the principle of xxx? Why is it designed this way?\n\n## 2. How to solve the xxx problem encountered in actual projects?"}
                     autoFocus
                   />
                   <div className="flex gap-2 mt-3 justify-end">
-                    {hfSaving && <span className="text-xs text-green self-center mr-3">已保存</span>}
+                    {hfSaving && <span className="text-xs text-green self-center mr-3">saved</span>}
                     {highFreqDraft !== highFreq && (
-                      <Button variant="outline" size="sm" onClick={() => setHighFreqDraft(highFreq)}>撤销修改</Button>
+                      <Button variant="outline" size="sm" onClick={() => setHighFreqDraft(highFreq)}>Undo changes</Button>
                     )}
-                    <Button variant="outline" size="sm" onClick={() => { setHighFreqDraft(highFreq); setHfEditing(false); }}>取消</Button>
-                    <Button variant="gradient" size="sm" onClick={handleSaveHighFreq} disabled={highFreqDraft === highFreq}>保存</Button>
+                    <Button variant="outline" size="sm" onClick={() => { setHighFreqDraft(highFreq); setHfEditing(false); }}>Cancel</Button>
+                    <Button variant="gradient" size="sm" onClick={handleSaveHighFreq} disabled={highFreqDraft === highFreq}>save</Button>
                   </div>
                 </>
               ) : (
@@ -369,11 +369,11 @@ export default function Knowledge() {
                       <ReactMarkdown>{highFreq}</ReactMarkdown>
                     </div>
                   ) : (
-                    <div className="text-dim text-sm py-10 text-center rounded-xl border border-border bg-bg">暂无高频题，点「编辑」添加</div>
+                    <div className="text-dim text-sm py-10 text-center rounded-xl border border-border bg-bg">There are currently no high-frequency questions, click "Edit" to add them.</div>
                   )}
                   <div className="flex gap-2 mt-3 justify-end items-center">
-                    {hfSaving && <span className="text-xs text-green mr-1">已保存</span>}
-                    <Button variant="outline" size="sm" onClick={() => setHfEditing(true)}>编辑</Button>
+                    {hfSaving && <span className="text-xs text-green mr-1">saved</span>}
+                    <Button variant="outline" size="sm" onClick={() => setHfEditing(true)}>Edit</Button>
                   </div>
                 </>
               )}

@@ -1,4 +1,4 @@
-"""Company Researcher — Tavily 联网搜索公司面试信息。"""
+"""Company Researcher — Tavily searches the Internet for company interview information."""
 import json
 import logging
 
@@ -10,14 +10,14 @@ logger = logging.getLogger("uvicorn")
 
 
 async def search_company(company: str, position: str = "") -> str:
-    """搜索公司信息并结构化整理。返回 JSON 字符串格式的 company_report。"""
+    """Search company information and organize it in a structured way. Returns JSON string format company_report."""
     tavily_key = resolve_tavily_key()
     if not tavily_key:
         logger.warning("TAVILY_API_KEY not configured, skipping company search")
         return json.dumps({
-            "company_name": company or "未知",
+            "company_name": company or "unknown",
             "tech_stack": [],
-            "interview_style": "无法获取（未配置搜索 API）",
+            "interview_style": "Unable to obtain (search API not configured)",
             "culture_notes": "",
             "common_focus_areas": [],
             "sources": [],
@@ -27,9 +27,9 @@ async def search_company(company: str, position: str = "") -> str:
     client = TavilyClient(api_key=tavily_key)
 
     queries = [
-        f"{company} {position} 业务方向 技术场景 产品",
-        f"{company} {position} 面试经验 面试流程 考察重点",
-        f"{company} 技术栈 工程文化 技术架构",
+        f"{company} {position} Business Direction Technical Scenario Products",
+        f"{company} {position} Interview experience Interview process Key points of inspection",
+        f"{company} Technology Stack Engineering Culture Technology Architecture",
     ]
 
     all_results = []

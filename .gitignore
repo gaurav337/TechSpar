@@ -24,7 +24,7 @@ data/topics.json
 !data/high_freq/.gitkeep
 data/interviews.db
 data/langgraph_checkpoints.sqlite
-# SQLite WAL mode 运行时的 journal 文件，和 *.sqlite/*.db 一起出现
+# journal file when SQLite WAL mode is run, and *.sqlite/*.db appears together
 *.sqlite-wal
 *.sqlite-shm
 *.db-wal

@@ -1,4 +1,4 @@
-"""模式2: 专项强化训练 — 批量出题 + 批量评估（不再使用 LangGraph）."""
+"""Mode 2: Special intensive training — Issue questions in batches + Batch evaluation (LangGraph is no longer used)."""
 import json
 
 from langchain_core.messages import SystemMessage, HumanMessage
@@ -71,21 +71,21 @@ def generate_drill_questions(
     queries = []
     if all_weak:
         queries.append(" ".join(all_weak[:5]))
-    queries.append(f"{topic_name} 核心知识点 面试常见问题")
+    queries.append(f"{topic_name} Core Knowledge Points Interview Frequently Asked Questions")
     knowledge_ctx = get_topic_knowledge(topic, queries, user_id)
 
     # Format past insights from vector retrieval
     past_insights_text = "\n".join(
         f"- {ins[:500]}" for ins in drill_ctx.get("past_insights", [])
-    ) or "暂无历史数据"
+    ) or "No historical data yet"
 
     # Load high-frequency questions
-    high_freq = _load_high_freq(topic, user_id) or "暂无"
+    high_freq = _load_high_freq(topic, user_id) or "None yet"
 
     # Format weak points, marking due reviews
     weak_lines = []
     for w in all_weak[:10]:
-        prefix = "[到期复习] " if w in due_points else ""
+        prefix = "[Review due] " if w in due_points else ""
         weak_lines.append(f"- {prefix}{w}")
 
     # Difficulty range and question strategy based on mastery
@@ -139,9 +139,9 @@ def generate_drill_questions(
         knowledge_context=knowledge_ctx,
         user_profile=get_profile_summary_for_drill(user_id),
         mastery_info=drill_ctx["mastery_info"],
-        weak_points="\n".join(weak_lines) or "暂无",
+        weak_points="\n".join(weak_lines) or "None yet",
         high_freq_questions=high_freq,
-        recent_questions="\n".join(f"- {q}" for q in drill_ctx["recent_questions"][-10:]) or "暂无",
+        recent_questions="\n".join(f"- {q}" for q in drill_ctx["recent_questions"][-10:]) or "None yet",
         past_insights=past_insights_text,
         question_strategy=question_strategy,
         diff_min=diff_min,
@@ -226,5 +226,5 @@ def evaluate_drill_answers(topic: str, questions: list[dict], answers: list[dict
         logger.error(f"Drill evaluation failed: {e}")
         logger.error(f"LLM raw response: {response.content[:500]}")
         # Fail loudly so the session is marked review_failed and the UI shows a retry —
-        # a fallback "解析失败" review would persist as reviewed (dead end).
+        # a fallback "Parsing failed" review would persist as reviewed (dead end).
         raise RuntimeError("Failed to parse evaluation results. Please resubmit.") from e

@@ -34,7 +34,7 @@ export default function RealtimePhase({ prepId, onBack }) {
   const [perfMetrics, setPerfMetrics] = useState(null);
   const [inputRole, setInputRole] = useState("hr");
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [progressMsg, setProgressMsg] = useState("连接中...");
+  const [progressMsg, setProgressMsg] = useState("Connecting...");
   const [started, setStarted] = useState(false);
   const [voiceprintAuto, setVoiceprintAuto] = useState(false);
   const chatEndRef = useRef(null);
@@ -162,17 +162,17 @@ export default function RealtimePhase({ prepId, onBack }) {
       <div className="flex items-center justify-between px-5 py-3 border-b border-border shrink-0 bg-card/50">
         <div className="flex items-center gap-3">
           <Brain size={20} className="text-primary" />
-          <span className="font-semibold text-sm">面试 Copilot</span>
+          <span className="font-semibold text-sm">interview Copilot</span>
           <Badge variant={connected ? "green" : "destructive"} className={cn("text-xs", connected && "copilot-connected-pulse")}>
             <span className={cn("inline-block w-1.5 h-1.5 rounded-full mr-1.5", connected ? "bg-green copilot-breathe" : "bg-red")} />
-            {connected ? "已连接" : "未连接"}
+            {connected ? "Connected" : "Not connected"}
           </Badge>
           {perfMetrics && (
             <div className="flex items-center gap-1.5 text-[11px] text-dim/70 tabular-nums ml-2 bg-card/80 border border-border/50 rounded-full px-2.5 py-1">
               {perfMetrics.warming ? (
                 <>
                   <Loader2 size={10} className="animate-spin text-primary/50" />
-                  <span>LLM 测速中...</span>
+                  <span>LLM speed test in progress...</span>
                 </>
               ) : (
                 <>

@@ -1,31 +1,31 @@
-# JD 定向备面
+# JD orientation preparation
 
-这个模式不是“直接开始一轮面试”，而是**先拆 JD，再开始训练**。
+This model is not“Start an interview directly”, but**Disassemble the JD first, then start training**.
 
-### 适合什么时候用
+### When is it suitable to use
 
-* 你手上已经有明确岗位 JD。
-* 你准备的不是泛化面试，而是某家公司、某个岗位。
-* 你想提前判断这个岗位到底更看重什么。
+* You already have a clear position JD.
+* What you are preparing for is not a general interview, but a certain company or a certain position.
+* You want to determine in advance what this position values more.
 
-### 操作流程
+### Operation process
 
-1. 进入左侧导航的 **JD 备面**。
-2. 填公司和岗位名称，方便后续复盘更清楚。
-3. 粘贴完整 JD，尽量保留职责、任职要求、加分项和技术栈。
-4. 点击分析，先拿到岗位拆解结果。
-5. 如果系统已经检测到你上传过简历，可以选择是否联动简历一起分析。
-6. 确认分析结果后，再开始训练。
+1. Enter the left navigation **JD preparation**.
+2. Fill in the company and position names to make subsequent review more clear.
+3. Paste the complete JD and try to retain the responsibilities, job requirements, bonus points and technology stack.
+4. Click Analyze to get the job breakdown results first.
+5. If the system has detected that you have uploaded a resume, you can choose whether to link the resume and analyze it together.
+6. After confirming the analysis results, start training.
 
-### 你会得到什么
+### what you get
 
-* 岗位最看重的能力点
-* 面试前最该补的方向
-* 高概率追问方向
-* 如果联动简历，还会看到“JD 和你的经历是否对位”的判断
+* The most important ability points for the position
+* The most important things to know before the interview
+* High probability of asking for directions
+* If you link your resume, you will also see“Does JD match your experience?”judgment
 
-### 使用建议
+### Usage suggestions
 
-* 不要只贴一个岗位标题，至少把 JD 正文贴完整。
-* 如果你改了 JD 内容，最好重新分析，不要直接沿用旧结果。
-* 这个模式适合临近真实面试时使用，不是替代简历模拟或专项训练的基础模式。
+* Don’t just post a job title, at least post the entire JD text.
+* If you change the JD content, it is best to reanalyze it rather than directly using the old results.
+* This mode is suitable for use near real interviews and is not a basic mode that replaces resume simulation or special training.

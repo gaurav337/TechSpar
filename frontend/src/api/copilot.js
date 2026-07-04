@@ -19,21 +19,21 @@ async function authFetch(url, options = {}) {
   return res;
 }
 
-/** 列出所有 Prep 会话 */
+/** List all Prep sessions */
 export async function listCopilotPreps() {
   const res = await authFetch(`${API_BASE}/copilot/preps`);
   if (!res.ok) throw new Error(await res.text());
   return res.json();
 }
 
-/** 删除 Prep 会话 */
+/** Delete Prep session */
 export async function deleteCopilotPrep(prepId) {
   const res = await authFetch(`${API_BASE}/copilot/prep/${prepId}`, { method: "DELETE" });
   if (!res.ok) throw new Error(await res.text());
   return res.json();
 }
 
-/** 启动 Copilot Prep Phase */
+/** start Copilot Prep Phase */
 export async function startCopilotPrep({ jdText, company, position }) {
   const form = new FormData();
   form.append("jd_text", jdText);
@@ -48,14 +48,14 @@ export async function startCopilotPrep({ jdText, company, position }) {
   return res.json();
 }
 
-/** 查询 Prep 进度 */
+/** Query Prep progress */
 export async function getCopilotPrepStatus(prepId) {
   const res = await authFetch(`${API_BASE}/copilot/prep/${prepId}`);
   if (!res.ok) throw new Error(await res.text());
   return res.json();
 }
 
-/** 获取策略树 */
+/** Get policy tree */
 export async function getCopilotStrategyTree(prepId) {
   const res = await authFetch(`${API_BASE}/copilot/prep/${prepId}/tree`);
   if (!res.ok) throw new Error(await res.text());

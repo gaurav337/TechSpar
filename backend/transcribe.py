@@ -1,10 +1,10 @@
-"""语音转写模块：两条独立链路。
+"""Speech transcription module: two independent links.
 
-短音频（几秒~几分钟，≤10MB）：
-    base64 data URI → DashScope qwen3-asr-flash 同步 chat/completions，零 OSS。
+Short audio (a few seconds~a few minutes,≤10MB):
+    base64 data URI → DashScope qwen3-asr-flash synchronization chat/completions, zero OSS.
 
-长音频（录音复盘，可能几十分钟）：
-    bytes → 阿里云 OSS（signed URL, 1h 过期）→ DashScope qwen3-asr-flash-filetrans 异步 + 轮询。
+Long audio (recording and replay, maybe tens of minutes):
+    bytes → Alibaba Cloud OSS (signed URL, expires in 1h)→ DashScope qwen3-asr-flash-filetrans asynchronous + Polling.
 """
 import base64
 import uuid
@@ -22,8 +22,8 @@ _DASHSCOPE_SYNC = "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/comple
 _DASHSCOPE_SUBMIT = "https://dashscope.aliyuncs.com/api/v1/services/audio/asr/transcription"
 _DASHSCOPE_QUERY = "https://dashscope.aliyuncs.com/api/v1/tasks/"
 
-# DashScope 同步端点限制：单次输入 ≤10MB、时长 ≤5min。
-# base64 会让体积 ×4/3，因此原始音频留 7MB 安全线。
+# DashScope sync endpoint limit: single input ≤10MB, duration ≤5 minutes.
+# base64 will make the volume ×4/3, so the original audio leaves a 7MB safe line.
 _SYNC_MAX_RAW_BYTES = 7 * 1024 * 1024
 
 _AUDIO_MIME = {
@@ -38,10 +38,10 @@ _AUDIO_MIME = {
 
 
 def transcribe_short(audio_bytes: bytes, suffix: str = ".webm") -> str:
-    """短音频同步转写：base64 data URI → DashScope qwen3-asr-flash。
+    """Short audio synchronous transcription:base64 data URI → DashScope qwen3-asr-flash.
 
-    适用于答题语音输入等 ≤5min / ≤7MB 的短片段，不依赖对象存储。
-    超过限制请走 transcribe_long（长音频 filetrans 链路）。
+    Suitable for voice input for answering questions, etc. ≤5min / ≤7MB short snippets, no reliance on object storage.
+    Please leave if you exceed the limit. transcribe_long (long audio filetrans link).
     """
     api_key = resolve_dashscope_key()
     if not api_key:
@@ -112,17 +112,17 @@ def _upload_to_oss(audio_bytes: bytes, suffix: str) -> str:
     key = f"audio/{uuid.uuid4().hex}{suffix}"
 
     bucket.put_object(key, audio_bytes)
-    # slash_safe=True 保留 key 里的 "/"，避免 DashScope 取不到文件
+    # slash_safe=True retains the key "/", to avoid DashScope not being able to retrieve the file
     url = bucket.sign_url("GET", key, 3600, slash_safe=True)
     logger.info(f"Uploaded to OSS: {key}")
     return url
 
 
 def transcribe_long(audio_bytes: bytes, suffix: str = ".webm") -> str:
-    """长音频异步转写：阿里云 OSS → DashScope qwen3-asr-flash-filetrans 轮询。
+    """Asynchronous transcription of long audio: Alibaba Cloud OSS → DashScope qwen3-asr-flash-filetrans polling.
 
-    给录音复盘场景用，可支持几十分钟~几小时的面试录音。
-    短音频请优先用 transcribe_short（更快、零 OSS 依赖）。
+    For recording and replaying scenarios, it can last for dozens of minutes~Hours of taped interviews.
+    Please give priority to short audio transcribe_short (faster, zero OSS dependencies).
     """
     api_key = resolve_dashscope_key()
     if not api_key:
@@ -167,11 +167,11 @@ def transcribe_long(audio_bytes: bytes, suffix: str = ".webm") -> str:
 
 def _extract_text(output: dict) -> str:
     """Fetch transcription result and extract text."""
-    # file_url 模式: result.transcription_url（单数）
+    # file_url pattern: result.transcription_url (singular)
     result = output.get("result", {})
     url = result.get("transcription_url")
     if not url:
-        # file_urls 模式 fallback: results[].transcription_url
+        # file_urls pattern fallback: results[].transcription_url
         for item in output.get("results", []):
             url = item.get("transcription_url")
             if url:

@@ -1,4 +1,4 @@
-"""策略树数据结构、embedding 预计算与节点匹配。"""
+"""Policy tree data structure, embedding precomputation and node matching."""
 import json
 import logging
 import numpy as np
@@ -10,7 +10,7 @@ logger = logging.getLogger("uvicorn")
 
 
 class StrategyTreeNavigator:
-    """在预计算的策略树上做 embedding 匹配导航。"""
+    """Do embedding matching navigation on the precomputed policy tree."""
 
     def __init__(self, tree: dict):
         self.tree = tree
@@ -20,7 +20,7 @@ class StrategyTreeNavigator:
         self._current_position: str | None = None
 
     async def precompute_embeddings(self):
-        """预计算所有节点 sample_questions 的 embedding。"""
+        """Precompute all nodes sample_embedding of questions."""
         embed_model = get_embedding()
         for node_id, node in self.nodes.items():
             questions = node.get("sample_questions", [])
@@ -37,7 +37,7 @@ class StrategyTreeNavigator:
         logger.info(f"Precomputed embeddings for {len(self._embeddings)} strategy tree nodes")
 
     def match_utterance(self, utterance_embedding: list[float], threshold: float = 0.45) -> tuple[str | None, str | None, float]:
-        """匹配 utterance 到最相似的策略树节点。
+        """Match utterance to the most similar policy tree node.
 
         Returns: (node_id, intent, similarity_score)
         """
@@ -67,7 +67,7 @@ class StrategyTreeNavigator:
         return best_node_id, node.get("intent", "unknown"), best_score
 
     def get_children(self, node_id: str) -> list[dict]:
-        """获取节点的子节点（追问方向）。"""
+        """Get the child nodes of a node (asking for direction)."""
         node = self.nodes.get(node_id)
         if not node:
             return []
@@ -86,7 +86,7 @@ class StrategyTreeNavigator:
 
 
 def parse_strategy_tree(raw_json: str) -> dict:
-    """从 LLM 输出解析策略树 JSON。"""
+    """Parse policy tree JSON from LLM output."""
     try:
         text = raw_json.strip()
         if text.startswith("```"):

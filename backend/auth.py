@@ -133,7 +133,7 @@ def create_token(user_id: str) -> str:
 
 
 def decode_token(token: str) -> str | None:
-    """独立的 JWT 解码。返回 user_id 或 None。用于 WebSocket 等非 Depends 场景。"""
+    """Independent JWT decoding. Return user_id or None. Used for non-Depends scenarios such as WebSocket."""
     try:
         payload = jwt.decode(token, settings.jwt_secret, algorithms=[JWT_ALGORITHM])
         return payload.get("sub") or None

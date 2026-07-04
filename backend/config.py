@@ -2,9 +2,9 @@ from pathlib import Path
 from pydantic_settings import BaseSettings
 
 
-DEFAULT_EMBEDDING_MODEL = "BAAI/bge-m3"
-# API embedding 单批文本数上限的默认值。各服务商上限不同(如 DashScope 10、OpenAI 可达 2048),
-# 取较保守的 10 作默认,任何服务商都不会超限报 400;用户可在设置里按自己的服务商调大。
+DEFAULT_EMBEDDING_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
+# API embedding The default value for the maximum number of texts in a single batch. Each service provider has different upper limit(For example, DashScope 10 and OpenAI can reach 2048),
+# Use the more conservative value of 10 as the default, and no service provider will report 400 if it exceeds the limit; users can increase the value according to their own service provider in the settings.
 DEFAULT_API_EMBED_BATCH_SIZE = 10
 
 
@@ -36,7 +36,7 @@ def embedding_local_path_of(
 ) -> "Path | None":
     if local_path:
         return Path(local_path).expanduser()
-    bundled_path = base_dir / "data" / "models" / "bge-m3"
+    bundled_path = base_dir / "data" / "models" / "all-MiniLM-L6-v2"
     if embedding_local_model_of(local_model, deprecated_model) == DEFAULT_EMBEDDING_MODEL and bundled_path.exists():
         return bundled_path
     return None
@@ -74,6 +74,7 @@ class Settings(BaseSettings):
     default_password: str = "admin123"
     default_name: str = "Admin"
     allow_registration: bool = False
+    high_security_mode: bool = False
 
     # Interview settings
     max_questions_per_phase: int = 5
@@ -101,7 +102,7 @@ class Settings(BaseSettings):
         return self.user_data_dir(user_id) / ".index_cache"
 
     def user_index_meta_path(self, user_id: str) -> Path:
-        """向量索引元数据(如上次重建时间)。独立于 .index_cache,后者重建时会被整目录清空。"""
+        """Vector index metadata(Such as the last rebuild time). independent from .index_cache, which will be cleared by the entire directory when it is rebuilt."""
         return self.user_data_dir(user_id) / "index_meta.json"
 
     def user_settings_path(self, user_id: str) -> Path:

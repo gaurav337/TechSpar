@@ -1,14 +1,14 @@
-"""Copilot 实时 ASR — DashScope qwen3-asr-flash-realtime (WebSocket)。
+"""Copilot real time ASR — DashScope qwen3-asr-flash-realtime (WebSocket).
 
-替代老的阿里云 NLS SpeechTranscriber：
-- 协议：OpenAI Realtime API 兼容
-- 模型：qwen3-asr-flash-realtime（中英日混说、服务端 VAD）
-- 鉴权：DashScope API Key
+Replace the old Alibaba Cloud NLS SpeechTranscriber:
+- Protocol: OpenAI Realtime API compatible
+- Model: qwen3-asr-flash-realtime (Chinese, English and Japanese, server-side VAD)
+- Authentication:DashScope API Key
 
-对外接口保持形态但生命周期方法改为 async（start/stop/shutdown），
-send_audio 仍为同步投递 + 内部异步发送（不阻塞 WebSocket 主循环）。
+The external interface maintains its form but the life cycle method is changed to async (start/stop/shutdown),
+send_audio is still delivered synchronously + Internally sent asynchronously (without blocking the WebSocket main loop).
 
-同时保留 VAD 切段 + 腾讯云声纹识别集成（lookup_role_now）。
+Also preserve VAD segments + Tencent Cloud Voiceprint Recognition Integration (lookup_role_now).
 """
 from __future__ import annotations
 
@@ -30,22 +30,22 @@ logger = logging.getLogger("uvicorn")
 _DASHSCOPE_WS_URL = "wss://dashscope.aliyuncs.com/api-ws/v1/realtime"
 _ASR_MODEL = "qwen3-asr-flash-realtime"
 _AUDIO_CHUNK_SIZE = 3200  # ~100ms PCM16 mono @ 16kHz
-_VP_WINDOW_SECONDS = 30.0  # 声纹结果滑动窗口
+_VP_WINDOW_SECONDS = 30.0  # Voiceprint results sliding window
 _SEND_QUEUE_MAX = 512
 
 
 class CopilotASR:
-    """DashScope 实时 ASR 封装。
+    """DashScope real-time ASR wrapper.
 
-    对外方法：
-      await start()                              — 连接 WS 并下发 session.update
-      send_audio(pcm_bytes)                      — 同步投递，内部异步发送
-      await stop() / await shutdown()            — 优雅关闭
-      lookup_role_now() -> 'hr'|'candidate'|None — 根据声纹窗口判决当前 role
+    External methods:
+      await start()                              — Connect to WS and deliver session.update
+      send_audio(pcm_bytes)                      — Synchronous delivery, internal asynchronous sending
+      await stop() / await shutdown()            — graceful closing
+      lookup_role_now() -> 'hr'|'candidate'|None — Determine the current situation based on the voiceprint window role
 
-    回调（async）：
-      on_interim(text)       — 流式中间结果
-      on_sentence_end(text)  — 一句话结束（已去重）
+    Callback (async):
+      on_interim(text)       — Streaming intermediate results
+      on_sentence_end(text)  — End of sentence (duplication removed)
       on_error(message)
     """
 
@@ -67,12 +67,12 @@ class CopilotASR:
         self._event_seq = 0
         self._dedup = TranscriptDeduper()
 
-        # 回调
+        # callback
         self.on_interim: Callable[[str], Awaitable] | None = None
         self.on_sentence_end: Callable[[str], Awaitable] | None = None
         self.on_error: Callable[[str], Awaitable] | None = None
 
-        # 声纹集成（可选）
+        # Voiceprint integration (optional)
         self._vp_client = voiceprint_client
         self._vp_id = voice_print_id
         self._vp_segmenter = None
@@ -89,13 +89,13 @@ class CopilotASR:
         self._event_seq += 1
         return f"asr-{id(self)}-{self._event_seq}"
 
-    # ────────── 生命周期 ──────────
+    # ────────── life cycle ──────────
 
     async def start(self) -> bool:
         api_key = self._api_key
         if not api_key:
             raise RuntimeError(
-                "DASHSCOPE_API_KEY required for real-time ASR. Configure it in 设置."
+                "DASHSCOPE_API_KEY required for real-time ASR. Configure it in settings."
             )
 
         try:
@@ -112,7 +112,7 @@ class CopilotASR:
             logger.error(f"DashScope ASR WS connect failed: {e}")
             raise
 
-        # 下发会话配置：PCM 16k + 服务端 VAD
+        # Deliver session configuration:PCM 16k + Server VAD
         session_update = {
             "event_id": self._next_event_id(),
             "type": "session.update",
@@ -145,7 +145,7 @@ class CopilotASR:
             self._vp_segmenter.reset()
         self._vp_results.clear()
 
-        # 通知 send_loop 退出
+        # Notification send_loop exit
         try:
             self._send_queue.put_nowait(None)
         except asyncio.QueueFull:
@@ -180,10 +180,10 @@ class CopilotASR:
     async def shutdown(self) -> None:
         await self.stop()
 
-    # ────────── 音频 I/O ──────────
+    # ────────── Audio I/O ──────────
 
     def send_audio(self, pcm_data: bytes) -> bool:
-        """同步投递 PCM；不阻塞。队列满时丢帧（优于阻塞调用方）。"""
+        """Deliver PCM synchronously; no blocking. Drop frames when queue is full (better than blocking caller)."""
         if not self._started or not pcm_data:
             return False
         try:
@@ -192,7 +192,7 @@ class CopilotASR:
             logger.debug("ASR send queue full, dropping frame")
             return False
 
-        # 并行：喂 VAD 切段，异步送声纹验证
+        # Parallel: Feed VAD to segment and send voiceprint verification asynchronously
         if self._vp_segmenter:
             try:
                 segments = self._vp_segmenter.feed(pcm_data)
@@ -203,9 +203,9 @@ class CopilotASR:
         return True
 
     async def _send_loop(self) -> None:
-        """从发送队列取 PCM → 切 100ms 块 → base64 → ws.send。"""
+        """Get from send queue PCM → Cut into 100ms chunks → base64 → ws.send."""
         try:
-            # 等待 session.created，最多 10 秒
+            # Wait for session.created, up to 10 seconds
             try:
                 await asyncio.wait_for(self._ready.wait(), timeout=10.0)
             except asyncio.TimeoutError:
@@ -236,7 +236,7 @@ class CopilotASR:
             logger.exception("ASR send loop error")
 
     async def _receive_loop(self) -> None:
-        """接收 DashScope 事件并分发到回调。"""
+        """Receives DashScope events and dispatches to callbacks."""
         try:
             if self._ws is None:
                 return
@@ -301,10 +301,10 @@ class CopilotASR:
             self._started = False
             self._ready.clear()
 
-    # ────────── 声纹集成（不变） ──────────
+    # ────────── Voiceprint integration (unchanged) ──────────
 
     async def _verify_segment(self, pcm_segment: bytes) -> None:
-        """异步送一段音频给腾讯 VPR，结果写入滑动窗口。"""
+        """Asynchronously send a piece of audio to Tencent VPR, and the result is written into the sliding window."""
         if not (self._vp_client and self._vp_id):
             return
         try:
@@ -319,12 +319,12 @@ class CopilotASR:
             logger.debug(f"VPR verify error (ignored): {e}")
 
     def lookup_role_now(self) -> str | None:
-        """根据最近 VPR 窗口判断当前说话人角色。
+        """Determine the current speaker role based on the latest VPR window.
 
-        返回：
-          - "candidate": 最近一条结果 matched
-          - "hr": 最近一条结果 unmatched
-          - None: 无可用结果，调用方应默认为 hr
+        Return:
+          - "candidate": the latest result matched
+          - "hr": the latest result unmatched
+          - None: No results available, caller should default to hr
         """
         if not self._vp_results:
             return None

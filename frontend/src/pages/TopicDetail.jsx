@@ -26,10 +26,10 @@ import { Skeleton } from "@/components/ui/skeleton";
 const PAGE_CLASS = "flex-1 w-full max-w-[1600px] mx-auto px-4 py-6 md:px-7 md:py-8 xl:px-10 2xl:px-12";
 
 const MODE_BADGES = {
-  resume: { text: "简历面试", variant: "default" },
-  topic_drill: { text: "专项训练", variant: "success" },
-  jd_prep: { text: "JD 备面", variant: "blue" },
-  recording: { text: "录音复盘", variant: "blue" },
+  resume: { text: "resume interview", variant: "default" },
+  topic_drill: { text: "Special training", variant: "success" },
+  jd_prep: { text: "JD preparation", variant: "blue" },
+  recording: { text: "Recording review", variant: "blue" },
 };
 
 export default function TopicDetail() {
@@ -64,9 +64,9 @@ export default function TopicDetail() {
     setGenerating(true);
     try {
       const res = await getTopicRetrospective(topic);
-      startTask(res.task_id, "retrospective", `${topicInfo?.name || topic} 领域回顾生成中`);
+      startTask(res.task_id, "retrospective", `${topicInfo?.name || topic} Domain review is being generated`);
     } catch (err) {
-      alert("生成失败: " + err.message);
+      alert("Build failed: " + err.message);
     } finally {
       setGenerating(false);
     }
@@ -106,13 +106,13 @@ export default function TopicDetail() {
   const retrospectiveAt = mastery.retrospective_at;
   const retrospectiveSections = parseRetrospectiveSections(retrospective);
   const visibleSections = retrospectiveSections.slice(0, 4);
-  const nextStepsSection = retrospectiveSections.find((section) => /建议|下一步/.test(section.title));
+  const nextStepsSection = retrospectiveSections.find((section) => /Suggestions|Next step/.test(section.title));
   const diagnosisText = mastery.notes
-    || extractPlainText(retrospectiveSections.find((section) => /进步|薄弱|掌握/.test(section.title))?.markdown, 180)
-    || "还没有形成稳定的阶段判断。";
+    || extractPlainText(retrospectiveSections.find((section) => /progress|weak|master/.test(section.title))?.markdown, 180)
+    || "A stable stage judgment has not yet been formed.";
   const latestSummary = extractSummarySnippet(latestSession?.review, latestSession?.overall);
   const actionText = extractPlainText(nextStepsSection?.markdown, 180)
-    || "先把最近一次最低分题重新讲通，再继续新增题目。";
+    || "First, re-explain the most recent lowest-scoring questions, and then continue to add new questions.";
 
   const profileWeaknesses = (profile?.weak_points || [])
     .filter((item) => item.topic === topic && !item.improved)
@@ -154,7 +154,7 @@ export default function TopicDetail() {
         onClick={() => navigate("/profile")}
       >
         <ArrowLeft size={16} />
-        返回画像
+        Return to image
       </button>
 
       <div className="mt-3 flex flex-col gap-4 2xl:flex-row 2xl:items-start 2xl:justify-between">
@@ -169,9 +169,9 @@ export default function TopicDetail() {
                 {topicInfo?.name || topic}
               </div>
               <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-dim">
-                <span>{sessions.length} 次训练记录</span>
-                {latestSession?.created_at && <span>最后训练 {formatMinute(latestSession.created_at)}</span>}
-                {mastery.last_assessed && <span>上次评估 {formatMinute(mastery.last_assessed)}</span>}
+                <span>{sessions.length} training records</span>
+                {latestSession?.created_at && <span>final training {formatMinute(latestSession.created_at)}</span>}
+                {mastery.last_assessed && <span>last assessment {formatMinute(mastery.last_assessed)}</span>}
               </div>
             </div>
           </div>
@@ -180,17 +180,17 @@ export default function TopicDetail() {
         <div className="flex flex-wrap items-center gap-2">
           {masteryScore != null && (
             <Badge variant="outline" className="rounded-full px-3 py-1 text-[12px]">
-              掌握度 {masteryScore}/100
+              Mastery {masteryScore}/100
             </Badge>
           )}
           {retrospectiveAt && (
             <Badge variant="secondary" className="rounded-full px-3 py-1 text-[12px]">
-              回顾更新 {formatShortDate(retrospectiveAt)}
+              Review updates {formatShortDate(retrospectiveAt)}
             </Badge>
           )}
           {retrospective && (
             <Button variant="outline" onClick={() => setShowFullRetrospective(true)}>
-              查看原文
+              View original text
             </Button>
           )}
           {sessions.length > 0 && (
@@ -200,7 +200,7 @@ export default function TopicDetail() {
               disabled={generating}
             >
               <RefreshCw className={cn(generating && "animate-spin")} />
-              {generating ? "生成中..." : retrospective ? "刷新回顾" : "生成回顾"}
+              {generating ? "Generating..." : retrospective ? "refresh review" : "Generate review"}
             </Button>
           )}
         </div>
@@ -209,45 +209,45 @@ export default function TopicDetail() {
       <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6">
         <SummaryStat
           icon={<Gauge size={18} />}
-          label="掌握度"
+          label="Mastery"
           value={masteryScore != null ? `${masteryScore}/100` : "--"}
-          hint={mastery.notes || "暂无掌握度说明"}
+          hint={mastery.notes || "No description of mastery yet"}
           accentClassName="text-primary"
           panelClassName="bg-[linear-gradient(135deg,rgba(245,158,11,0.12),rgba(245,158,11,0.03))]"
         />
         <SummaryStat
           icon={<Target size={18} />}
-          label="训练次数"
+          label="training times"
           value={sessions.length}
-          hint="该领域累计"
+          hint="Accumulated in this field"
           accentClassName="text-text"
         />
         <SummaryStat
           icon={<TrendingUp size={18} />}
-          label="最近均分"
+          label="Most recently evenly divided"
           value={latestAvg != null ? `${latestAvg}/10` : "--"}
-          hint={latestSession?.created_at ? formatShortDate(latestSession.created_at) : "暂无评分"}
+          hint={latestSession?.created_at ? formatShortDate(latestSession.created_at) : "No rating yet"}
           accentClassName={getScoreTextClass(latestAvg)}
         />
         <SummaryStat
           icon={<Sparkles size={18} />}
-          label="趋势变化"
+          label="Trend changes"
           value={formatDelta(trendDelta)}
-          hint={trendDelta == null ? "至少需要 2 次训练" : "相比上一条评分记录"}
+          hint={trendDelta == null ? "Requires at least 2 training sessions" : "Compared with the previous rating record"}
           accentClassName={getDeltaClass(trendDelta)}
         />
         <SummaryStat
           icon={<CalendarDays size={18} />}
-          label="已答题数"
+          label="Number of questions answered"
           value={totalAnswered}
-          hint="历史累计"
+          hint="Historical accumulation"
           accentClassName="text-text"
         />
         <SummaryStat
           icon={<CircleAlert size={18} />}
-          label="待攻克点"
+          label="Point to be conquered"
           value={recurringWeaknesses.length}
-          hint={recurringWeaknesses.length ? "重复暴露" : "暂未沉淀"}
+          hint={recurringWeaknesses.length ? "repeated exposure" : "Not settled yet"}
           accentClassName={recurringWeaknesses.length ? "text-red" : "text-text"}
         />
       </div>
@@ -256,16 +256,16 @@ export default function TopicDetail() {
         <div className="space-y-4">
           <WorkbenchPanel
             icon={<CalendarDays size={18} />}
-            title="训练时间线"
-            caption="这里直接看每次训练的结论、答题量和高低分题，不再只给日期列表。"
+            title="Training timeline"
+            caption="Here we directly look at the conclusion, answer volume and high and low scores of each training session, instead of just giving a list of dates."
             action={(
               <Badge variant="outline" className="rounded-full px-3 py-1 text-[11px]">
-                最新记录在上
+                The latest record is above
               </Badge>
             )}
           >
             {sessionsDesc.length === 0 ? (
-              <DashboardEmpty message="该领域暂无训练记录。" />
+              <DashboardEmpty message="There are no training records in this area." />
             ) : (
               <div className="space-y-3">
                 {sessionsDesc.map((session, index) => (
@@ -282,8 +282,8 @@ export default function TopicDetail() {
 
           <WorkbenchPanel
             icon={<Sparkles size={18} />}
-            title="训练回顾拆解"
-            caption="AI 回顾先拆成模块化信息块，再决定要不要展开全文。"
+            title="Training review breakdown"
+            caption="The AI review is first broken down into modular chunks of information before deciding whether to expand the full text."
           >
             {visibleSections.length > 0 ? (
               <div className="space-y-3">
@@ -301,10 +301,10 @@ export default function TopicDetail() {
               </div>
             ) : (
               <DashboardEmpty
-                message={sessions.length === 0 ? "还没有训练数据可拆解。" : "先生成一次领域回顾，这里会自动拆成模块。"}
+                message={sessions.length === 0 ? "There is no training data to dissect yet." : "First generate a domain review, which will be automatically split into modules."}
                 action={sessions.length > 0 ? (
                   <Button variant="outline" onClick={handleGenerate} disabled={generating}>
-                    {generating ? "生成中..." : "生成回顾"}
+                    {generating ? "Generating..." : "Generate review"}
                   </Button>
                 ) : null}
               />
@@ -315,22 +315,22 @@ export default function TopicDetail() {
         <div className="space-y-4">
           <WorkbenchPanel
             icon={<Gauge size={18} />}
-            title="当前诊断"
-            caption="把掌握度、最近表现和当前动作集中放在一处。"
+            title="current diagnosis"
+            caption="Keep mastery, recent performance, and current actions in one place."
           >
             <div className="space-y-3">
               <InsightBlock
-                title="掌握度判断"
-                value={masteryScore != null ? `${masteryScore}/100` : "暂无评分"}
+                title="Mastery Judgment"
+                value={masteryScore != null ? `${masteryScore}/100` : "No rating yet"}
                 body={diagnosisText}
               />
               <InsightBlock
-                title="最新训练结论"
+                title="Latest training conclusions"
                 value={latestAvg != null ? `${latestAvg}/10` : "--"}
-                body={latestSummary || "最近一次训练还没有结构化总结。"}
+                body={latestSummary || "There is no structured summary of the most recent training session."}
               />
               <InsightBlock
-                title="当前动作"
+                title="current action"
                 body={actionText}
                 tone="accent"
               />
@@ -339,25 +339,25 @@ export default function TopicDetail() {
 
           <WorkbenchPanel
             icon={<CircleAlert size={18} />}
-            title="持续薄弱点"
-            caption="优先看重复暴露的问题，而不是只看最近一次失分。"
+            title="persistent weakness"
+            caption="Prioritize issues that have been exposed repeatedly, rather than just looking at the most recent loss."
           >
             <SignalList
               items={recurringWeaknesses}
               tone="red"
-              emptyText="还没有沉淀出重复暴露的问题。"
+              emptyText="Repeated exposure issues have not yet precipitated."
             />
           </WorkbenchPanel>
 
           <WorkbenchPanel
             icon={<Trophy size={18} />}
-            title="稳定优势"
-            caption="这些点已经形成正向信号，下一轮训练别把它们丢掉。"
+            title="Stable advantage"
+            caption="These points have formed positive signals, don't throw them away in the next round of training."
           >
             <SignalList
               items={recurringStrengths}
               tone="green"
-              emptyText="还没有形成稳定优势信号。"
+              emptyText="A stable advantage signal has not yet been formed."
             />
           </WorkbenchPanel>
         </div>
@@ -440,28 +440,28 @@ function SessionTimelineCard({ session, index, onOpen }) {
               <Badge variant={badge.variant}>{badge.text}</Badge>
               <div className="text-sm font-medium text-text">{session.created_at?.slice(0, 10)}</div>
               <Badge variant="secondary" className="rounded-full px-2.5 py-0.5 text-[11px]">
-                第 {index + 1} 条
+                No. {index + 1} Article
               </Badge>
               <div className="text-xs text-dim">#{session.session_id}</div>
             </div>
 
             <div className="mt-3 text-sm leading-6 text-text">
-              {summary || "这次训练暂时没有提炼出结构化结论。"}
+              {summary || "This training has not yet refined a structured conclusion."}
             </div>
 
             <div className="mt-3 flex flex-wrap gap-2 text-xs">
-              <SignalChip label={`已答 ${answeredCount} 题`} />
-              {weak && <SignalChip label={`最低 ${formatQuestionScore(weak)}`} tone="red" />}
-              {best && <SignalChip label={`最佳 ${formatQuestionScore(best)}`} tone="green" />}
-              {weakCount > 0 && <SignalChip label={`薄弱 ${weakCount}`} tone="red" />}
-              {strongCount > 0 && <SignalChip label={`亮点 ${strongCount}`} tone="green" />}
+              <SignalChip label={`Answered ${answeredCount} question`} />
+              {weak && <SignalChip label={`lowest ${formatQuestionScore(weak)}`} tone="red" />}
+              {best && <SignalChip label={`Best ${formatQuestionScore(best)}`} tone="green" />}
+              {weakCount > 0 && <SignalChip label={`weak ${weakCount}`} tone="red" />}
+              {strongCount > 0 && <SignalChip label={`Highlights ${strongCount}`} tone="green" />}
             </div>
           </div>
 
           <div className="flex items-center justify-between gap-4 xl:flex-col xl:items-end">
             <ScorePill score={avg} large />
             <div className="inline-flex items-center gap-1 text-xs text-dim transition-colors group-hover:text-text">
-              查看完整复盘
+              View full review
               <ChevronRight size={15} />
             </div>
           </div>
@@ -508,7 +508,7 @@ function SignalList({ items, tone, emptyText }) {
             </Badge>
           </div>
           {item.lastSeen && (
-            <div className="mt-2 text-xs text-dim">最近信号 {formatShortDate(item.lastSeen)}</div>
+            <div className="mt-2 text-xs text-dim">recent signal {formatShortDate(item.lastSeen)}</div>
           )}
         </div>
       ))}
@@ -556,14 +556,14 @@ function FullRetrospectiveModal({ open, retrospective, sectionCount, updatedAt, 
       >
         <div className="flex items-start justify-between gap-4 border-b border-border/70 px-5 py-4 md:px-6">
           <div className="min-w-0">
-            <div className="text-lg font-semibold text-text">{topicName} 完整回顾原文</div>
+            <div className="text-lg font-semibold text-text">{topicName} Full review of the original article</div>
             <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-sm text-dim">
-              <span>{sectionCount || 1} 个模块</span>
-              {updatedAt && <span>更新于 {formatMinute(updatedAt)}</span>}
+              <span>{sectionCount || 1} modules</span>
+              {updatedAt && <span>updated on {formatMinute(updatedAt)}</span>}
             </div>
           </div>
 
-          <Button variant="ghost" size="icon" onClick={onClose} aria-label="关闭完整回顾">
+          <Button variant="ghost" size="icon" onClick={onClose} aria-label="Close full review">
             <X size={18} />
           </Button>
         </div>
@@ -649,7 +649,7 @@ function extractSummarySnippet(review, overall) {
   if (!review) return "";
 
   const summaryPart = review
-    .split("## 逐题复盘")[0]
+    .split("## Review question by question")[0]
     .replace(/^## .*$/gm, "")
     .replace(/\*\*/g, "")
     .trim();
@@ -681,7 +681,7 @@ function parseRetrospectiveSections(markdown) {
       continue;
     }
 
-    if (!current) current = { title: "阶段回顾", markdown: "" };
+    if (!current) current = { title: "Stage review", markdown: "" };
     current.markdown += current.markdown ? `\n${rawLine}` : rawLine;
   }
 

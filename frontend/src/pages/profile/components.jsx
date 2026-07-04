@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { formatShortDate } from "./derive";
 import { MODE_META } from "./meta";
 
-// 折叠区。用于把"次要/旧观察"收纳起来,不挤占主区。
+// Folding area. used to put"Secondary/old observation"Store it away without occupying the main area.
 export function CollapsibleSection({ title, caption, defaultOpen = false, children, badge }) {
   const [open, setOpen] = useState(defaultOpen);
   return (
@@ -40,11 +40,11 @@ function BehaviorSignalRow({ signal }) {
 
   let polarityBadge;
   if (signal.improved) {
-    polarityBadge = <Badge variant="outline">已改善</Badge>;
+    polarityBadge = <Badge variant="outline">improved</Badge>;
   } else if ((signal.polarity || "negative") === "positive") {
-    polarityBadge = <Badge variant="success">优势</Badge>;
+    polarityBadge = <Badge variant="success">Advantages</Badge>;
   } else {
-    polarityBadge = <Badge variant="destructive">短板</Badge>;
+    polarityBadge = <Badge variant="destructive">Short board</Badge>;
   }
 
   return (
@@ -56,8 +56,8 @@ function BehaviorSignalRow({ signal }) {
           </div>
           <div className="mt-1.5 flex flex-wrap items-center gap-2 text-xs text-dim">
             {polarityBadge}
-            <span>出现 {signal.times_seen || 1} 次</span>
-            {signal.last_seen && <span>· 最近 {formatShortDate(signal.last_seen)}</span>}
+            <span>appear {signal.times_seen || 1} times</span>
+            {signal.last_seen && <span>· Recently {formatShortDate(signal.last_seen)}</span>}
             <span className="font-mono opacity-60">{signal.id}</span>
           </div>
         </div>
@@ -67,7 +67,7 @@ function BehaviorSignalRow({ signal }) {
             onClick={() => setExpanded(!expanded)}
             className="shrink-0 text-xs font-medium text-primary hover:underline"
           >
-            {expanded ? "收起证据" : `证据 (${examples.length})`}
+            {expanded ? "put away evidence" : `evidence (${examples.length})`}
           </button>
         )}
       </div>
@@ -86,8 +86,8 @@ function BehaviorSignalRow({ signal }) {
   );
 }
 
-// 按 namespace 分组渲染 behavior_signals。
-// namespaces 来自 buildBehaviorSignals().namespaces:
+// Rendering grouped by namespace behavior_signals.
+// namespaces comes from buildBehaviorSignals().namespaces:
 //   [{ key, label, color, negative, positive, improved }, ...]
 export function BehaviorSignalList({ namespaces }) {
   const populated = (namespaces || []).filter(
@@ -138,7 +138,7 @@ export function ScoreChart({ history }) {
     y: PAD.top + innerH - ((entry.avg_score || 0) / 10) * innerH,
     score: entry.avg_score,
     date: entry.date,
-    topic: entry.topic || "综合",
+    topic: entry.topic || "comprehensive",
     mode: entry.mode,
   }));
 
@@ -241,10 +241,10 @@ export function TopicPriorityCard({ item, onSelect, label }) {
           )}
           <span className="truncate text-sm font-semibold">{item.topic}</span>
           {item.weakCount > 0 && (
-            <Badge variant="destructive" className="shrink-0 px-1.5 py-0 text-[10px]">待补{item.weakCount}</Badge>
+            <Badge variant="destructive" className="shrink-0 px-1.5 py-0 text-[10px]">To be replenished{item.weakCount}</Badge>
           )}
           {item.strongCount > 0 && (
-            <Badge variant="success" className="shrink-0 px-1.5 py-0 text-[10px]">强项{item.strongCount}</Badge>
+            <Badge variant="success" className="shrink-0 px-1.5 py-0 text-[10px]">Strengths{item.strongCount}</Badge>
           )}
         </div>
         <div className="flex shrink-0 items-center gap-1.5">
@@ -262,7 +262,7 @@ export function TopicPriorityCard({ item, onSelect, label }) {
       </div>
       <div className="mt-1.5 flex items-center gap-2 text-[11px] text-dim">
         <span className="line-clamp-1 flex-1">
-          {item.topWeakness || item.note || "已有训练记录"}
+          {item.topWeakness || item.note || "Already have training records"}
         </span>
         {item.lastSignal && (
           <span className="shrink-0 opacity-70">{formatShortDate(item.lastSignal)}</span>
@@ -290,16 +290,16 @@ export function CrossBlockerList({ items }) {
         </div>
       )) : (
         <div className="rounded-2xl border border-dashed border-border/80 px-4 py-8 text-sm text-dim">
-          目前没有明显的跨领域阻塞项。
+          There are currently no obvious cross-domain blocking items.
         </div>
       )}
     </div>
   );
 }
 
-// 表现轴的 namespace 卡。dim 来自 buildBehaviorSignals().namespaces,
-// 字段: { key, label, color, bg, negative: [...], positive: [...], improved: [...] }
-// 每个数组里的元素是 behavior_signal: { id, description, times_seen, last_seen, examples, ... }
+// The namespace card representing the axis. dim comes from buildBehaviorSignals().namespaces,
+// Field: { key, label, color, bg, negative: [...], positive: [...], improved: [...] }
+// The elements in each array are behavior_signal: { id, description, times_seen, last_seen, examples, ... }
 export function PerformanceDimCard({ dim }) {
   const negative = dim.negative || [];
   const positive = dim.positive || [];
@@ -315,7 +315,7 @@ export function PerformanceDimCard({ dim }) {
       <div className="mt-2 flex flex-wrap gap-2">
         {negative.length > 0 && <Badge variant="destructive">{negative.length}</Badge>}
         {positive.length > 0 && <Badge variant="success">+{positive.length}</Badge>}
-        {improved.length > 0 && <Badge variant="outline">改善 {improved.length}</Badge>}
+        {improved.length > 0 && <Badge variant="outline">improve {improved.length}</Badge>}
       </div>
       {featured && (
         <div className="mt-2.5 text-xs leading-5 text-dim line-clamp-2">
@@ -350,7 +350,7 @@ export function HabitTagList({ items }) {
   const hasMore = items.length > 5;
 
   if (items.length === 0) {
-    return <div className="text-sm text-dim">还没有记录到稳定的表达习惯。</div>;
+    return <div className="text-sm text-dim">No stable expressive habits have been documented.</div>;
   }
 
   return (
@@ -367,7 +367,7 @@ export function HabitTagList({ items }) {
           onClick={() => setExpanded(!expanded)}
           className="mt-3 text-left text-[13px] text-primary hover:underline"
         >
-          {expanded ? "收起" : `展开更多 (+${items.length - 5})`}
+          {expanded ? "close" : `Expand more (+${items.length - 5})`}
         </button>
       )}
     </div>

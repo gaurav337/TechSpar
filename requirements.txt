@@ -4,9 +4,9 @@ langchain-openai>=0.2.0
 langgraph>=0.2.0
 langgraph-checkpoint-sqlite>=2.0.0
 
-# OpenAI-compatible embedding client (RAG / 记忆向量;自写轻量检索,无 LlamaIndex)
+# OpenAI-compatible embedding client (RAG / Memory vector; self-written lightweight retrieval, none LlamaIndex)
 openai>=1.0.0
-# 向量余弦检索的数值后端（indexer / memory / graph / copilot 直接 import）
+# Numerical backend for vector cosine retrieval (indexer / memory / graph / copilot direct import)
 numpy>=1.26.0
 
 # Optional local embedding dependencies live in requirements.local-embedding.txt
@@ -23,26 +23,26 @@ python-multipart>=0.0.12
 aiosqlite>=0.20.0
 
 # Speech-to-text (Alibaba Cloud OSS + DashScope cloud ASR)
-# OSS 只用于长音频异步转写（录音复盘）；短音频走 base64 同步链路，无需 OSS。
+# OSS is only used for asynchronous transcription (recording duplication) of long audio; short audio uses a base64 synchronous link, without OSS.
 oss2>=2.18.0
 
 # Auth
 bcrypt>=4.0.0
 python-jose[cryptography]>=3.3.0
 
-# HTTP（transcribe 直接 import；此前仅靠 oss2/tavily 传递依赖）
+# HTTP (transcribe direct import; previously only relied on oss2/tavily transitive dependency)
 requests>=2.31.0
 
 # Web search (Copilot Company Researcher)
 tavily-python>=0.3.0
 
-# Copilot 实时 ASR (DashScope qwen3-asr-flash-realtime)
+# Copilot real time ASR (DashScope qwen3-asr-flash-realtime)
 websockets>=12.0
 
-# Tencent Cloud VPR (可选，用于候选人声纹识别)
+# Tencent Cloud VPR (Optional, used for candidate voiceprint recognition)
 tencentcloud-sdk-python-common>=3.0.1000
 
-# VAD 切段（C 库，非神经网络）
+# VAD segmentation (C library, non-neural network)
 webrtcvad>=2.0.10
 
 # Utils

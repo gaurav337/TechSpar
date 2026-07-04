@@ -28,7 +28,7 @@ from backend.user_context import get_current_user_id
 _embedding_cache: dict[str, tuple[str, object]] = {}
 
 _DEFAULT_TEMPERATURE = 0.7
-_COPILOT_TEMPERATURE = 0.3  # Copilot 场景偏确定性
+_COPILOT_TEMPERATURE = 0.3  # Copilot scenario is deterministic
 
 
 class ProviderNotConfigured(RuntimeError):
@@ -50,6 +50,19 @@ def _effective_uid(user_id: str | None) -> str | None:
 def resolve_llm_config(user_id: str | None = None) -> dict:
     """Resolve this user's LLM config. Per-user only — no global fallback; missing
     fields stay empty and surface as ProviderNotConfigured when a client is built."""
+    import os
+    nvidia_key = os.getenv("NVIDIA_API_KEY")
+    if nvidia_key:
+        uid = _effective_uid(user_id)
+        override = load_user_provider(uid)[0] if uid else None
+        temperature = override.temperature if override else _DEFAULT_TEMPERATURE
+        return {
+            "api_base": "https://integrate.api.nvidia.com/v1",
+            "api_key": nvidia_key,
+            "model": "meta/llama-3.1-70b-instruct",
+            "temperature": temperature,
+        }
+
     uid = _effective_uid(user_id)
     override = load_user_provider(uid)[0] if uid else None
     if override is None:
@@ -66,20 +79,38 @@ def resolve_embedding_config(user_id: str | None = None) -> dict:
     """Resolve this user's embedding config (per-user only, no global fallback)."""
     uid = _effective_uid(user_id)
     override = load_user_provider(uid)[1] if uid else None
-    if override is None:
-        return {
-            "backend": "", "api_base": "", "api_key": "",
-            "api_model": "", "local_model": "", "local_path": "",
-            "api_batch_size": DEFAULT_API_EMBED_BATCH_SIZE,
-        }
+
+    if settings.high_security_mode:
+        backend = "local"
+        api_base = ""
+        api_key = ""
+        api_model = ""
+        local_model = override.local_model if override else ""
+        local_path = override.local_path if override else ""
+        api_batch_size = DEFAULT_API_EMBED_BATCH_SIZE
+    else:
+        if override is None:
+            return {
+                "backend": "", "api_base": "", "api_key": "",
+                "api_model": "", "local_model": "", "local_path": "",
+                "api_batch_size": DEFAULT_API_EMBED_BATCH_SIZE,
+            }
+        backend = override.backend
+        api_base = override.api_base
+        api_key = override.api_key
+        api_model = override.api_model
+        local_model = override.local_model
+        local_path = override.local_path
+        api_batch_size = override.api_batch_size
+
     return {
-        "backend": override.backend,
-        "api_base": override.api_base,
-        "api_key": override.api_key,
-        "api_model": override.api_model,
-        "local_model": override.local_model,
-        "local_path": override.local_path,
-        "api_batch_size": override.api_batch_size,
+        "backend": backend,
+        "api_base": api_base,
+        "api_key": api_key,
+        "api_model": api_model,
+        "local_model": local_model,
+        "local_path": local_path,
+        "api_batch_size": api_batch_size,
     }
 
 
@@ -261,7 +292,7 @@ def probe_embedding(config: dict) -> None:
             raise ProviderNotConfigured("Embedding")
         model_name = embedding_api_model_of(config["api_model"], "")
         if not model_name:
-            raise RuntimeError("Embedding Model 必填")
+            raise RuntimeError("Embedding Model required")
         from openai import OpenAI
 
         client = OpenAI(api_key=config["api_key"], base_url=config["api_base"] or None,
@@ -274,19 +305,30 @@ def probe_embedding(config: dict) -> None:
 # ── Optional service credentials (per-user, no global fallback) ──
 
 def resolve_dashscope_key(user_id: str | None = None) -> str:
-    """DashScope key for ASR (语音输入 / 录音转写 / Copilot 实时)。未配置返回空串。"""
+    """DashScope key for ASR (Voice input / Recording Transcription / Copilot real time). If not configured, an empty string is returned."""
+    if settings.high_security_mode:
+        return ""
     uid = _effective_uid(user_id)
     return load_user_services(uid).dashscope_api_key if uid else ""
 
 
 def resolve_tavily_key(user_id: str | None = None) -> str:
-    """Tavily key for Copilot 联网搜索。未配置返回空串。"""
+    """Tavily key for Copilot Internet search. If not configured, an empty string is returned."""
+    if settings.high_security_mode:
+        return ""
     uid = _effective_uid(user_id)
     return load_user_services(uid).tavily_api_key if uid else ""
 
 
 def resolve_oss_config(user_id: str | None = None) -> dict:
-    """阿里云 OSS 配置(录音复盘长音频上传)。未配置字段为空串。"""
+    """Alibaba Cloud OSS configuration(Recording and replaying long audio upload). Unconfigured fields are empty strings."""
+    if settings.high_security_mode:
+        return {
+            "access_key_id": "",
+            "access_key_secret": "",
+            "bucket": "",
+            "endpoint": "",
+        }
     uid = _effective_uid(user_id)
     s = load_user_services(uid) if uid else None
     return {

@@ -12,7 +12,7 @@ router = APIRouter(prefix="/api")
 
 @router.get("/voiceprint/status")
 def voiceprint_status(user_id: str = Depends(get_current_user)):
-    """返回用户声纹配置状态（未配置/已配置未注册/已注册）。"""
+    """Returns the user voiceprint configuration status (not configured/Configured but not registered/registered)."""
     from backend.copilot import voiceprint_store
 
     return voiceprint_store.status_summary(user_id)
@@ -23,7 +23,7 @@ async def voiceprint_put_credentials(
     payload: VoiceprintCredentials,
     user_id: str = Depends(get_current_user),
 ):
-    """保存腾讯云凭据。保存前先 ping 一下验证有效性。"""
+    """Save Tencent Cloud credentials. Before saving, ping to verify validity."""
     from backend.copilot import voiceprint_store
     from backend.copilot.voiceprint import VoiceprintClient
 
@@ -33,7 +33,7 @@ async def voiceprint_put_credentials(
         app_id=payload.app_id,
     )
     if not await client.ping():
-        raise HTTPException(400, "腾讯云凭据无效或网络不通，请检查 SecretId / SecretKey")
+        raise HTTPException(400, "Tencent Cloud credentials are invalid or the network is unavailable, please check SecretId / SecretKey")
 
     data = voiceprint_store.load(user_id)
     data["credentials"] = payload.model_dump()
@@ -46,29 +46,29 @@ async def voiceprint_enroll(
     file: UploadFile = File(...),
     user_id: str = Depends(get_current_user),
 ):
-    """上传 WAV 文件注册候选人声纹。前端应录制 ≥6 秒 16kHz mono WAV。"""
+    """Upload a WAV file to register the candidate's voiceprint. The frontend should record ≥6 seconds 16kHz mono WAV."""
     from backend.copilot import voiceprint_store
     from backend.copilot.voiceprint import extract_pcm_from_wav
 
     client = voiceprint_store.get_client(user_id)
     if client is None:
-        raise HTTPException(400, "请先在设置页配置腾讯云凭据")
+        raise HTTPException(400, "Please configure Tencent Cloud credentials on the settings page first")
 
     wav_bytes = await file.read()
     if not wav_bytes:
-        raise HTTPException(400, "上传文件为空")
+        raise HTTPException(400, "The uploaded file is empty")
     try:
         pcm_bytes = extract_pcm_from_wav(wav_bytes)
     except ValueError as exc:
-        raise HTTPException(400, f"WAV 解析失败：{exc}")
+        raise HTTPException(400, f"WAV parsing failed:{exc}")
 
     if len(pcm_bytes) < 64000:
-        raise HTTPException(400, "录音太短，至少 2 秒")
+        raise HTTPException(400, "The recording is too short, at least 2 seconds")
 
     speaker_nick = f"techspar_{user_id}"
     voice_print_id = await client.enroll(speaker_nick, pcm_bytes)
     if not voice_print_id:
-        raise HTTPException(500, "腾讯云声纹注册失败，请检查日志")
+        raise HTTPException(500, "Tencent Cloud voiceprint registration failed, please check the log")
 
     data = voiceprint_store.load(user_id)
     data["enrollment"] = {
@@ -82,7 +82,7 @@ async def voiceprint_enroll(
 
 @router.delete("/voiceprint/enroll")
 async def voiceprint_unenroll(user_id: str = Depends(get_current_user)):
-    """删除已注册声纹（本地 + 腾讯云端）。保留凭据。"""
+    """Delete registered voiceprint (local + Tencent Cloud). Keep credentials."""
     from backend.copilot import voiceprint_store
 
     voice_print_id = voiceprint_store.get_voice_print_id(user_id)

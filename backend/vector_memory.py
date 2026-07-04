@@ -1,9 +1,9 @@
-"""向量记忆系统 — 语义检索 + 时间衰减 + 薄弱点语义去重。
+"""vector memory system — Semantic retrieval + time decay + Semantic deduplication of weak points.
 
-设计：
-- SQLite BLOB 存 float32 embedding
-- numpy cosine similarity 搜索（百级向量，sub-ms）
-- profile.json 仍是真相源，向量索引是加速层
+Design:
+- SQLite BLOB storage float32 embedding
+- numpy cosine similarity search (hundred-level vector, sub-ms)
+- profile.json is still the source of truth, vector indexing is the acceleration layer
 """
 import json
 import logging

@@ -40,11 +40,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 
-// 录音参数
+// Recording parameters
 const VP_SAMPLE_RATE = 16000;
 const VP_MIN_SECONDS = 6;
 
-// ── WAV / PCM 工具（用于声纹录音上传）──
+// ── WAV / PCM tool (for voiceprint recording upload)──
 
 function encodeWav(pcm16, sampleRate) {
   const dataSize = pcm16.length * 2;
@@ -121,11 +121,11 @@ export default function Settings() {
   const [divergence, setDivergence] = useState(3);
   const [showKey, setShowKey] = useState(false);
 
-  // 连接测试结果：null | { status: "testing" | "ok" | "fail", error? }
+  // Connection test results:null | { status: "testing" | "ok" | "fail", error? }
   const [llmTest, setLlmTest] = useState(null);
   const [embTest, setEmbTest] = useState(null);
 
-  // Embedding 配置（每用户，hot-reload；空字段继承全局默认）
+  // Embedding configuration (per user, hot-reload; empty fields inherit global default)
   const [embBackend, setEmbBackend] = useState("");  // "" | api | local
   const [embApiBase, setEmbApiBase] = useState("");
   const [embApiKey, setEmbApiKey] = useState("");
@@ -135,7 +135,7 @@ export default function Settings() {
   const [embLocalPath, setEmbLocalPath] = useState("");
   const [showEmbKey, setShowEmbKey] = useState(false);
 
-  // 可选服务密钥（每用户，对应功能开关）
+  // Optional service key (per user, corresponding function switch)
   const [dashscopeKey, setDashscopeKey] = useState("");
   const [tavilyKey, setTavilyKey] = useState("");
   const [ossKeyId, setOssKeyId] = useState("");
@@ -146,11 +146,11 @@ export default function Settings() {
   const [showTavily, setShowTavily] = useState(false);
   const [showOssSecret, setShowOssSecret] = useState(false);
 
-  // 账户/系统配置（全局，仅 admin 可见）
+  // Account/System configuration (global, only visible to admin)
   const [allowRegistration, setAllowRegistration] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
 
-  // 重建向量索引（手动按钮；换 embedding 后弹警告提醒）
+  // Rebuild vector index (manual button; warning will pop up after changing embedding)
   const [needsReindex, setNeedsReindex] = useState(false);
   const [reindexing, setReindexing] = useState(false);
   const [reindexDone, setReindexDone] = useState(false);
@@ -163,7 +163,7 @@ export default function Settings() {
   const [error, setError] = useState("");
   const [activeTab, setActiveTab] = useState("llm");
 
-  // 声纹识别状态
+  // Voiceprint recognition status
   const [vpStatus, setVpStatus] = useState({ configured: false, enrolled: false });
   const [vpSecretId, setVpSecretId] = useState("");
   const [vpSecretKey, setVpSecretKey] = useState("");
@@ -201,7 +201,7 @@ export default function Settings() {
   };
   const scrollSpyLock = useRef(0);
 
-  // 数据迁移状态
+  // Data migration status
   const [exporting, setExporting] = useState(false);
   const [importFile, setImportFile] = useState(null);
   const [importDbStrategy, setImportDbStrategy] = useState("skip");
@@ -566,7 +566,7 @@ export default function Settings() {
   const labelClass = "text-[11px] font-semibold uppercase tracking-[0.18em] text-dim/80";
   const inputClass = "h-12 rounded-2xl bg-card/90";
 
-  // 「测试连接」按钮 + 结果，LLM / Embedding 两处复用
+  // "Test connection" button + As a result,LLM / Embedding reused in two places
   const renderTestRow = (test, onTest) => (
     <div className="mt-6 flex flex-wrap items-center gap-3 border-t border-border/40 pt-5">
       <Button
@@ -1369,7 +1369,7 @@ export default function Settings() {
           )}
           <Button variant="gradient" className="px-8" onClick={handleSave} disabled={saving}>
             {saving ? <Loader2 size={15} className="animate-spin" /> : saved ? <Check size={15} /> : null}
-            {saving ? "保存中..." : saved ? "已保存" : "保存"}
+            {saving ? "Saving..." : saved ? "saved" : "save"}
           </Button>
         </div>
       </div>

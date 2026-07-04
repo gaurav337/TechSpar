@@ -1,9 +1,9 @@
-"""个性化记忆系统 — 跨面试用户画像。
+"""personalized memory system — User personas across interviews.
 
-设计哲学：
-- 文件即真相（OpenClaw）：profile.json 可人工编辑
-- 两阶段提取（Mem0）：Extract → Update，不无脑追加
-- 向量召回（embedding）：语义搜索历史洞察
+Design philosophy:
+- File is the truth (OpenClaw): profile.json can be edited manually
+- Two-stage extraction (Mem0):Extract → Update, no brainless addition
+- Vector recall (embedding): Semantic search historical insights
 """
 import asyncio
 import copy
@@ -22,14 +22,14 @@ from backend.llm_provider import get_langchain_llm
 
 logger = logging.getLogger("uvicorn")
 
-# Strip "(领域：xxx)" suffix that LLM sometimes copies from format hints
-_TOPIC_SUFFIX_RE = re.compile(r'\s*[（(]领域[：:]\s*[^）)]+[）)]\s*$')
+# Strip "(Field:xxx)" suffix that LLM sometimes copies from format hints
+_TOPIC_SUFFIX_RE = re.compile(r'\s*[((]field[::]\s*[^))]+[))]\s*$')
 
-# 表现轴的四个固定 namespace。这一层是认知架构分类(怎么表达/怎么想/怎么叙事/对自己怎么评),
-# 是封闭集合,LLM 自由度花在 namespace 之下的 behavior_id 涌现,不放在创造新 namespace 上。
+# Four fixed namespaces representing axes. This layer is the cognitive architecture classification(How to express/What do you think/How to narrate/How would you rate yourself?),
+# It is a closed set, and the LLM degrees of freedom are spent under the namespace. behavior_ids emerge, not on creating new namespaces.
 BEHAVIOR_NAMESPACES = {"reasoning", "narrative", "communication", "metacognition"}
 
-# behavior_signal ID 格式: <namespace>.<snake_case_name>
+# behavior_signal ID format: <namespace>.<snake_case_name>
 _BEHAVIOR_ID_RE = re.compile(r'^([a-z_]+)\.([a-z][a-z0-9_]*)$')
 
 
@@ -45,14 +45,14 @@ def _get_canonical_topic_keys(user_id: str) -> set[str]:
 def _normalize_extraction_topics(extraction: dict, canonical: set, fallback_topic: str):
     """Normalize topic for knowledge-axis weak/strong points.
 
-    weak_points 和 strong_points 现在只承载知识轴。topic 必须在 canonical 集合内,
-    否则 fallback 到当前面试的 topic。表现轴观察走 behavior_signals,不进这两个数组。
+    weak_points and strong_points now only carry the knowledge axis. topic must be in the canonical collection,
+    Otherwise, fallback to the current interview topic. Expression Axis Observation Walk behavior_signals, do not enter these two arrays.
     """
     for item in extraction.get("weak_points", []) + extraction.get("strong_points", []):
         if not isinstance(item, dict):
             continue
         item["point"] = _clean_point_text(item.get("point", ""))
-        item.pop("axis", None)  # 旧字段,新数据不带
+        item.pop("axis", None)  # Old fields, new data are not included
         topic = item.get("topic", "")
         if topic not in canonical:
             item["topic"] = fallback_topic
@@ -74,45 +74,45 @@ DEFAULT_PROFILE = {
     "target_role": "",
     "updated_at": "",
 
-    # 上次 consolidation 运行时间 (用于节流,避免每次 session 都跑 Stage 3)
+    # Last consolidation run time (Used for throttling to avoid running every session Stage 3)
     "last_consolidation_at": "",
 
-    # 技术掌握度 (topic → {level: 1-5, notes: str})
+    # Technical mastery (topic → {level: 1-5, notes: str})
     "topic_mastery": {},
 
-    # 知识轴薄弱点 (list of {point, topic, first_seen, last_seen, times_seen, improved})
+    # Weak points in the knowledge axis (list of {point, topic, first_seen, last_seen, times_seen, improved})
     "weak_points": [],
 
-    # 知识轴强项 (list of {point, topic, first_seen})
+    # Knowledge Axis Strengths (list of {point, topic, first_seen})
     "strong_points": [],
 
-    # 表现轴: behavior_signals.
-    # key 是 emergent ID (格式 <namespace>.<snake_case>),value 是该模式的累积证据.
-    # 与 weak_points / strong_points 物理分离,不嵌套. polarity 决定它是负向还是正向.
-    # 示例: "reasoning.jump_to_conclusion": {
+    # Expression axis: behavior_signals.
+    # key is emergent ID (Format <namespace>.<snake_case>),value is the accumulated evidence for the pattern.
+    # with weak_points / strong_points are physically separated, not nested. polarity determines whether it is negative or positive.
+    # Example: "reasoning.jump_to_conclusion": {
     #     "namespace": "reasoning",
     #     "polarity": "negative",
-    #     "description": "被追问 why 时跳过推导直接给结论",
+    #     "description": "When asked why, skip the derivation and give the conclusion directly.",
     #     "first_seen": "...", "last_seen": "...", "times_seen": 3,
     #     "improved": false,
     #     "examples": [{"session_id": "...", "date": "...", "snippet": "..."}]
     # }
     "behavior_signals": {},
 
-    # 表达与沟通特征
+    # Expression and communication characteristics
     "communication": {
-        "style": "",        # e.g. "回答偏短，缺少具体例子"
-        "habits": [],       # e.g. ["紧张时语速加快", "喜欢用类比解释"]
-        "suggestions": [],  # e.g. ["多用 STAR 法描述项目"]
+        "style": "",        # e.g. "The answer is short and lacks specific examples."
+        "habits": [],       # e.g. ["Speech speeds up when nervous", "Like to explain with analogies"]
+        "suggestions": [],  # e.g. ["Use the STAR method to describe projects"]
     },
 
-    # 答题思维模式
+    # Question answering thinking mode
     "thinking_patterns": {
-        "strengths": [],    # e.g. ["能用类比解释抽象概念", "项目描述有数据支撑"]
-        "gaps": [],         # e.g. ["对比类问题缺乏结构", "被追问 why 时容易卡住"]
+        "strengths": [],    # e.g. ["Ability to use analogies to explain abstract concepts", "Project description is supported by data"]
+        "gaps": [],         # e.g. ["Contrast questions lack structure", "It’s easy to get stuck when asked why"]
     },
 
-    # 面试统计
+    # Interview statistics
     "stats": {
         "total_sessions": 0,
         "resume_sessions": 0,
@@ -251,7 +251,7 @@ def _load_profile(user_id: str) -> dict:
     path = _profile_path(user_id)
     if path.exists():
         return json.loads(path.read_text(encoding="utf-8"))
-    # deepcopy: 浅拷贝会让所有新用户共享嵌套 list/dict，写入互相污染
+    # deepcopy: A shallow copy will share the nest with all new users list/dict, writes contaminate each other
     return copy.deepcopy(DEFAULT_PROFILE)
 
 
@@ -273,7 +273,7 @@ def _save_insight(mode: str, topic: str, summary: str, raw_extraction: dict, use
     path = ins_dir / f"{today}.md"
 
     time_str = datetime.now().strftime("%H:%M")
-    entry = f"\n## {time_str} | {mode} | {topic or '综合'}\n\n{summary}\n"
+    entry = f"\n## {time_str} | {mode} | {topic or 'comprehensive'}\n\n{summary}\n"
 
     if raw_extraction.get("weak_points"):
         entry += "\n**Weak spots:**\n"
@@ -296,10 +296,10 @@ def get_profile(user_id: str) -> dict:
 
 
 async def mark_profile_viewed(user_id: str) -> dict:
-    """记录画像页访问基线快照，前端据此派生"自上次访问"的 delta 视图。
+    """Record the baseline snapshot of the portrait page access, and the front end is derived accordingly"since last visit"delta view.
 
-    快照存 total_sessions 和各 topic 当时的掌握度，使 mastery 变化可以精确计算
-    （score_history 只有 session 均分，推不出掌握度差值）。
+    snapshot total_The current mastery of sessions and topics enables mastery changes to be accurately calculated
+    (score_history is only divided equally by session, and the difference in mastery cannot be derived).
     """
     async with _get_profile_lock(user_id):
         profile = _load_profile(user_id)
@@ -349,9 +349,9 @@ def _weak_point_weight(wp: dict, now: datetime) -> float:
 
 
 def get_topic_score_trend(profile: dict, topic: str, window: int = 5) -> dict | None:
-    """近 N 次该领域训练的均分趋势，从 score_history 派生，零额外存储。
+    """The average distribution trend of the past N times of training in this field, from score_history derived, zero extra storage.
 
-    至少 2 次有分记录才有趋势。direction 阈值 ±0.5 分，避免噪声当趋势。
+    There is a trend only if there are at least 2 points recorded. direction threshold ±0.5 points, avoid noise as a trend.
     """
     scores = [
         h["avg_score"] for h in profile.get("stats", {}).get("score_history", [])
@@ -383,7 +383,7 @@ def get_topic_context_for_drill(topic: str, user_id: str) -> dict:
     if trend:
         arrow = {"up": "↗", "down": "↘", "flat": "→"}[trend["direction"]]
         mastery_info += (
-            f"；近 {len(trend['scores'])} 次训练均分 {trend['first']} → {trend['last']} {arrow}"
+            f"; near {len(trend['scores'])} Average training times {trend['first']} → {trend['last']} {arrow}"
         )
 
     # Weak points for this topic (knowledge only — legacy axis=performance excluded),
@@ -400,7 +400,7 @@ def get_topic_context_for_drill(topic: str, user_id: str) -> dict:
     topic_weak = [w["point"] for w in topic_weak_wps]
 
     # Recent questions asked in this topic — anti-repeat context for generation.
-    # score_history 从不存题目文本,必须从 sessions 存储读,否则永远为空。
+    # score_History never stores question text, it must be read from sessions storage, otherwise it will always be empty.
     from backend.storage.sessions import list_recent_questions
     recent_questions = list_recent_questions(topic, user_id=user_id)
 
@@ -409,7 +409,7 @@ def get_topic_context_for_drill(topic: str, user_id: str) -> dict:
     try:
         from backend.vector_memory import search_memory
         results = search_memory(
-            query=f"{topic} 面试薄弱点 常见错误",
+            query=f"{topic} Interview Weak Points Common Mistakes",
             chunk_types=["session_summary", "insight"],
             topic=topic,
             user_id=user_id,
@@ -435,15 +435,15 @@ def _active_knowledge_weak_points(profile: dict) -> list[dict]:
         w for w in profile.get("weak_points", [])
         if not w.get("improved")
         and not w.get("archived")
-        and w.get("axis") != "performance"  # 老数据可能带 axis=performance,排除
+        and w.get("axis") != "performance"  # Old data may contain axis=performance, exclusion
     ]
 
 
 def _top_consolidated_patterns(profile: dict, limit: int = 3) -> list[str]:
     """Active consolidated cross-domain patterns, highest confidence first.
 
-    Stage 3 产出的规律 source="consolidated"，不在 observed/predicted 两个过滤里，
-    必须显式取出注入 prompt，否则只写不读。
+    Stage 3 output patterns source="consolidated", not here observed/predicted In the two filters,
+    The injection prompt must be explicitly removed, otherwise it will only be written but not read.
     """
     patterns = [
         w for w in profile.get("weak_points", [])
@@ -459,8 +459,8 @@ def _top_consolidated_patterns(profile: dict, limit: int = 3) -> list[str]:
 def _top_behavior_signals(profile: dict, polarity: str | None = None, limit: int = 6) -> list[tuple[str, dict]]:
     """Top behavior_signals sorted by recency × times_seen.
 
-    复用 _weak_point_weight 的半衰期权重（字段同构: last_seen/first_seen/times_seen）。
-    纯按 times_seen 排会让几个月前的旧高频信号永远压住最近的新信号。
+    Reuse _weak_point_half-life weight of weight (field isomorphism: last_seen/first_seen/times_seen).
+    Pure press times_The seen row will allow old high-frequency signals from several months ago to forever overpower recent new signals.
 
     polarity=None returns all (active negatives + improved positives).
     polarity="negative" returns active negative signals only.
@@ -469,7 +469,7 @@ def _top_behavior_signals(profile: dict, polarity: str | None = None, limit: int
     items = []
     for sid, data in signals.items():
         if data.get("improved"):
-            continue  # 改善了暂不进 summary
+            continue  # Improved, not going forward yet summary
         if polarity and data.get("polarity", "negative") != polarity:
             continue
         items.append((sid, data))
@@ -495,52 +495,52 @@ def get_profile_summary(user_id: str) -> str:
         observed = [w["point"] for w in observed_wps[:6]]
         predicted = [w["point"] for w in active_weak if w.get("source") == "predicted"][:4]
         if observed:
-            parts.append(f"已知知识薄弱点（训练中暴露）: {', '.join(observed)}")
+            parts.append(f"Known knowledge weaknesses (exposed during training): {', '.join(observed)}")
         if predicted:
-            parts.append(f"潜在知识薄弱点（JD分析预测）: {', '.join(predicted)}")
+            parts.append(f"Potential knowledge weaknesses (predicted by JD analysis): {', '.join(predicted)}")
 
     consolidated = _top_consolidated_patterns(profile)
     if consolidated:
-        parts.append("跨领域规律（系统从多次训练归纳）:\n  - " + "\n  - ".join(consolidated))
+        parts.append("Cross-domain rules (the system summarizes from multiple trainings):\n  - " + "\n  - ".join(consolidated))
 
     if profile.get("strong_points"):
-        # 按时间倒序: 列表是插入序,直接 [:5] 永远只注入最早的几条
+        # In reverse chronological order: the list is in insertion order, directly [:5] Always inject only the earliest ones
         recent_strong = sorted(
             profile["strong_points"],
             key=lambda s: s.get("first_seen", ""),
             reverse=True,
         )
         points = ", ".join(s["point"] for s in recent_strong[:5])
-        parts.append(f"知识强项: {points}")
+        parts.append(f"Knowledge strengths: {points}")
 
-    # 表现轴:行为模式
+    # Performance Axis: Behavioral Patterns
     top_behaviors = _top_behavior_signals(profile, polarity="negative", limit=6)
     if top_behaviors:
         lines = [
-            f"{sid} (出现 {data.get('times_seen', 1)} 次): {(data.get('description') or '').strip()}"
+            f"{sid} (appear {data.get('times_seen', 1)} times): {(data.get('description') or '').strip()}"
             for sid, data in top_behaviors
         ]
-        parts.append("行为模式短板:\n  - " + "\n  - ".join(lines))
+        parts.append("Behavioral shortcomings:\n  - " + "\n  - ".join(lines))
 
     if profile.get("communication", {}).get("style"):
-        parts.append(f"沟通风格: {profile['communication']['style']}")
+        parts.append(f"communication style: {profile['communication']['style']}")
 
     tp = profile.get("thinking_patterns", {})
     if tp.get("gaps"):
-        parts.append(f"思维短板: {', '.join(tp['gaps'][:5])}")
+        parts.append(f"Shortcomings in thinking: {', '.join(tp['gaps'][:5])}")
     if tp.get("strengths"):
-        parts.append(f"思维优势: {', '.join(tp['strengths'][:5])}")
+        parts.append(f"Thinking advantage: {', '.join(tp['strengths'][:5])}")
 
     if profile.get("stats", {}).get("total_sessions"):
         stats = profile["stats"]
-        parts.append(f"已完成 {stats['total_sessions']} 次模拟面试")
+        parts.append(f"Completed {stats['total_sessions']} mock interviews")
 
     if profile.get("topic_mastery"):
         mastery = ", ".join(
             f"{t}: {v.get('score', v.get('level', 0) * 20)}/100"
             for t, v in profile["topic_mastery"].items()
         )
-        parts.append(f"掌握度: {mastery}")
+        parts.append(f"Mastery: {mastery}")
 
     return "\n".join(parts) if parts else "New user, no historical data yet"
 
@@ -550,10 +550,10 @@ def get_profile_summary_for_drill(user_id: str) -> str:
     profile = _load_profile(user_id)
     parts = []
 
-    # consolidated patterns 和 behavior_signals 都是天然跨 topic 的,直接注入 top N
+    # consolidated patterns and behavior_Signals are naturally cross-topic and can be injected directly top N
     consolidated = _top_consolidated_patterns(profile)
     if consolidated:
-        parts.append("跨领域规律（系统从多次训练归纳）:\n  - " + "\n  - ".join(consolidated))
+        parts.append("Cross-domain rules (the system summarizes from multiple trainings):\n  - " + "\n  - ".join(consolidated))
 
     top_behaviors = _top_behavior_signals(profile, polarity="negative", limit=3)
     if top_behaviors:
@@ -561,34 +561,34 @@ def get_profile_summary_for_drill(user_id: str) -> str:
             f"{sid}: {(data.get('description') or '').strip()}"
             for sid, data in top_behaviors
         ]
-        parts.append("反复出现的行为模式短板:\n  - " + "\n  - ".join(lines))
+        parts.append("Recurring behavioral pattern weaknesses:\n  - " + "\n  - ".join(lines))
 
     if profile.get("communication", {}).get("style"):
-        parts.append(f"沟通风格: {profile['communication']['style']}")
+        parts.append(f"communication style: {profile['communication']['style']}")
 
     tp = profile.get("thinking_patterns", {})
     if tp.get("gaps"):
-        parts.append(f"思维短板: {', '.join(tp['gaps'][:5])}")
+        parts.append(f"Shortcomings in thinking: {', '.join(tp['gaps'][:5])}")
     if tp.get("strengths"):
-        parts.append(f"思维优势: {', '.join(tp['strengths'][:5])}")
+        parts.append(f"Thinking advantage: {', '.join(tp['strengths'][:5])}")
 
     if profile.get("stats", {}).get("total_sessions"):
-        parts.append(f"已完成 {profile['stats']['total_sessions']} 次模拟面试")
+        parts.append(f"Completed {profile['stats']['total_sessions']} mock interviews")
 
     return "\n".join(parts) if parts else "New user, no historical data yet"
 
 
 def _compact_profile_for_extract(profile: dict) -> str:
-    """Stage 1 Extract prompt 的紧凑画像视图。
+    """A compact portrait view of the Stage 1 Extract prompt.
 
-    全量 json.dumps(profile) 会把 archived 条目、整个 score_history、behavior
-    examples 全部塞进 prompt，随使用量无界膨胀，且旧数据会锚定 LLM。
-    只注入活跃子集；behavior_signals 不在这里——prompt 有独立的
-    existing_behavior_signals 区块。
+    full amount json.dumps(profile) will archived entries, the entire score_history,behavior
+    Examples are all stuffed into the prompt, expanding unbounded with usage, and old data will be anchored to LLM.
+    Only the active subset is injected;behavior_signals are not here——prompt has independent
+    existing_behavior_signals block.
     """
     parts = []
     if profile.get("target_role"):
-        parts.append(f"目标岗位: {profile['target_role']}")
+        parts.append(f"target position: {profile['target_role']}")
 
     now = datetime.now()
     active_weak = _active_knowledge_weak_points(profile)
@@ -625,7 +625,7 @@ def _compact_profile_for_extract(profile: dict) -> str:
         parts.append("Domain Mastery:\n" + "\n".join(lines))
 
     if profile.get("communication", {}).get("style"):
-        parts.append(f"沟通风格: {profile['communication']['style']}")
+        parts.append(f"communication style: {profile['communication']['style']}")
     tp = profile.get("thinking_patterns", {})
     if tp.get("gaps"):
         parts.append("Thinking Gaps: " + ", ".join(tp["gaps"][:5]))
@@ -634,7 +634,7 @@ def _compact_profile_for_extract(profile: dict) -> str:
 
     stats = profile.get("stats", {})
     if stats.get("total_sessions"):
-        parts.append(f"已完成 {stats['total_sessions']} 次训练, 综合平均分 {stats.get('avg_score', '?')}")
+        parts.append(f"Completed {stats['total_sessions']} training times, overall average score {stats.get('avg_score', '?')}")
 
     return "\n\n".join(parts) if parts else "New user, no historical profile yet"
 
@@ -989,13 +989,13 @@ def _update_thinking_patterns(profile: dict, patterns: dict, user_id: str):
 
 
 def _decay_consolidated_patterns(profile: dict, now: str) -> int:
-    """支撑证据大多已改善的 consolidated pattern 自动降权/标记改善（确定性，无 LLM）。
+    """Most of the supporting evidence has improved the consolidated pattern’s automatic downgrade./Marking improvements (deterministic, no LLM).
 
-    pattern 的 consolidates 存的是支撑它的原始弱点文本。原始弱点被训练改善后，
-    pattern 不该继续以原 confidence 置顶：
-    - 全部支撑点 improved → pattern 也标记 improved
-    - 过半 improved → 一次性降 confidence（用 history 事件保证幂等）
-    支撑点文本被 UPDATE 改写后匹配不到 → 保守跳过，不衰减。
+    The pattern's consolidates store the original vulnerability text that supports it. After the original weaknesses are improved through training,
+    The pattern should not continue to be topped with the original confidence:
+    - All support points improved → pattern is also marked improved
+    - More than half improved → Lower confidence at once (use history event to ensure idempotence)
+    The support point text cannot be matched after being rewritten by UPDATE. → Conservative skipping without attenuation.
     Returns number of patterns changed.
     """
     originals = {
@@ -1163,10 +1163,10 @@ async def llm_update_profile(
             new_strong_lines.append(f"- {point}")
 
         prompt = PROFILE_UPDATE_PROMPT.format(
-            existing_weak="\n".join(existing_weak_lines) or "暂无",
-            existing_strong="\n".join(existing_strong_lines) or "暂无",
-            new_weak="\n".join(new_weak_lines) or "暂无",
-            new_strong="\n".join(new_strong_lines) or "暂无",
+            existing_weak="\n".join(existing_weak_lines) or "None yet",
+            existing_strong="\n".join(existing_strong_lines) or "None yet",
+            new_weak="\n".join(new_weak_lines) or "None yet",
+            new_strong="\n".join(new_strong_lines) or "None yet",
         )
 
         llm = get_langchain_llm(user_id)
@@ -1231,9 +1231,9 @@ async def llm_update_profile(
         user_id=user_id,
     )
 
-    # ── Stage 3: Consolidation (带节流, 失败不阻塞) ──
-    # 从 active observed weak_points 里识别跨领域规律, 输出 source="consolidated" 的条目.
-    # 内部节流: 24h cooldown + 至少 3 条新 wp + 至少 5 条 active wp 才真的跑 LLM.
+    # ── Stage 3: Consolidation (With throttling, no blocking on failure) ──
+    # from active observed weak_Identify cross-domain rules in points and output source="consolidated" entry.
+    # internal throttling: 24h cooldown + At least 3 new wp + At least 5 active wps can really run LLM.
     await consolidate_patterns(user_id)
 
 
@@ -1245,29 +1245,29 @@ def _format_existing_behavior_signals(profile: dict) -> str:
     """
     signals = profile.get("behavior_signals", {}) or {}
     if not signals:
-        return "（暂无，本次面试可以从零开始创建。新 ID 必须严格符合 `<namespace>.<snake_case>` 格式。）"
+        return "(None yet, this interview can be created from scratch. The new ID must strictly comply with `<namespace>.<snake_case>` format. )"
 
     by_ns: dict[str, list[str]] = {}
     for sid, data in signals.items():
         if data.get("improved"):
-            # 还展示,但加 "(已改善)" 提示 LLM 优先用 IMPROVE 而非重复 ADD
-            status = "已改善"
+            # Also displayed, but added "(improved)" Tip: LLM prefers IMPROVE to repeating ADD
+            status = "improved"
         else:
-            status = f"出现 {data.get('times_seen', 1)} 次"
+            status = f"appear {data.get('times_seen', 1)} times"
         polarity = data.get("polarity", "negative")
         polarity_tag = "+" if polarity == "positive" else "-"
-        desc = (data.get("description") or "").strip() or "（无描述）"
-        line = f"- [{polarity_tag}] `{sid}` （{status}）: {desc}"
+        desc = (data.get("description") or "").strip() or "(no description)"
+        line = f"- [{polarity_tag}] `{sid}` ({status}): {desc}"
         by_ns.setdefault(data.get("namespace", "other"), []).append(line)
 
     parts = []
     for ns in ("reasoning", "narrative", "communication", "metacognition"):
         if ns in by_ns:
             parts.append(f"### {ns}\n" + "\n".join(by_ns[ns]))
-    # 任何不在四个 namespace 的兜底展示(理论上不会有,但防御一下)
+    # Any hidden display that is not in the four namespaces(Theoretically it won't happen, but let's take precautions)
     extras = [ns for ns in by_ns if ns not in BEHAVIOR_NAMESPACES]
     for ns in extras:
-        parts.append(f"### {ns} (异常 namespace, 仅展示不复用)\n" + "\n".join(by_ns[ns]))
+        parts.append(f"### {ns} (Exception namespace, only displayed without reuse)\n" + "\n".join(by_ns[ns]))
 
     return "\n\n".join(parts)
 
@@ -1309,12 +1309,12 @@ Only extract patterns explicitly supported by the transcript; do not speculate. 
 
 
 def build_calibration_ops(questions: list, answers: list, scores: list) -> list:
-    """答题自评 vs 实际得分的确定性元认知校准，零 LLM 调用。
+    """Deterministic metacognitive calibration of self-assessment vs. actual scores, zero LLM calls.
 
-    自评有把握（confidence=high）但得分 ≤4 → 过度自信证据；
-    自评没把握（confidence=low）但得分 ≥8 → 过度保守证据。
-    每场每个方向最多一条 op，snippet 带量化比例和例题。
-    ADD 落在已有 ID 上会被 _apply_behavior_ops 降级为 UPDATE（语义锚定在首次 description）。
+    Self-assessment is confident (confidence=high) but score ≤4 → overconfidence in evidence;
+    Self-evaluation is not sure (confidence=low) but score ≥8 → Evidence of overconservatism.
+    There is a maximum of one op per direction in each field, and the snippet comes with quantization scale and examples.
+    If ADD falls on an existing ID, it will be _apply_behavior_ops downgraded to UPDATE (semantics anchored in first description).
     """
     conf_map = {}
     for a in answers or []:
@@ -1413,16 +1413,16 @@ async def update_profile_after_interview(
     llm = get_langchain_llm(user_id)
 
     canonical = _get_canonical_topic_keys(user_id)
-    allowed_topics_str = "、".join(sorted(canonical)) if canonical else "(None)"
+    allowed_topics_str = ",".join(sorted(canonical)) if canonical else "(None)"
 
     # ── Stage 1: Extract insights ──
     transcript_lines = []
     for msg in messages:
         if hasattr(msg, "content"):
             if isinstance(msg, HumanMessage):
-                transcript_lines.append(f"候选人: {msg.content}")
+                transcript_lines.append(f"candidate: {msg.content}")
             elif hasattr(msg, "content") and not isinstance(msg, SystemMessage):
-                transcript_lines.append(f"面试官: {msg.content}")
+                transcript_lines.append(f"interviewer: {msg.content}")
 
     score_text = ""
     if scores:
@@ -1485,32 +1485,32 @@ async def update_profile_after_interview(
 
 
 # ── Stage 3: Consolidation ──────────────────────────────────────────────────
-# 从扁平的 weak_points 里识别跨领域规律,产出 source="consolidated" 的高层条目。
-# 被整合的原始 wp 会被 archive,reason="superseded_by_consolidation"。
-# 设计要点:
-# - 跨至少 2 个不同 topic 才算合格 pattern (挡住同领域换粒度的假整合)
-# - 失败不影响 Stage 1/2 (整个函数 try/except 包裹)
-# - 节流: 24h + 至少 3 条新 observed wp 才跑一次
+# from flat weak_Identify cross-domain patterns in points and output source="consolidated" high-level entries.
+# The original wp being integrated will be archive,reason="superseded_by_consolidation".
+# Design points:
+# - Across at least 2 different topics to be qualified pattern (Prevent false integration of changing granularity in the same field)
+# - Failure does not affect Stage 1/2 (entire function try/except package)
+# - Throttle: 24h + Only run once for at least 3 new observed wp
 
-CONSOLIDATE_MIN_ACTIVE_WPS = 5       # 活跃 observed wp 少于这个不跑
-CONSOLIDATE_MIN_NEW_WPS = 3          # 距上次 consolidation 新增少于这个不跑
-CONSOLIDATE_COOLDOWN_HOURS = 24      # 两次 consolidation 之间的最小间隔
-CONSOLIDATE_MIN_SUPPORTING = 2       # 一条 pattern 至少需要引用的 wp 数
-CONSOLIDATE_MIN_SPANNING_TOPICS = 2  # 必须跨多少个不同 topic
-CONSOLIDATE_MAX_STATEMENT_LEN = 80   # pattern 描述的字符上限
+CONSOLIDATE_MIN_ACTIVE_WPS = 5       # Active observed wp is less than this and does not run
+CONSOLIDATE_MIN_NEW_WPS = 3          # If the number of new additions since the last consolidation is less than this, do not run.
+CONSOLIDATE_COOLDOWN_HOURS = 24      # Minimum interval between two consolidations
+CONSOLIDATE_MIN_SUPPORTING = 2       # A pattern needs to reference at least the number of wp
+CONSOLIDATE_MIN_SPANNING_TOPICS = 2  # How many differences must be spanned? topic
+CONSOLIDATE_MAX_STATEMENT_LEN = 80   # The upper limit of characters described by pattern
 
-PATTERN_FEEDBACK_STEP_DOWN = 0.3     # 用户点"不准"一次降的 confidence
-PATTERN_FEEDBACK_STEP_UP = 0.1       # 用户点"准"一次升的 confidence
-PATTERN_ARCHIVE_CONFIDENCE = 0.5     # confidence 低于这个直接归档
+PATTERN_FEEDBACK_STEP_DOWN = 0.3     # user point"Not allowed"dropped once confidence
+PATTERN_FEEDBACK_STEP_UP = 0.1       # user point"Accurate"one liter confidence
+PATTERN_ARCHIVE_CONFIDENCE = 0.5     # If confidence is lower than this, file directly
 
 
 async def apply_pattern_feedback(user_id: str, point: str, verdict: str) -> dict | None:
-    """用户对 consolidated pattern 的反馈 — 防 LLM 编造规律的最后防线。
+    """User feedback on consolidated pattern — The last line of defense against LLM fabricating rules.
 
-    verdict: accurate（confidence 升）| inaccurate（confidence 降，低于阈值归档）
-             | acknowledged（仅标记已读）。
-    任何反馈都意味着用户看过这条规律 → user_acknowledged=True。
-    按 point 文本定位（pattern 无独立 ID，文件即真相）。找不到返回 None。
+    verdict: accurate（confidence l）| Inaccurate (confidence dropped, archived below threshold)
+             | acknowledged (only marked as read).
+    Any feedback means the user has seen this pattern → user_acknowledged=True.
+    Position by point text (pattern has no independent ID, the file is the truth). Not found returns None.
     """
     async with _get_profile_lock(user_id):
         profile = _load_profile(user_id)
@@ -1603,18 +1603,18 @@ Output ONLY the JSON block. Do not include any other markdown text.
 
 
 def _filter_active_observed_wps(profile: dict) -> list[tuple[int, dict]]:
-    """返回 (原 index, wp) 对的列表, 只包含活跃的 observed 知识轴条目.
+    """Return (original index, wp) List of pairs, containing only active observed knowledge axis entries.
 
-    原 index 用于 consolidation 写回时精确定位 profile["weak_points"] 里的原条目.
+    The original index is used for precise positioning when consolidation is written back. profile["weak_points"] original entry in.
     """
     out = []
     for i, wp in enumerate(profile.get("weak_points", [])):
         if wp.get("improved") or wp.get("archived"):
             continue
-        # 只对 observed 的条目做 consolidation, 不整合已整合过的或 JD 预测的
+        # Only consolidate observed entries, not consolidated ones or JD predicted ones.
         if wp.get("source", "observed") != "observed":
             continue
-        # 跳过老数据里的 axis=performance 条目 (这类观察现在走 behavior_signals)
+        # Skip old data axis=performance entry (Such observations now go behavior_signals)
         if wp.get("axis") == "performance":
             continue
         out.append((i, wp))
@@ -1622,16 +1622,16 @@ def _filter_active_observed_wps(profile: dict) -> list[tuple[int, dict]]:
 
 
 def _validate_consolidation_pattern(pattern: dict, active: list[tuple[int, dict]]) -> str | None:
-    """验证一条 LLM 产出的 pattern. 返回 None 表示通过, 否则返回拒绝原因."""
+    """Verify a pattern produced by LLM. Return None to pass, otherwise return the rejection reason."""
     idxs = pattern.get("supporting_wp_indices")
     if not isinstance(idxs, list) or len(idxs) < CONSOLIDATE_MIN_SUPPORTING:
         return "too_few_supporting"
 
-    # idxs 是"输入给 LLM 时的局部 index",引用的是 active 列表的位置
+    # idxs is"Local as input to LLM index", refers to the position of the active list
     if any(not isinstance(i, int) or i < 0 or i >= len(active) for i in idxs):
         return "invalid_index"
 
-    # 必须跨至少 2 个 topic
+    # Must span at least 2 topic
     topics = {active[i][1].get("topic", "") for i in idxs}
     topics.discard("")
     if len(topics) < CONSOLIDATE_MIN_SPANNING_TOPICS:
@@ -1647,7 +1647,7 @@ def _validate_consolidation_pattern(pattern: dict, active: list[tuple[int, dict]
 
 
 def _apply_consolidation_pattern(profile: dict, pattern: dict, active: list[tuple[int, dict]], now: str):
-    """把一条 pattern 写入 profile: 追加新 consolidated wp + archive 被 supersede 的原条目."""
+    """Write a pattern into profile: append new consolidated wp + archive original entry superseded."""
     idxs = pattern["supporting_wp_indices"]
     supporting_pairs = [active[i] for i in idxs]
     supporting_wps = [wp for _, wp in supporting_pairs]
@@ -1667,13 +1667,13 @@ def _apply_consolidation_pattern(profile: dict, pattern: dict, active: list[tupl
     }
     profile.setdefault("weak_points", []).append(new_wp)
 
-    # Archive 被 supersede 的原条目 (用原 profile index 精确定位, 防止锁外并发写)
+    # Archive original entry superseded (Use the original profile index to accurately locate and prevent concurrent writes outside the lock.)
     all_wps = profile.get("weak_points", [])
     for orig_idx, wp in supporting_pairs:
         if orig_idx >= len(all_wps):
             continue
         target = all_wps[orig_idx]
-        # 再次确认这条就是我们要改的 (防止锁外并发写把 list 改了)
+        # Confirm again that this is what we want to change (To prevent concurrent writing outside the lock, the list has been changed.)
         if target.get("point") != wp.get("point"):
             continue
         target["archived"] = True
@@ -1687,7 +1687,7 @@ def _apply_consolidation_pattern(profile: dict, pattern: dict, active: list[tupl
 
 
 def _should_run_consolidation(profile: dict) -> tuple[bool, str]:
-    """检查节流条件. 返回 (是否应该跑, 原因)."""
+    """Check throttling conditions. Return (Should you run and why?)."""
     active = _filter_active_observed_wps(profile)
     if len(active) < CONSOLIDATE_MIN_ACTIVE_WPS:
         return False, f"too_few_active_wps ({len(active)} < {CONSOLIDATE_MIN_ACTIVE_WPS})"
@@ -1700,9 +1700,9 @@ def _should_run_consolidation(profile: dict) -> tuple[bool, str]:
             if hours_since < CONSOLIDATE_COOLDOWN_HOURS:
                 return False, f"cooldown (last run {hours_since:.1f}h ago)"
         except (ValueError, TypeError):
-            pass  # 解析失败就当没跑过
+            pass  # If the parsing fails, it will be treated as if it has not been run.
 
-        # 至少 N 条新 observed wp 才值得重跑
+        # At least N new observed wps are worth re-running.
         new_count = 0
         for _, wp in active:
             first_seen = wp.get("first_seen", "")
@@ -1718,10 +1718,10 @@ def _should_run_consolidation(profile: dict) -> tuple[bool, str]:
 
 
 async def consolidate_patterns(user_id: str) -> dict:
-    """Stage 3: 从 active observed weak_points 里识别跨领域规律.
+    """Stage 3: From active observed weak_Identify cross-domain patterns in points.
 
-    带节流: 满足 cooldown + 新观察数量 + 活跃数量三个条件才真的跑 LLM.
-    失败不影响上游 (所有异常在这里被吞).
+    With throttling: satisfied cooldown + Number of new observations + The active number requires three conditions to really run. LLM.
+    Failure does not affect upstream (All exceptions are swallowed here).
 
     Returns:
         {"ran": bool, "applied": int, "skipped": list, "reason": str}
@@ -1754,10 +1754,10 @@ async def consolidate_patterns(user_id: str) -> dict:
                 raise ValueError("patterns is not a list")
         except (json.JSONDecodeError, ValueError, KeyError) as e:
             logger.warning(f"Consolidation parse failed: {e}. Raw: {response.content[:200]}")
-            # 解析失败不更新 last_consolidation_at, 下次 session 会重试
+            # Parsing fails and does not update last_consolidation_at, will try again next session
             return {"ran": False, "applied": 0, "skipped": [], "reason": "llm_parse_failed"}
 
-        # 验证
+        # Verify
         valid_patterns = []
         skipped = []
         for p in raw_patterns:
@@ -1770,21 +1770,21 @@ async def consolidate_patterns(user_id: str) -> dict:
             else:
                 skipped.append({"statement": p.get("statement", "?"), "reason": rej})
 
-        # 写入 (在锁内)
+        # write (inside the lock)
         applied = 0
         async with _get_profile_lock(user_id):
             profile = _load_profile(user_id)
-            # 锁内重新过滤 active, 因为 profile 在 LLM 期间可能被并发写
+            # Re-filter active within the lock because profiles may be written concurrently during LLM
             active_inside = _filter_active_observed_wps(profile)
 
-            # 重新验证 index 还有效 (active 可能变短了)
+            # Re-verify that the index is still valid (active may have become shorter)
             now = datetime.now().isoformat()
             for p in valid_patterns:
                 idxs = p["supporting_wp_indices"]
                 if any(i >= len(active_inside) for i in idxs):
                     skipped.append({"statement": p.get("statement", "?"), "reason": "stale_index_after_reload"})
                     continue
-                # 还要确认 active 列表的顺序没变 (通过比对 point 文本)
+                # Also make sure the order of the active list has not changed (By comparing point text)
                 ok = True
                 for local_i in idxs:
                     orig_idx_outside = active[local_i][0]

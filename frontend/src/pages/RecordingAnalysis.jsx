@@ -16,19 +16,19 @@ const PAGE_CLASS = "flex-1 w-full max-w-[1600px] mx-auto px-4 py-6 md:px-7 md:py
 const RECORDING_MODES = [
   {
     key: "dual",
-    label: "双人对话",
-    sub: "面试官 + 你",
+    label: "two-person dialogue",
+    sub: "interviewer + you",
     Icon: Users,
     tone: "blue",
-    note: "适合完整面试录音，系统会按对话结构识别追问和回答。",
+    note: "Suitable for complete interview recording, the system will identify follow-up questions and answers according to the conversation structure.",
   },
   {
     key: "solo",
-    label: "单人录音",
-    sub: "只有你",
+    label: "Single recording",
+    sub: "only you",
     Icon: User,
     tone: "green",
-    note: "适合技术表达、自我介绍或复盘独白，重点看表达质量和内容完整度。",
+    note: "Suitable for technical expression, self-introduction or review monologue, focusing on the quality of expression and completeness of content.",
   },
 ];
 
@@ -53,19 +53,19 @@ function formatFileSize(size) {
 }
 
 function buildStatus({ inputTab, audioFile, transcriptCount, transcribing, analyzing }) {
-  if (analyzing) return { label: "分析中", tone: "blue", hint: "正在生成复盘结果" };
-  if (transcribing) return { label: "转写中", tone: "blue", hint: "正在把录音转成文本" };
-  if (transcriptCount > 0) return { label: "可分析", tone: "green", hint: "文本已准备好" };
-  if (inputTab === "upload" && audioFile) return { label: "待转写", tone: "amber", hint: "先把录音转成文本" };
-  if (inputTab === "paste") return { label: "待粘贴", tone: "neutral", hint: "先输入可分析文本" };
-  return { label: "待上传", tone: "neutral", hint: "先选择录音文件" };
+  if (analyzing) return { label: "Analyzing", tone: "blue", hint: "Generating review results" };
+  if (transcribing) return { label: "Transcribing", tone: "blue", hint: "Converting recording to text" };
+  if (transcriptCount > 0) return { label: "Analyzable", tone: "green", hint: "text is ready" };
+  if (inputTab === "upload" && audioFile) return { label: "To be transcribed", tone: "amber", hint: "Convert the recording to text first" };
+  if (inputTab === "paste") return { label: "To be pasted", tone: "neutral", hint: "Enter parsable text first" };
+  return { label: "To be uploaded", tone: "neutral", hint: "Select the recording file first" };
 }
 
 function buildSourceLabel({ inputTab, audioFile, transcriptCount }) {
-  if (audioFile && transcriptCount > 0) return "录音转写";
-  if (audioFile) return "上传录音";
-  if (inputTab === "paste" || transcriptCount > 0) return "文本输入";
-  return "待选择";
+  if (audioFile && transcriptCount > 0) return "Recording Transcription";
+  if (audioFile) return "Upload recording";
+  if (inputTab === "paste" || transcriptCount > 0) return "Text input";
+  return "To be selected";
 }
 
 export default function RecordingAnalysis() {
@@ -108,7 +108,7 @@ export default function RecordingAnalysis() {
       const data = await transcribeRecording(audioFile, recordingMode);
       setTranscript(data.transcript || "");
     } catch (err) {
-      setError("转写失败: " + err.message);
+      setError("Transcription failed: " + err.message);
     } finally {
       setTranscribing(false);
     }
@@ -121,9 +121,9 @@ export default function RecordingAnalysis() {
     try {
       const data = await analyzeRecording(transcript, recordingMode, company || null, position || null);
       setSubmitted(true);
-      startTask(data.session_id, "recording", "录音复盘生成中");
+      startTask(data.session_id, "recording", "Recording copy is being generated");
     } catch (err) {
-      setError("分析失败: " + err.message);
+      setError("Analysis failed: " + err.message);
     } finally {
       setAnalyzing(false);
     }
@@ -137,15 +137,15 @@ export default function RecordingAnalysis() {
             <CardContent className="p-5 md:p-6 xl:p-7">
               <div className="flex flex-col gap-6">
                 <div className="border-b border-border/70 pb-4">
-                  <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-dim/80">录音复盘工作区</div>
-                  <div className="mt-2 text-2xl font-display font-bold tracking-tight md:text-3xl">录音复盘</div>
+                  <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-dim/80">Recording and playback workspace</div>
+                  <div className="mt-2 text-2xl font-display font-bold tracking-tight md:text-3xl">Recording review</div>
                   <div className="mt-1.5 max-w-2xl text-sm leading-6 text-dim">
-                    上传面试录音或直接粘贴文本，先拿到可分析文本，再进入 AI 复盘。
+                    Upload the interview recording or paste the text directly, get the analyzable text first, and then enter the AI review.
                   </div>
                 </div>
 
                 <div className="space-y-3">
-                  <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-dim/80">录音模式</div>
+                  <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-dim/80">Recording mode</div>
                   <div className="grid gap-3 md:grid-cols-2">
                     {RECORDING_MODES.map((item) => {
                       const selected = recordingMode === item.key;
@@ -175,7 +175,7 @@ export default function RecordingAnalysis() {
                             <div className="min-w-0 flex-1">
                               <div className="flex flex-wrap items-center gap-2">
                                 <div className="text-sm font-semibold">{item.label}</div>
-                                {selected && <Badge variant={item.tone === "green" ? "success" : "blue"}>当前模式</Badge>}
+                                {selected && <Badge variant={item.tone === "green" ? "success" : "blue"}>Current mode</Badge>}
                               </div>
                               <div className="mt-0.5 text-xs text-dim">{item.sub}</div>
                               <div className="mt-2 text-[13px] leading-6 text-dim">{item.note}</div>
@@ -189,19 +189,19 @@ export default function RecordingAnalysis() {
 
                 <div className="grid gap-4 md:grid-cols-2">
                   <div className="space-y-2">
-                    <Label className="text-[11px] font-semibold uppercase tracking-[0.18em] text-dim/80">公司</Label>
+                    <Label className="text-[11px] font-semibold uppercase tracking-[0.18em] text-dim/80">company</Label>
                     <Input
                       className="h-12 rounded-2xl bg-card/90"
-                      placeholder="例：字节跳动"
+                      placeholder="Example: ByteDance"
                       value={company}
                       onChange={(event) => setCompany(event.target.value)}
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-[11px] font-semibold uppercase tracking-[0.18em] text-dim/80">岗位</Label>
+                    <Label className="text-[11px] font-semibold uppercase tracking-[0.18em] text-dim/80">position</Label>
                     <Input
                       className="h-12 rounded-2xl bg-card/90"
-                      placeholder="例：后端开发实习"
+                      placeholder="Example: Back-end development internship"
                       value={position}
                       onChange={(event) => setPosition(event.target.value)}
                     />
@@ -211,9 +211,9 @@ export default function RecordingAnalysis() {
                 <div className="rounded-[28px] border border-border/80 bg-background/65 p-4 md:p-5">
                   <div className="flex flex-col gap-3 border-b border-border/70 pb-4 md:flex-row md:items-end md:justify-between">
                     <div>
-                      <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-dim/80">输入方式</div>
+                      <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-dim/80">Input method</div>
                       <div className="mt-1 text-sm text-dim">
-                        上传录音适合完整面试复盘，粘贴文字适合已有转写稿或手动整理后的内容。
+                        Uploading the recording is suitable for a complete interview review, and pasting the text is suitable for content that has been transcribed or manually organized.
                       </div>
                     </div>
                     <div className="flex gap-1 rounded-xl bg-card/92 p-1">
@@ -230,7 +230,7 @@ export default function RecordingAnalysis() {
                             setError(null);
                           }}
                         >
-                          {tab === "upload" ? "上传录音" : "粘贴文字"}
+                          {tab === "upload" ? "Upload recording" : "Paste text"}
                         </button>
                       ))}
                     </div>
@@ -254,13 +254,13 @@ export default function RecordingAnalysis() {
                             <div>
                               <div className="text-base font-semibold">{audioFile.name}</div>
                               <div className="mt-1 text-sm text-dim">
-                                {formatFileSize(audioFile.size)} · 点击可重新选择文件
+                                {formatFileSize(audioFile.size)} · Click to reselect the file
                               </div>
                             </div>
                           ) : (
                             <div>
-                              <div className="text-base font-semibold">点击上传音频文件</div>
-                              <div className="mt-1 text-sm text-dim">支持 mp3、wav、m4a、webm 等常见格式</div>
+                              <div className="text-base font-semibold">Click to upload audio files</div>
+                              <div className="mt-1 text-sm text-dim">Support common formats such as mp3, wav, m4a, webm, etc.</div>
                             </div>
                           )}
                         </div>
@@ -268,23 +268,23 @@ export default function RecordingAnalysis() {
                       </button>
 
                       <div className="grid gap-3 md:grid-cols-3">
-                        <HintChip title="完整录音优先" description="不要只截最后几分钟，否则上下文会断掉。" />
-                        <HintChip title="先转写再分析" description="分析基于文本，不是直接读音频内容。" />
-                        <HintChip title="音质越稳越好" description="背景噪音越少，转写误差越小。" />
+                        <HintChip title="Complete recording is preferred" description="Don't just cut off the last few minutes or the context will be broken." />
+                        <HintChip title="Transcribe first and then analyze" description="The analysis is based on text, not reading the audio content directly." />
+                        <HintChip title="The more stable the sound quality, the better" description="The less background noise, the smaller the transcription error." />
                       </div>
                     </div>
                   ) : (
                     <div className="mt-4">
                       <div className="mb-2 flex items-center justify-between gap-3">
-                        <div className="text-sm font-semibold">待分析文本</div>
-                        <div className="text-xs text-dim tabular-nums">{transcriptCount} 字</div>
+                        <div className="text-sm font-semibold">Text to be analyzed</div>
+                        <div className="text-xs text-dim tabular-nums">{transcriptCount} word</div>
                       </div>
                       <Textarea
                         className="min-h-[340px] rounded-[24px] border-border/70 bg-background/80 px-4 py-4 text-[15px] leading-7 resize-y"
                         placeholder={
                           recordingMode === "dual"
-                            ? "粘贴面试对话记录。\n\n示例：\n面试官：请介绍一下你自己\n我：我是..."
-                            : "粘贴你的技术表达、项目复盘或自我介绍内容。"
+                            ? "Paste the transcript of the interview conversation.\n\nExample:\nInterviewer: Please introduce yourself\nme: I am..."
+                            : "Paste your technical expression, project review or self-introduction."
                         }
                         value={transcript}
                         onChange={(event) => setTranscript(event.target.value)}
@@ -298,10 +298,10 @@ export default function RecordingAnalysis() {
                     <CardContent className="p-4 md:p-5">
                       <div className="flex items-center justify-between gap-3 border-b border-border/70 pb-3">
                         <div>
-                          <div className="text-sm font-semibold">转写结果</div>
-                          <div className="mt-1 text-[13px] leading-6 text-dim">可直接编辑修正后再开始分析。</div>
+                          <div className="text-sm font-semibold">Transcription results</div>
+                          <div className="mt-1 text-[13px] leading-6 text-dim">You can directly edit and correct before starting analysis.</div>
                         </div>
-                        <div className="text-xs text-dim tabular-nums">{transcriptCount} 字</div>
+                        <div className="text-xs text-dim tabular-nums">{transcriptCount} word</div>
                       </div>
                       <Textarea
                         className="mt-4 min-h-[340px] rounded-[24px] border-border/70 bg-background/80 px-4 py-4 text-[15px] leading-7 resize-y"
@@ -327,8 +327,8 @@ export default function RecordingAnalysis() {
             <CardContent className="p-5">
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-dim/80">决策面板</div>
-                  <div className="mt-1 text-lg font-semibold">先拿到可分析文本</div>
+                  <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-dim/80">decision panel</div>
+                  <div className="mt-1 text-lg font-semibold">Get the analyzable text first</div>
                 </div>
                 <div className={cn("rounded-full border px-3 py-1 text-sm", toneClasses(status.tone))}>
                   {status.label}
@@ -338,34 +338,34 @@ export default function RecordingAnalysis() {
               <div className="mt-4 space-y-3">
                 <StepRow
                   index="01"
-                  title="选择录音模式"
+                  title="Select recording mode"
                   description={currentMode.label}
                   done={!!recordingMode}
                 />
                 <StepRow
                   index="02"
-                  title="准备输入内容"
+                  title="Prepare to enter content"
                   description={
                     inputTab === "upload"
                       ? audioFile
-                        ? "录音文件已选择。"
-                        : "先选择一段可复盘的录音。"
+                        ? "The recording file has been selected."
+                        : "First select a recording that can be played back."
                       : transcriptCount > 0
-                        ? "文本内容已填写。"
-                        : "先粘贴可分析文本。"
+                        ? "The text content has been filled in."
+                        : "Paste the parsable text first."
                   }
                   done={inputTab === "upload" ? !!audioFile : transcriptCount > 0}
                   active={inputTab === "upload" ? !audioFile : transcriptCount === 0}
                 />
                 <StepRow
                   index="03"
-                  title="获取可分析文本"
+                  title="Get parsable text"
                   description={
                     transcriptCount > 0
-                      ? "文本已就绪，可以直接进入 AI 复盘。"
+                      ? "The text is ready and you can directly enter the AI review."
                       : inputTab === "upload"
-                        ? "上传录音后需要先做转写。"
-                        : "粘贴文字本身就是可分析文本。"
+                        ? "After uploading the recording, it needs to be transcribed first."
+                        : "The pasted text itself is parsable text."
                   }
                   done={transcriptCount > 0}
                   active={inputTab === "upload" && !!audioFile && transcriptCount === 0}
@@ -373,10 +373,10 @@ export default function RecordingAnalysis() {
               </div>
 
               <div className="mt-5 grid grid-cols-2 gap-2">
-                <MiniMetric label="输入来源" value={sourceLabel} />
-                <MiniMetric label="文本长度" value={transcriptCount} />
-                <MiniMetric label="音频文件" value={audioFile ? "已选" : "未选"} />
-                <MiniMetric label="当前模式" value={currentMode.label} />
+                <MiniMetric label="input source" value={sourceLabel} />
+                <MiniMetric label="text length" value={transcriptCount} />
+                <MiniMetric label="audio file" value={audioFile ? "Selected" : "Not selected"} />
+                <MiniMetric label="Current mode" value={currentMode.label} />
               </div>
 
               <div className="mt-5 space-y-3">
@@ -390,17 +390,17 @@ export default function RecordingAnalysis() {
                   {transcribing ? (
                     <>
                       <Loader2 size={18} className="animate-spin" />
-                      转写中...
+                      Transcribing...
                     </>
                   ) : analyzing ? (
                     <>
                       <Loader2 size={18} className="animate-spin" />
-                      AI 分析中...
+                      AI analysis in progress...
                     </>
                   ) : canTranscribe ? (
-                    "先转写这段录音"
+                    "First transcribe this recording"
                   ) : (
-                    "开始分析"
+                    "Start analysis"
                   )}
                 </Button>
 
@@ -409,7 +409,7 @@ export default function RecordingAnalysis() {
                 </div>
 
                 <Button variant="ghost" className="w-full" onClick={() => navigate("/")}>
-                  返回首页
+                  Return to homepage
                 </Button>
               </div>
             </CardContent>
@@ -417,12 +417,12 @@ export default function RecordingAnalysis() {
 
           <Card className="border-border/80">
             <CardContent className="p-5">
-              <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-dim/80">当前设置</div>
+              <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-dim/80">Current settings</div>
               <div className="mt-3 space-y-3 text-sm">
-                <InfoRow label="录音模式" value={currentMode.label} />
-                <InfoRow label="输入来源" value={sourceLabel} />
-                <InfoRow label="公司" value={company.trim() || "未填写"} />
-                <InfoRow label="岗位" value={position.trim() || "未填写"} />
+                <InfoRow label="Recording mode" value={currentMode.label} />
+                <InfoRow label="input source" value={sourceLabel} />
+                <InfoRow label="company" value={company.trim() || "Not filled in"} />
+                <InfoRow label="position" value={position.trim() || "Not filled in"} />
               </div>
             </CardContent>
           </Card>

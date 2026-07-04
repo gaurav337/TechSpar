@@ -5,7 +5,7 @@ the user's embedding model, and numpy brute-force retrieval. Chunk vectors live 
 the shared `memory_vectors` table (chunk_type 'resume_chunk' / 'topic_chunk'), so
 there is one vector store and one invalidation path. The resume PDF and knowledge
 files stay the source of truth; vectors are a rebuildable cache (lazily built on
-first query, force-rebuilt from Settings → 更新向量索引).
+first query, force-rebuilt from Settings → Update vector index).
 """
 import json
 import logging
@@ -30,7 +30,7 @@ logger = logging.getLogger("uvicorn")
 RESUME_CHUNK = "resume_chunk"
 TOPIC_CHUNK = "topic_chunk"
 
-CHUNK_SIZE = 1000       # chars per chunk (CJK-friendly; ~数百 token)
+CHUNK_SIZE = 1000       # chars per chunk (CJK-friendly; ~hundreds token)
 CHUNK_OVERLAP = 150     # char overlap carried between adjacent chunks
 TOPIC_EXTS = {".md", ".txt", ".py"}
 

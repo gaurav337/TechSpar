@@ -75,7 +75,7 @@ def put_user_settings(payload: SettingsResponse, user_id: str = Depends(get_curr
         logger.info("Embedding model changed for user %s — vectors invalidated.", user_id)
         invalidate_user_embeddings(user_id)
 
-    # 仅 admin 能改全局账户开关；非 admin 的请求即便带了 system 字段也直接忽略。
+    # Only admin can change the global account switch; non-admin requests will be ignored even if they include the system field.
     if is_admin_user(user_id):
         settings.allow_registration = payload.system.allow_registration
 
@@ -88,15 +88,15 @@ def _conn_error_message(exc: Exception) -> str:
     import openai
 
     if isinstance(exc, ProviderNotConfigured):
-        return "请先填写必填字段"
+        return "Please fill in the required fields first"
     if isinstance(exc, openai.AuthenticationError):
-        return "API Key 无效（认证失败）"
+        return "API Key is invalid (authentication failed)"
     if isinstance(exc, openai.PermissionDeniedError):
-        return "Key 无该模型权限或被拒绝访问"
+        return "Key does not have permission for the model or access is denied."
     if isinstance(exc, openai.NotFoundError):
-        return "模型不存在，或 Base URL 路径不正确"
+        return "The model does not exist, or the Base URL path is incorrect"
     if isinstance(exc, openai.APIConnectionError):
-        return "无法连接到 Base URL，请检查地址与网络"
+        return "Unable to connect to Base URL, please check address and network"
     msg = str(exc).strip().replace("\n", " ")
     return msg[:300] or exc.__class__.__name__
 
@@ -149,11 +149,11 @@ def rebuild_index(user_id: str = Depends(get_current_user)):
             resume_dir = settings.user_resume_path(user_id)
             has_resume = resume_dir.exists() and any(p.is_file() for p in resume_dir.rglob("*"))
 
-            plan = [("cleanup", "清理旧向量"), ("weak_points", "记忆 / 薄弱点")]
+            plan = [("cleanup", "Clean up old vectors"), ("weak_points", "memory / weak point")]
             if has_resume:
-                plan.append(("resume", "简历"))
+                plan.append(("resume", "Resume"))
             for key, meta in topics.items():
-                plan.append((f"topic:{key}", f"知识库 · {meta.get('name', key)}"))
+                plan.append((f"topic:{key}", f"knowledge base · {meta.get('name', key)}"))
             total = len(plan)
         except Exception as exc:  # noqa: BLE001 - setup failed, nothing rebuilt
             logger.exception("rebuild-index setup failed for user %s", user_id)

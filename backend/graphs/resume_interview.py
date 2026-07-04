@@ -1,4 +1,4 @@
-"""模式1: 简历模拟面试 LangGraph."""
+"""Mode 1: Resume Mock Interview LangGraph."""
 import asyncio
 import json
 import logging

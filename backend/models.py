@@ -33,7 +33,7 @@ class InterviewPhase(str, Enum):
 class ResumeInterviewState(TypedDict, total=False):
     messages: Annotated[list, add_messages]
     phase: str           # InterviewPhase value
-    target_role: str     # 候选人应聘岗位，注入 interviewer prompt
+    target_role: str     # Candidates apply for positions, inject interviewer prompt
     resume_context: str
     questions_asked: list[str]
     phase_question_count: int
@@ -62,7 +62,7 @@ class StartInterviewRequest(BaseModel):
     topic: str | None = None
     num_questions: int | None = None
     divergence: int | None = None
-    target_role: str | None = None  # resume 模式必填，缺省时回落到 profile.target_role
+    target_role: str | None = None  # Resume mode is required and falls back to profile.target_role
 
 
 class JobPrepPreviewRequest(BaseModel):
@@ -109,14 +109,14 @@ class LoginRequest(BaseModel):
 
 class StrategyNode(TypedDict, total=False):
     id: str                     # "tech_01_python_gc"
-    topic: str                  # 考察维度
-    sample_questions: list[str] # 典型问题
+    topic: str                  # Examination Dimensions
+    sample_questions: list[str] # Typical questions
     intent: str                 # "technical" | "behavioral" | "project" | "pressure"
-    depth: int                  # 追问深度 0=入口, 1=追问, 2=深追
+    depth: int                  # Asking for depth 0=entrance, 1=Ask, 2=Chase deeply
     risk_level: str             # "safe" | "caution" | "danger"
-    children: list[str]         # 子节点 ID
-    trigger_condition: str      # 触发追问的回答特征
-    recommended_points: list[str]  # 建议回答要点
+    children: list[str]         # child node ID
+    trigger_condition: str      # Response characteristics that trigger follow-up questions
+    recommended_points: list[str]  # Suggested answer points
 
 
 class StrategyTree(TypedDict, total=False):
@@ -131,7 +131,7 @@ class CopilotPrepState(TypedDict, total=False):
     resume_context: str
     profile: dict
 
-    # Layer 0: 并行 Analyst 产出
+    # Layer 0: Parallel Analyst output
     company_report: str
     jd_analysis: dict
     fit_report: dict
@@ -143,9 +143,9 @@ class CopilotPrepState(TypedDict, total=False):
     risk_map: list[dict]
     prep_hints: list[dict]
 
-    # Prep 状态追踪
+    # Prep status tracking
     status: str              # "running" | "done" | "error"
-    progress: str            # 当前进度描述
+    progress: str            # Current progress description
     error: str
 
 
@@ -179,16 +179,16 @@ class EmbeddingSettings(BaseModel):
     api_model: str = ""
     local_model: str = ""
     local_path: str = ""
-    # API 单批文本数上限,因服务商而异(如 DashScope 10、OpenAI 上千)。默认保守取小值;仅 API 模式生效。
+    # The upper limit of the number of texts in a single API batch varies depending on the service provider.(Such as DashScope 10, OpenAI thousands). The default is to take a small conservative value; only the API mode takes effect.
     api_batch_size: int = Field(default=DEFAULT_API_EMBED_BATCH_SIZE, ge=1, le=2048)
 
 
 class ServiceSettings(BaseModel):
     """Per-user optional service credentials. Each gates one feature; empty = that
     feature stays off for this user (no global fallback)."""
-    dashscope_api_key: str = ""   # 语音输入 / 录音转写 / Copilot 实时 ASR
-    tavily_api_key: str = ""      # Copilot 联网搜索
-    oss_access_key_id: str = ""   # 录音复盘长音频上传（阿里云 OSS）
+    dashscope_api_key: str = ""   # Voice input / Recording Transcription / Copilot real time ASR
+    tavily_api_key: str = ""      # Copilot Internet Search
+    oss_access_key_id: str = ""   # Recording and replaying long audio upload (Alibaba Cloud OSS)
     oss_access_key_secret: str = ""
     oss_bucket: str = ""
     oss_endpoint: str = ""
@@ -208,11 +208,11 @@ class SettingsResponse(BaseModel):
     training: UserSettings
     is_admin: bool = False  # GET-only; ignored on PUT
     configured: dict[str, bool] = Field(default_factory=dict)  # GET-only: {llm, embedding}
-    last_reindex_at: str = ""  # GET-only: 上次向量索引重建时间(ISO),未重建过为空
+    last_reindex_at: str = ""  # GET-only: Last vector index rebuild time(ISO), has not been rebuilt and is empty.
 
 
 class VoiceprintCredentials(BaseModel):
-    """腾讯云 VPR 凭据（per-user）。"""
+    """Tencent Cloud VPR credentials (per-user)."""
     secret_id: str
     secret_key: str
     app_id: str = ""

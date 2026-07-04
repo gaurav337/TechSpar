@@ -6,7 +6,7 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(() => localStorage.getItem("token"));
   const [loading, setLoading] = useState(() => Boolean(localStorage.getItem("token")));
-  // 用户尚未配齐自己的 LLM/Embedding → 进首登引导。由 /api/settings 的 configured 决定。
+  // The user has not yet configured his or her LLM/Embedding → Enter the first ascent guide. by /api/The configured settings determine.
   const [needsOnboarding, setNeedsOnboarding] = useState(false);
 
   function login(tokenStr, userData) {

@@ -43,7 +43,7 @@ export default function DomainTable({ items, onSelect }) {
       </div>
 
       {filtered.length === 0 ? (
-        <div className="py-6 text-center text-sm text-dim">暂无匹配的领域。</div>
+        <div className="py-6 text-center text-sm text-dim">There are no matching fields yet.</div>
       ) : (
         <div className="rounded-lg border border-border overflow-hidden">
           {filtered.map((item, index) => (
@@ -78,10 +78,10 @@ export default function DomainTable({ items, onSelect }) {
               </span>
 
               {item.weakCount > 0 && (
-                <span className="shrink-0 text-[11px] text-red">{item.weakCount}弱</span>
+                <span className="shrink-0 text-[11px] text-red">{item.weakCount}weak</span>
               )}
               {item.strongCount > 0 && (
-                <span className="shrink-0 text-[11px] text-green">{item.strongCount}强</span>
+                <span className="shrink-0 text-[11px] text-green">{item.strongCount}Strong</span>
               )}
 
               <ChevronRight size={14} className="shrink-0 text-dim/40" />

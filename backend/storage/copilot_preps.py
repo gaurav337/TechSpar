@@ -51,7 +51,7 @@ def create_prep(prep_id: str, user_id: str, company: str, position: str, jd_text
     conn = _get_conn()
     conn.execute(
         "INSERT INTO copilot_preps (prep_id, user_id, company, position, jd_text, status, progress, created_at) "
-        "VALUES (?, ?, ?, ?, ?, 'running', '初始化中...', ?)",
+        "VALUES (?, ?, ?, ?, ?, 'running', 'Initializing...', ?)",
         (prep_id, user_id, company, position, jd_text[:200], datetime.now().isoformat()),
     )
     conn.commit()
@@ -68,7 +68,7 @@ def update_progress(prep_id: str, progress: str):
 def set_done(prep_id: str, result: dict):
     conn = _get_conn()
     conn.execute(
-        "UPDATE copilot_preps SET status='done', progress='准备完成', result=? WHERE prep_id=?",
+        "UPDATE copilot_preps SET status='done', progress='Ready to complete', result=? WHERE prep_id=?",
         (json.dumps(result, ensure_ascii=False), prep_id),
     )
     conn.commit()
@@ -99,7 +99,7 @@ def get_prep(prep_id: str, user_id: str) -> dict | None:
 
 
 def get_prep_by_id(prep_id: str) -> dict | None:
-    """按 prep_id 查询，不校验 user_id（内部使用）。"""
+    """press prep_ID query, no verification user_id (internal use)."""
     conn = _get_conn()
     row = conn.execute(
         "SELECT * FROM copilot_preps WHERE prep_id=?", (prep_id,)

@@ -1,31 +1,31 @@
-# 快速开始
+# quick start
 
-这页不是部署文档，而是**部署完成后的最短验收路径**。如果项目还没跑起来，先看 [部署说明](deployment.md)。
+This page is not a deployment document; it is**The shortest acceptance path after deployment is completed**. If the project is not running yet, take a look first [Deployment instructions](deployment.md).
 
-### 访问地址
+### Access address
 
-* **Docker 启动**：`http://localhost`
-* **前端开发模式**：`http://localhost:5173`
+* **Docker start**:`http://localhost`
+* **Front-end development model**:`http://localhost:5173`
 
-如果你没有改过 `.env` 里的默认认证配置，可以直接使用：
+If you haven't changed it `.env` The default authentication configuration in can be used directly:
 
-* **默认账号**：`admin@techspar.local`
-* **默认密码**：`admin123`
+* **Default account**:`admin@techspar.local`
+* **default password**:`admin123`
 
-如果你已经改过 `DEFAULT_EMAIL` / `DEFAULT_PASSWORD`，那就用你自己的配置值登录。
+If you have already changed `DEFAULT_EMAIL` / `DEFAULT_PASSWORD`, then log in with your own configuration values.
 
-### 最快体验路径
+### Fastest experience path
 
-1. 打开浏览器访问系统并登录。
-2. 留在首页，选择 **简历模拟面试**。
-3. 上传一份 PDF 简历。
-4. 开始面试，直接用键盘回答即可；需要时再打开麦克风做语音输入。
-5. 完成后进入复盘页，确认能看到整体评价、逐题点评和改进建议。
+1. Open a browser to access the system and log in.
+2. Stay on the home page and select **Resume Mock Interview**.
+3. Upload a PDF resume.
+4. Start the interview and answer directly using the keyboard; turn on the microphone for voice input when needed.
+5. After completion, enter the review page and confirm that you can see the overall evaluation, topic-by-topic comments and improvement suggestions.
 
-### 其他模式怎么试
+### How to try other modes
 
-* **专项强化训练**：题库里已经有默认训练领域，直接选一个就能开始；如果不够，再自己新增。这里的题库不是固定题单，而是专项训练动态出题的依据。
-* **JD 定向备面**：进入 **JD 备面** 页面，粘贴完整 JD，先做岗位分析，再开始训练。
-* **录音复盘**：进入 **录音复盘** 页面，上传录音或直接粘贴转写文本。
+* **Special intensive training**: There are already default training areas in the question bank, just select one to start; if it is not enough, add it yourself. The question bank here is not a fixed list of questions, but a basis for dynamic questions for special training.
+* **JD orientation preparation**:Enter **JD preparation** page, paste the complete JD, do job analysis first, and then start training.
+* **Recording review**:Enter **Recording review** page, upload the recording or paste the transcribed text directly.
 
-如果你只是想确认系统已经跑通，先完成一轮简历模拟面试就够了。
+If you just want to make sure the system is working, completing a resume mock interview first is enough.

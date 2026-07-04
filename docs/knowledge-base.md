@@ -1,59 +1,59 @@
-# 题库与知识库
+# Question bank and knowledge base
 
-当前产品里的“题库”是按**训练领域**组织的，不是单独维护一套外部知识库后台。
+in current products“question bank”Yes press**training areas**The organization does not maintain a separate external knowledge base backend.
 
-更重要的是，它不是传统意义上的“固定题目列表”。
+More importantly, it is not a traditional“Fixed question list”.
 
-在 TechSpar 里，题库的本质是一个**动态出题底座**：系统不会简单地从里面抽几道旧题给你做，而是把题库、画像、历史训练结果和当前掌握度一起作为输入，动态生成这一轮更该练的题。
+In TechSpar, the question bank is essentially a**Dynamic question base**: The system will not simply select a few old questions for you to do. Instead, it will use the question bank, portraits, historical training results and current mastery as input to dynamically generate questions that should be practiced more in this round.
 
-### 先理解当前模型
+### Understand the current model first
 
-进入左侧导航的 **题库** 后，你维护的是某个领域下的两类内容：
+Enter the left navigation **question bank** Finally, you maintain two types of content in a certain field:
 
-* **核心知识库**：Markdown 形式的核心知识点，定义这个领域该覆盖哪些知识边界，并影响该领域的出题和评分参考。
-* **高频题库**：你自己整理的高频问题、易错点、面试清单，用来告诉系统哪些考点应该被优先覆盖。
+* **core knowledge base**: Core knowledge points in Markdown form, defining which knowledge boundaries should be covered in this field, and affecting the question setting and scoring reference in this field.
+* **High frequency question bank**: High-frequency questions, error-prone points, and interview lists compiled by yourself are used to tell the system which test points should be covered first.
 
-### 题库为什么是核心设计
+### Why is the question bank the core design?
 
-很多人看到“题库”两个字，会默认联想到固定题单，但这里不是这个逻辑。
+Many people see“question bank”These two words will be associated with a fixed list of questions by default, but this logic is not here.
 
-真正参与出题的输入至少包括：
+The input that actually participates in formulating the question includes at least:
 
-* **核心知识库检索结果**：告诉系统这个领域里有哪些关键概念、原理、边界和常见陷阱。
-* **高频题库**：告诉系统哪些问题更常出现，哪些考点更值得优先覆盖。
-* **历史训练记录**：避免刚练过的题反复出现，也让系统知道你最近答得怎样。
-* **薄弱点与掌握度**：决定这轮是继续补短板，还是向更深更广的方向拓展。
+* **Core knowledge base search results**: Tell the system what key concepts, principles, boundaries and common pitfalls there are in this field.
+* **High frequency question bank**: Tell the system which problems occur more frequently and which test points deserve priority coverage.
+* **Historical training records**: This prevents the questions you have just practiced from appearing again and lets the system know how you have answered recently.
+* **Weak points and mastery**: Decide whether to continue to make up for shortcomings in this round, or to expand in a deeper and wider direction.
 
-所以最终的题目不是“从题库里抽出来”，而是系统根据这些信息**为这一轮训练动态生成**。
+So the final question is not“Extracted from question bank”, but the system uses this information to**Dynamically generated for this round of training**.
 
-也就是说：
+That is to say:
 
-* 传统题库产品：先有一批固定题，再让你去做
-* TechSpar：先判断你现在最该练什么，再生成这一轮最合适的题
+* Traditional question bank products: first have a batch of fixed questions, and then let you do them
+* TechSpar: First determine what you should practice most now, and then generate the most appropriate questions for this round
 
-这也是为什么题库在这里不是附属页面，而是整个闭环里的核心基础设施。
+This is why the question bank here is not an affiliate page, but the core infrastructure in the entire closed loop.
 
-### 正确的使用方式
+### Correct way to use
 
-1. 系统会内置一批默认训练领域，并自动给每个领域生成一份基础 `README.md`。
-2. 进入某个领域后，先看 **核心知识库**，按你的面试方向直接改。
-3. 如果默认内容不够，再新增更多 `.md` 文件，把重点拆成更细的主题。
-4. 在 **高频题库** 标签页里补充常考题、易错点和速记清单。
-5. 如果默认领域不够，再自己新增自定义领域。
-6. 完成后回到首页，选择 **专项强化训练**，并选中这个领域开始练。
-7. 训练结束后的薄弱点、掌握度、复盘结果会继续写回系统，影响后面的题目生成。
+1. The system will have a batch of default training fields built-in and automatically generate a basic training base for each field. `README.md`.
+2. After entering a certain field, first read **core knowledge base**, change it directly according to your interview direction.
+3. If the default content is not enough, add more `.md` document, breaking the key points into smaller topics.
+4. in **High frequency question bank** The tab page is supplemented with frequently asked questions, common mistakes and shorthand lists.
+5. If the default domain is not enough, add a custom domain yourself.
+6. After completion, return to the home page and select **Special intensive training**, and select this area to start practicing.
+7. After the training, the weak points, mastery, and review results will continue to be written back to the system, affecting subsequent question generation.
 
-### 当前支持什么，不支持什么
+### What is currently supported and what is not supported
 
-* 当前页面重点支持 **Markdown 文本编辑**。
-* 核心知识文件需要是 `.md`。
-* 如果你手里是 PDF、TXT 或旧题库资料，建议先提炼要点，再整理进 Markdown 文件。
-* 当前没有“上传后等待激活状态”“勾选绑定知识库”这类流程。
+* Current page focuses on support **Markdown text editing**.
+* The core knowledge document needs to be `.md`.
+* If you have PDF, TXT or old question bank materials, it is recommended to extract the key points first and then organize them into Markdown files.
+* Currently none“Wait for activation status after uploading”“Check Bind Knowledge Base”This type of process.
 
-### 推荐写法
+### Recommended writing method
 
-* `README.md`：写这个领域的总览、核心概念、常见陷阱。
-* 拆分文件：按子主题拆，例如 `索引.md`、`事务.md`、`锁.md`。
-* 高频题库：写成短问题列表、判断点、答题 checklist，方便系统优先覆盖这些高价值考点。
+* `README.md`:Write an overview, core concepts, and common pitfalls in this field.
+* Split file: Split by subtopics, for example `Index.md`,`affairs.md`,`lock.md`.
+* High-frequency question bank: written in short question lists, judgment points, and answer checklists to facilitate the system to prioritize covering these high-value test points.
 
-题库不是越大越好。对训练效果更重要的是：内容聚焦、术语统一、问题和答案边界清晰，并且能为动态出题提供稳定、可检索、可复用的依据。
+The bigger the question bank, the better. More important to the training effect are: content focus, unified terminology, clear boundaries between questions and answers, and the ability to provide a stable, searchable, and reusable basis for dynamic question generation.

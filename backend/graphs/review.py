@@ -1,4 +1,4 @@
-"""复盘系统：面试结束后生成复盘报告。"""
+"""Review system: Generate a review report after the interview."""
 from langchain_core.messages import SystemMessage, HumanMessage, AIMessage
 
 from backend.llm_provider import get_langchain_llm
@@ -22,9 +22,9 @@ def generate_review(
     transcript_lines = []
     for msg in messages:
         if isinstance(msg, HumanMessage):
-            transcript_lines.append(f"**候选人**: {msg.content}")
+            transcript_lines.append(f"**candidate**: {msg.content}")
         elif isinstance(msg, AIMessage):
-            transcript_lines.append(f"**面试官**: {msg.content}")
+            transcript_lines.append(f"**interviewer**: {msg.content}")
     transcript = "\n\n".join(transcript_lines)
 
     # Build extra context
@@ -35,11 +35,11 @@ def generate_review(
                 f"- Q: {s.get('question', '?')} → {s.get('score', '?')}/10 ({s.get('assessment', '')})"
                 for s in scores
             )
-            extra += f"\n## 各题评分记录\n{score_summary}\n"
+            extra += f"\n## Score records for each question\n{score_summary}\n"
         if weak_points:
-            extra += f"\n## 已识别的薄弱点\n{', '.join(weak_points)}\n"
+            extra += f"\n## Identified weak points\n{', '.join(weak_points)}\n"
         if topic:
-            extra += f"\n## 训练领域: {topic}\n"
+            extra += f"\n## training areas: {topic}\n"
 
     # Resume mode: use inline eval history if available
     if mode == InterviewMode.RESUME and eval_history:
@@ -79,7 +79,7 @@ def generate_review(
     llm = get_langchain_llm(user_id)
     response = llm.invoke([
         SystemMessage(content=prompt),
-        HumanMessage(content="请生成复盘报告。"),
+        HumanMessage(content="Please generate a review report."),
     ])
 
     return response.content

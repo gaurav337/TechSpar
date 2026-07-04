@@ -205,5 +205,5 @@ def evaluate_job_prep_answers(
         logger.error(f"JD prep evaluation failed: {exc}")
         logger.error(f"LLM raw response: {response.content[:800]}")
         # Fail loudly: the caller marks the session review_failed and the UI offers a
-        # retry. A fallback "解析失败" review would persist as reviewed — a dead end.
+        # retry. A fallback "Parsing failed" review would persist as reviewed — a dead end.
         raise RuntimeError("Failed to parse evaluation results. Please resubmit.") from exc

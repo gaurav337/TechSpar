@@ -1,18 +1,18 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 
 /**
- * Copilot 实时面试辅助 WebSocket hook。
+ * Copilot real-time interview assistance WebSocket hook.
  *
- * 职责：
- * 1. 建立 WebSocket 连接
- * 2. 采集麦克风音频并转为 PCM 推流
- * 3. 接收 ASR 结果和 Agent 分析结果
+ * Responsibilities:
+ * 1. Establish a WebSocket connection
+ * 2. Collect microphone audio and convert it to PCM streaming
+ * 3. Receive ASR results and Agent analysis results
  */
 export default function useCopilotStream({ prepId, onUpdate } = {}) {
   const [connected, setConnected] = useState(false);
   const [listening, setListening] = useState(false);
-  const [asrText, setAsrText] = useState("");       // 中间结果（实时字幕）
-  const [lastFinal, setLastFinal] = useState("");    // 最近的句末结果
+  const [asrText, setAsrText] = useState("");       // Intermediate results (live subtitles)
+  const [lastFinal, setLastFinal] = useState("");    // Recent sentence end results
 
   const wsRef = useRef(null);
   const streamRef = useRef(null);
@@ -34,7 +34,7 @@ export default function useCopilotStream({ prepId, onUpdate } = {}) {
     }, 2000);
   }, []);  // connect added below via circular ref — safe because scheduleReconnect only reads it
 
-  /** 建立 WebSocket 连接 */
+  /** Establish a WebSocket connection */
   const connect = useCallback((sessionId) => {
     if (wsRef.current && wsRef.current.readyState <= WebSocket.OPEN) return;
 
@@ -99,7 +99,7 @@ export default function useCopilotStream({ prepId, onUpdate } = {}) {
     wsRef.current = ws;
   }, [prepId, scheduleReconnect]);
 
-  /** 开始录音并推流 PCM */
+  /** Start recording and streaming PCM */
   const startListening = useCallback(async () => {
     if (!wsRef.current || listening) return;
 
@@ -142,7 +142,7 @@ export default function useCopilotStream({ prepId, onUpdate } = {}) {
     }
   }, [listening]);
 
-  /** 停止录音 */
+  /** Stop recording */
   const stopListening = useCallback(() => {
     streamRef.current?.getTracks().forEach((t) => t.stop());
     streamRef.current = null;
@@ -153,21 +153,21 @@ export default function useCopilotStream({ prepId, onUpdate } = {}) {
     setListening(false);
   }, []);
 
-  /** 手动输入 HR 发言 */
+  /** Manually enter HR statement */
   const sendManualText = useCallback((text) => {
     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
       wsRef.current.send(JSON.stringify({ type: "manual", text }));
     }
   }, []);
 
-  /** 手动输入候选人回答 */
+  /** Manually enter candidate responses */
   const sendCandidateResponse = useCallback((text) => {
     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
       wsRef.current.send(JSON.stringify({ type: "candidate_response", text }));
     }
   }, []);
 
-  /** 断开连接 */
+  /** Disconnect */
   const disconnect = useCallback(() => {
     manualClose.current = true;
     clearTimeout(reconnectTimer.current);

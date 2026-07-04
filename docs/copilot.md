@@ -1,39 +1,39 @@
-# 面试 Copilot
+# interview Copilot
 
-`面试 Copilot` 不是“再来一轮模拟面试”，而是一个两阶段工具：
+`interview Copilot` No“Another round of mock interviews”, but a two-stage tool:
 
-1. 先做 **Prep Phase**，围绕目标 JD、公司、简历和已有画像生成准备结果。
-2. 再进入 **Realtime Phase**，在真实面试或模拟场景里接收实时辅助。
+1. Do it first **Prep Phase**, generate preparation results around the target JD, company, resume and existing portraits.
+2. Re-enter **Realtime Phase**, receive real-time assistance in real interviews or simulated scenarios.
 
-### 适合什么时候用
+### When is it suitable to use
 
-* 你已经拿到明确岗位 JD，不再是泛练。
-* 你想先知道 HR 或面试官大概率会怎么追问。
-* 你面试前想把高危路径先暴露出来，而不是现场才踩坑。
+* You have obtained a specific position as a JD and are no longer a general practitioner.
+* You want to know first how HR or the interviewer will most likely ask questions.
+* You want to expose high-risk paths before the interview, rather than stepping into pitfalls on the spot.
 
-### 正确流程
+### Correct process
 
-1. 进入左侧导航的 **面试 Copilot**。
-2. 填公司、岗位，并粘贴完整 JD。
-3. 如果你已经上传过简历，系统会自动联动简历做匹配分析。
-4. 如果你已经有训练画像，系统也会把领域掌握度和弱点带进准备阶段。
-5. 点击开始准备，等待后台完成预处理。
-6. 查看结果页里的公司情报、匹配亮点 / 差距、高危路径和策略树线索。
-7. 准备完成后，再点 **开始面试辅助** 进入实时模式。
+1. Enter the left navigation **interview Copilot**.
+2. Fill in the company, position, and paste the complete JD.
+3. If you have already uploaded your resume, the system will automatically link your resume for matching analysis.
+4. If you already have a training portrait, the system will also bring domain mastery and weaknesses into the preparation stage.
+5. Click Start Preparation and wait for the background to complete preprocessing.
+6. View company information and matching highlights on the results page / Gaps, high-risk paths, and strategy tree clues.
+7. After preparation is complete, click **Start interview assistance** Enter live mode.
 
-如果你要启用 Copilot 的独立模型、实时语音识别或联网公司搜索，相关环境变量怎么申请和验证，统一看 [外部服务配置](external-services.md)。
+If you want to enable Copilot's independent model, real-time speech recognition or online company search, how to apply for and verify related environment variables, please see the unified [External service configuration](external-services.md).
 
-### 你会得到什么
+### what you get
 
-* **公司情报**：帮助你回答时更贴近目标公司语境。
-* **JD 拆解**：看岗位真正看重哪些技术点和能力维度。
-* **匹配亮点 / 差距**：哪些经历能放大，哪些短板要先补。
-* **高危路径**：哪些追问一旦打到，你最容易失分。
-* **实时建议**：进入实时模式后，系统会根据当前问题给回答方向和风险提示。
+* **Company information**: Helps you answer more closely to the context of the target company.
+* **JD teardown**: See what technical points and ability dimensions the position really values.
+* **Match Highlights / gap**: Which experiences can be amplified, and which shortcomings need to be made up for first.
+* **high risk path**: Which questions are most likely to cause you to lose points once they are hit.
+* **real-time suggestions**: After entering the real-time mode, the system will give answer directions and risk tips based on the current question.
 
-### 使用建议
+### Usage suggestions
 
-* 不要只贴岗位标题，至少保留职责、要求、加分项和技术栈。
-* 简历、画像都不是强制前置条件，但补全后结果会更像真实面试。
-* Copilot 的价值不在“替你答题”，而在提前暴露追问路径和回答风险。
-* 如果预处理结果已经指出明显差距，先回题库、专项训练或 JD 备面补一轮，再回来用 Copilot。
+* Don’t just post the job title, at least keep the responsibilities, requirements, bonus points, and technology stack.
+* Neither the resume nor the portrait is a mandatory prerequisite, but after completion, the result will be more like a real interview.
+* The value of Copilot is not“Answer the question for you”, while exposing the risk of questioning and answering in advance.
+* If the pre-processing results have pointed out obvious gaps, first go back to the question bank, special training or JD preparation to make up one round, and then come back to use Copilot.

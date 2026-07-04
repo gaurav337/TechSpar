@@ -62,7 +62,7 @@ export default function Profile() {
       .then(([nextProfile, topics]) => {
         setProfile(nextProfile);
         setCanonicalTopics(new Set(Object.keys(topics || {})));
-        // 重置"自上次访问"基线。基线 30 分钟内不重置,短时间刷新/跳转回来时 delta 保持可见
+        // reset"since last visit"baseline. The baseline will not be reset within 30 minutes and will be refreshed in a short time./delta remains visible when jumping back
         const hasAnyData = (nextProfile?.stats?.total_sessions || 0) > 0
           || (nextProfile?.weak_points || []).length > 0;
         const markerAt = Date.parse(nextProfile?.view_marker?.at || "") || 0;
@@ -100,45 +100,45 @@ export default function Profile() {
       {
         path: "/topic-drill",
         icon: Target,
-        title: "专项训练",
-        desc: "选个技术主题，AI 按你的应答深度持续追问。",
-        hint: "最快上手",
+        title: "Special training",
+        desc: "Choose a technical topic, and AI will continue to ask questions according to the depth of your answer.",
+        hint: "Quickest to get started",
       },
       {
         path: "/resume-interview",
         icon: FileText,
-        title: "简历面试",
-        desc: "上传简历，按你的经历定制行为面与项目深挖。",
-        hint: "需先传简历",
+        title: "resume interview",
+        desc: "Upload your resume and customize the behavioral profile and project in-depth research based on your experience.",
+        hint: "Need to submit resume first",
       },
       {
         path: "/job-prep",
         icon: BriefcaseBusiness,
-        title: "JD 备面",
-        desc: "贴目标岗位 JD，模拟真实岗位的考察重点。",
-        hint: "需先填 JD",
+        title: "JD preparation",
+        desc: "Post the JD of the target position to simulate the inspection focus of the real position.",
+        hint: "Need to fill in first JD",
       },
     ];
 
     return (
       <div className={PAGE_CLASS}>
-        <div className="text-3xl font-display font-bold">个人画像</div>
+        <div className="text-3xl font-display font-bold">personal portrait</div>
         <Card className="mt-5 overflow-hidden border-primary/20 bg-[linear-gradient(135deg,rgba(245,158,11,0.12),rgba(20,184,166,0.08))] dark:bg-[linear-gradient(135deg,rgba(245,158,11,0.16),rgba(8,145,178,0.12))]">
           <CardContent className="p-8 md:p-10">
             <div className="max-w-2xl">
-              <Badge className="mb-4 bg-primary/12 text-primary">还没有训练数据</Badge>
+              <Badge className="mb-4 bg-primary/12 text-primary">No training data yet</Badge>
               <div className="text-2xl font-semibold leading-tight md:text-4xl">
-                先积累几轮回答，再让页面开始提炼真正的重点。
+                Build up a few rounds of answers first, and then let the page begin to refine the real highlights.
               </div>
               <div className="mt-4 text-sm leading-7 text-dim md:text-base">
-                开始面试后，系统会逐步把你的弱项、强项、答题模式和领域变化沉淀下来。等第一批数据形成，页面会自动切到驾驶舱视图。
+                After starting the interview, the system will gradually accumulate your weaknesses, strengths, answering patterns and changes in areas. When the first batch of data is formed, the page will automatically switch to the cockpit view.
               </div>
             </div>
 
-            <div className="mt-7 text-xs font-medium text-dim">选一个方式开始第一场面试</div>
+            <div className="mt-7 text-xs font-medium text-dim">Choose a way to start your first interview</div>
             <div className="mt-3 grid gap-3 md:grid-cols-3">
               {startOptions.map((option) => {
-                // eslint 没配 jsx-uses-vars,解构参数会被误报 unused;局部变量走 varsIgnorePattern
+                // eslint is not equipped with jsx-uses-vars, the destructuring parameters will be falsely reported as unused; local variables will be removed varsIgnorePattern
                 const { path, icon: Icon, title, desc, hint } = option;
                 return (
                 <button
@@ -169,8 +169,8 @@ export default function Profile() {
 
   const stats = profile.stats || {};
   const scoreHistory = stats.score_history || [];
-  // 知识轴: weak_points / strong_points 现在只承载知识类。
-  // 老数据里可能存在 axis=performance 的遗留条目,用 isKnowledgeAxis 过滤掉。
+  // knowledge axis: weak_points / strong_points now only carry knowledge classes.
+  // It may exist in old data axis=The legacy entries of performance are filtered out using isKnowledgeAxis.
   const weakActive = (profile.weak_points || []).filter(
     (item) => !item.improved && !item.archived && isKnowledgeAxis(item)
   );
@@ -193,7 +193,7 @@ export default function Profile() {
 
   const priorityWeaknesses = buildPriorityWeaknesses(weakActive, masteryMap);
 
-  // 表现轴: 全部从 behavior_signals 派生,不再从 weak_points 派生
+  // Performance axis: all from behavior_signals, no longer derived from weak_points derived
   const behaviorView = buildBehaviorSignals(profile);
   const featuredBehavior = behaviorView.featured;
   const activePerfDims = behaviorView.namespaces.filter(
@@ -223,11 +223,11 @@ export default function Profile() {
   return (
     <div className={PAGE_CLASS}>
       <div className="animate-fade-in">
-        <div className="text-3xl font-display font-bold tracking-tight md:text-4xl">个人画像</div>
+        <div className="text-3xl font-display font-bold tracking-tight md:text-4xl">personal portrait</div>
         <div className="mt-2 text-sm text-dim">
-          {stats.total_answers || 0} 次回答分析
-          {stats.total_sessions ? ` | ${stats.total_sessions} 次完整面试` : ""}
-          {profile.updated_at ? ` | 上次更新 ${formatMinute(profile.updated_at)}` : ""}
+          {stats.total_answers || 0} Answer analysis
+          {stats.total_sessions ? ` | ${stats.total_sessions} full interviews` : ""}
+          {profile.updated_at ? ` | last updated ${formatMinute(profile.updated_at)}` : ""}
         </div>
       </div>
 
@@ -236,13 +236,13 @@ export default function Profile() {
           <CardContent className="p-4 md:p-5">
             <div className="flex items-center gap-2 text-sm font-semibold">
               <Sparkles size={16} className="text-primary" />
-              自上次访问（{formatShortDate(visitDelta.since)}）的变化
+              Since last visit ({formatShortDate(visitDelta.since)}) changes
             </div>
 
             <div className="mt-3 flex flex-wrap gap-2">
               {visitDelta.sessionsDelta > 0 && (
                 <Badge variant="outline" className="rounded-full px-2.5 py-1 text-xs font-normal">
-                  +{visitDelta.sessionsDelta} 次训练
+                  +{visitDelta.sessionsDelta} training times
                 </Badge>
               )}
               {visitDelta.masteryChanges.slice(0, 4).map((change) => (
@@ -259,12 +259,12 @@ export default function Profile() {
               ))}
               {visitDelta.newWeak.length > 0 && (
                 <Badge variant="outline" className="rounded-full border-red/40 px-2.5 py-1 text-xs font-normal text-red">
-                  +{visitDelta.newWeak.length} 个新薄弱点
+                  +{visitDelta.newWeak.length} new weak point
                 </Badge>
               )}
               {visitDelta.newlyImproved.length > 0 && (
                 <Badge variant="outline" className="rounded-full border-green/40 px-2.5 py-1 text-xs font-normal text-green">
-                  {visitDelta.newlyImproved.length} 条已改善
+                  {visitDelta.newlyImproved.length} Article has been improved
                 </Badge>
               )}
             </div>
@@ -275,8 +275,8 @@ export default function Profile() {
                   <div key={pattern.point} className="flex items-start gap-2 rounded-xl border border-accent/25 bg-accent/5 px-3 py-2 text-sm leading-6">
                     <span className="shrink-0 text-accent">✦</span>
                     <span>
-                      系统发现了一条关于你的新规律：{pattern.point}
-                      <span className="ml-1 text-xs text-dim">（可在下方知识证据区确认准不准）</span>
+                      The system discovered a new pattern about you:{pattern.point}
+                      <span className="ml-1 text-xs text-dim">(You can confirm accuracy in the knowledge evidence area below)</span>
                     </span>
                   </div>
                 ))}
@@ -288,18 +288,18 @@ export default function Profile() {
 
       <Card className="mt-5 animate-fade-in-up [animation-delay:0.04s]">
         <CardContent className="p-4 md:p-5">
-          <SectionHeader icon={<TrendingUp size={18} />} title="练习统计" />
+          <SectionHeader icon={<TrendingUp size={18} />} title="Practice Statistics" />
 
           <div className="mt-5 grid gap-6 lg:grid-cols-[auto_1px_1fr] items-center rounded-3xl border border-border/60 bg-black/[0.02] dark:bg-white/[0.02] p-5 md:p-6 lg:p-7 shadow-sm">
             <div className="flex gap-8 md:gap-14 lg:pl-2">
               <div className="flex flex-col gap-1.5">
-                <div className="text-sm font-medium text-dim">总练习次数</div>
+                <div className="text-sm font-medium text-dim">Total number of exercises</div>
                 <div className="mt-1 flex items-baseline gap-1.5">
                   <div className="text-4xl font-bold tracking-tight text-primary drop-shadow-sm">{stats.total_sessions || 0}</div>
                 </div>
               </div>
               <div className="flex flex-col gap-1.5">
-                <div className="text-sm font-medium text-dim">综合平均分</div>
+                <div className="text-sm font-medium text-dim">Overall average score</div>
                 <div className="mt-1 flex items-baseline gap-1.5">
                   <div className="text-4xl font-bold tracking-tight text-green drop-shadow-sm">{stats.avg_score ?? "-"}</div>
                 </div>
@@ -322,12 +322,12 @@ export default function Profile() {
                   <div className="mt-2.5 flex items-baseline gap-3">
                     <div>
                       <span className={cn("text-xl font-semibold tracking-tight", item.accentClassName)}>{item.count}</span>
-                      <span className="ml-0.5 text-[10px] text-dim">次</span>
+                      <span className="ml-0.5 text-[10px] text-dim">times</span>
                     </div>
                     <div className="text-border/60 text-xs">/</div>
                     <div>
                       <span className={cn("text-xl font-semibold tracking-tight", item.accentClassName)}>{item.avgScore ?? "-"}</span>
-                      <span className="ml-0.5 text-[10px] text-dim">分</span>
+                      <span className="ml-0.5 text-[10px] text-dim">points</span>
                     </div>
                   </div>
                 </div>
@@ -337,26 +337,26 @@ export default function Profile() {
         </CardContent>
       </Card>
 
-      {/* ═══ 能力特征 (大卡, 知识轴) ═══ */}
+      {/* ═══ Ability characteristics (Daka, knowledge axis) ═══ */}
       <Card className="mt-5 animate-fade-in-up [animation-delay:0.08s]">
         <CardContent className="p-5 md:p-6">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-baseline gap-3">
-              <div className="text-xl font-display font-bold tracking-tight">能力特征</div>
-              <div className="text-xs text-dim">"你懂什么、会什么" — 技术知识维度</div>
+              <div className="text-xl font-display font-bold tracking-tight">Ability characteristics</div>
+              <div className="text-xs text-dim">"What do you know and know?" — technical knowledge dimension</div>
             </div>
-            <Badge variant="outline" className="rounded-full px-2.5 py-0.5 text-[10px]">知识轴</Badge>
+            <Badge variant="outline" className="rounded-full px-2.5 py-0.5 text-[10px]">knowledge axis</Badge>
           </div>
 
-          {/* 焦点领域 */}
+          {/* focus areas */}
           <div className="mt-6">
             <SectionHeader
               icon={<Target size={18} />}
-              title="焦点领域"
-              caption="按训练领域排列，聚焦当前最该补的方向。"
+              title="focus areas"
+              caption="Arrange by training area, focusing on the direction that needs to be supplemented most at present."
               action={(
                 <Button variant="outline" size="sm" onClick={() => navigate("/history")}>
-                  查看全部记录
+                  View all records
                 </Button>
               )}
             />
@@ -365,23 +365,23 @@ export default function Profile() {
                 <TopicPriorityCard
                   item={featuredTopic}
                   onSelect={(topic) => navigate(`/profile/topic/${topic}`)}
-                  label="主推荐"
+                  label="Main recommendation"
                 />
               ) : (
                 <div className="rounded-[24px] border border-dashed border-border/80 px-5 py-8 text-sm text-dim">
-                  目前没有可继续追踪的真实训练领域。
+                  There is currently no real training area to continue tracking.
                 </div>
               )}
               {secondaryTopic && (
                 <TopicPriorityCard
                   item={secondaryTopic}
                   onSelect={(topic) => navigate(`/profile/topic/${topic}`)}
-                  label="次推荐"
+                  label="Recommended"
                 />
               )}
               {extraTopicCount > 0 && (
                 <div className="rounded-2xl border border-border/70 bg-black/[0.02] px-4 py-3 text-xs leading-5 text-dim dark:bg-white/[0.02]">
-                  还有 {extraTopicCount} 个领域在排队，完整列表见下方能力地图。
+                  besides {extraTopicCount} areas are lined up, see the competency map below for a complete list.
                 </div>
               )}
             </div>
@@ -389,12 +389,12 @@ export default function Profile() {
 
           <div className="my-5 border-t border-border/60" />
 
-          {/* 知识证据 */}
+          {/* knowledge evidence */}
           <div>
             <SectionHeader
               icon={<Clock3 size={18} />}
-              title="知识证据"
-              caption="按弱点 / 强项 / 已改善分组的原始观察，可点击核对判断依据。"
+              title="knowledge evidence"
+              caption="press weakness / Strengths / The original observation of the improved grouping can be clicked to check the basis for judgment."
             />
             <div className="mt-4">
               <EvidenceTable
@@ -407,12 +407,12 @@ export default function Profile() {
 
           <div className="my-5 border-t border-border/60" />
 
-          {/* 能力地图 */}
+          {/* Capability map */}
           <div>
             <SectionHeader
               icon={<Target size={18} />}
-              title="能力地图"
-              caption="覆盖到的真实训练主题与各自掌握度。"
+              title="Capability map"
+              caption="Real training topics covered and respective mastery levels."
             />
             <div className="mt-4">
               <DomainTable
@@ -424,23 +424,23 @@ export default function Profile() {
         </CardContent>
       </Card>
 
-      {/* ═══ 表现特征 (大卡, 表现轴) ═══ */}
+      {/* ═══ Performance characteristics (Large card, performance axis) ═══ */}
       <Card className="mt-5 animate-fade-in-up [animation-delay:0.12s]">
         <CardContent className="p-5 md:p-6">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-baseline gap-3">
-              <div className="text-xl font-display font-bold tracking-tight">表现特征</div>
-              <div className="text-xs text-dim">"你怎么表达、怎么推导" — 行为模式维度</div>
+              <div className="text-xl font-display font-bold tracking-tight">Performance characteristics</div>
+              <div className="text-xs text-dim">"How do you express it and how do you derive it?" — behavioral pattern dimensions</div>
             </div>
-            <Badge variant="outline" className="rounded-full px-2.5 py-0.5 text-[10px]">表现轴</Badge>
+            <Badge variant="outline" className="rounded-full px-2.5 py-0.5 text-[10px]">Expression axis</Badge>
           </div>
 
-          {/* 主推行为模式 + 四 namespace 摘要 */}
+          {/* Mainly promoted behavior patterns + Four namespace summary */}
           <div className="mt-6">
             {featuredBehavior ? (
               <div className="rounded-[20px] border border-amber-500/20 bg-[linear-gradient(135deg,rgba(245,158,11,0.06),rgba(251,191,36,0.03))] p-5 md:p-6 dark:bg-[linear-gradient(135deg,rgba(245,158,11,0.10),rgba(251,191,36,0.04))]">
                 <div className="inline-flex rounded-full bg-amber-500/12 px-3 py-1 text-xs font-medium text-amber-600 dark:text-amber-400">
-                  最突出的行为模式
+                  most prominent behavioral pattern
                 </div>
                 <div className="mt-3 text-lg font-semibold leading-relaxed md:text-xl">
                   {featuredBehavior.description || featuredBehavior.id}
@@ -450,17 +450,17 @@ export default function Profile() {
                   <span>·</span>
                   <span className="font-mono">{featuredBehavior.id}</span>
                   <span>·</span>
-                  <span>出现 {featuredBehavior.times_seen || 1} 次</span>
+                  <span>appear {featuredBehavior.times_seen || 1} times</span>
                 </div>
                 {featuredBehavior.examples?.length > 0 && (
                   <div className="mt-3 rounded-xl border border-border/60 bg-card/90 px-3 py-2 text-xs leading-5 text-dim">
-                    最近一次: {featuredBehavior.examples[featuredBehavior.examples.length - 1].snippet}
+                    most recent: {featuredBehavior.examples[featuredBehavior.examples.length - 1].snippet}
                   </div>
                 )}
               </div>
             ) : (
               <div className="rounded-[20px] border border-dashed border-border/70 px-5 py-7 text-sm leading-6 text-dim">
-                还没有累积到稳定的行为模式。完成下一次面试后，系统会按四个维度（推导 / 叙事 / 表达 / 元认知）开始识别你的模式。
+                A stable behavior pattern has not been accumulated yet. After completing the next interview, the system will classify the interview based on four dimensions (derivative / narrative / express / Metacognition) Begin to recognize your patterns.
               </div>
             )}
 
@@ -473,15 +473,15 @@ export default function Profile() {
             )}
           </div>
 
-          {/* 完整 behavior_signals 列表 */}
+          {/* complete behavior_signals list */}
           {behaviorView.activeNegativeCount + behaviorView.activePositiveCount + behaviorView.improvedCount > 0 && (
             <>
               <div className="my-5 border-t border-border/60" />
               <div>
                 <SectionHeader
                   icon={<Brain size={18} />}
-                  title="模式清单"
-                  caption="按维度分组的所有 behavior_signals，点开行可看证据片段。"
+                  title="pattern list"
+                  caption="All grouped by dimension behavior_signals, click on the row to see the evidence fragment."
                 />
                 <div className="mt-4">
                   <BehaviorSignalList namespaces={behaviorView.namespaces} />
@@ -490,7 +490,7 @@ export default function Profile() {
             </>
           )}
 
-          {/* 旧观察（合并 communication.* 与 thinking_patterns.*） */}
+          {/* old observations (merged communication.* with thinking_patterns.*) */}
           {(profile.communication?.style ||
             communicationHabits.length > 0 ||
             communicationSuggestions.length > 0 ||
@@ -499,29 +499,29 @@ export default function Profile() {
             <>
               <div className="my-5 border-t border-border/60" />
               <CollapsibleSection
-                title="旧观察聚合"
-                caption="来自历史 session 的自由文本聚合。新数据流已切到上方 behavior_signals，这里保留作为参考。"
+                title="Aggregation of old observations"
+                caption="Free text aggregation from historical sessions. The new data stream has been cut to the top behavior_signals, reserved here for reference."
                 defaultOpen={behaviorView.activeNegativeCount === 0}
                 badge={<Badge variant="outline" className="text-[10px]">legacy</Badge>}
               >
                 <div className="space-y-5">
                   {profile.communication?.style && (
                     <div className="rounded-2xl bg-black/[0.02] p-4 dark:bg-white/[0.02]">
-                      <div className="text-xs font-medium text-dim mb-1">沟通风格</div>
+                      <div className="text-xs font-medium text-dim mb-1">communication style</div>
                       <div className="text-sm leading-7">{profile.communication.style}</div>
                     </div>
                   )}
                   {communicationHabits.length > 0 && (
                     <div>
-                      <div className="text-xs font-medium text-dim mb-2">表达习惯</div>
+                      <div className="text-xs font-medium text-dim mb-2">Expression habits</div>
                       <HabitTagList items={communicationHabits} />
                     </div>
                   )}
                   {(thinkingGaps.length > 0 || thinkingStrengths.length > 0 || communicationSuggestions.length > 0) && (
                     <div className="grid gap-x-6 gap-y-4 sm:grid-cols-2 lg:grid-cols-3">
-                      <PatternColumn title="风险" color="text-red" items={thinkingGaps} />
-                      <PatternColumn title="优势" color="text-green" items={thinkingStrengths} />
-                      <PatternColumn title="训练建议" color="text-primary" items={communicationSuggestions} />
+                      <PatternColumn title="risk" color="text-red" items={thinkingGaps} />
+                      <PatternColumn title="Advantages" color="text-green" items={thinkingStrengths} />
+                      <PatternColumn title="training suggestions" color="text-primary" items={communicationSuggestions} />
                     </div>
                   )}
                 </div>
@@ -531,13 +531,13 @@ export default function Profile() {
         </CardContent>
       </Card>
 
-      {/* ═══ 辅助底栏: 训练结构 + 最近评分 + 趋势 ═══ */}
+      {/* ═══ Auxiliary Bottom Column: Training Structure + Recent ratings + Trend ═══ */}
       <Card className="mt-5 animate-fade-in-up [animation-delay:0.16s]">
         <CardContent className="p-5 md:p-6">
           <SectionHeader
             icon={<Activity size={18} />}
-            title="训练结构"
-            caption="模式分布、最近评分、趋势。"
+            title="training structure"
+            caption="Pattern distribution, recent ratings, trends."
           />
           <div className="mt-5 grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
             <div className="space-y-3">
@@ -545,7 +545,7 @@ export default function Profile() {
                 <div key={item.mode}>
                   <div className="flex items-center justify-between gap-3 text-sm">
                     <span>{item.label}</span>
-                    <span className="text-dim">{item.count} 次</span>
+                    <span className="text-dim">{item.count} times</span>
                   </div>
                   <div className="mt-2 h-2 overflow-hidden rounded-full bg-border">
                     <div
@@ -556,37 +556,37 @@ export default function Profile() {
                 </div>
               )) : (
                 <div className="rounded-xl border border-dashed border-border/80 px-3 py-4 text-sm text-dim">
-                  暂无训练分布数据。
+                  There is currently no training distribution data.
                 </div>
               )}
             </div>
 
             <div className="grid gap-3 sm:grid-cols-2">
               <div className="rounded-2xl border border-border/80 bg-card/80 p-4">
-                <div className="text-xs font-medium text-dim">最近一次评分</div>
+                <div className="text-xs font-medium text-dim">Last rating</div>
                 <div className="mt-2 text-2xl font-semibold">
                   {latestEntry?.avg_score != null ? `${latestEntry.avg_score}/10` : "--"}
                 </div>
                 <div className="mt-2 text-xs text-dim">
-                  {latestEntry ? `${(MODE_META[latestEntry.mode] || MODE_META.topic_drill).label} · ${formatShortDate(latestEntry.date)}` : "暂无评分记录"}
+                  {latestEntry ? `${(MODE_META[latestEntry.mode] || MODE_META.topic_drill).label} · ${formatShortDate(latestEntry.date)}` : "No rating record yet"}
                 </div>
               </div>
               <div className="rounded-2xl border border-border/80 bg-card/80 p-4">
-                <div className="text-xs font-medium text-dim">趋势变化</div>
+                <div className="text-xs font-medium text-dim">Trend changes</div>
                 <div className={cn(
                   "mt-2 text-2xl font-semibold",
                   trendDelta == null ? "text-text" : trendDelta >= 0 ? "text-green" : "text-red"
                 )}>
                   {trendDelta == null ? "--" : trendDelta > 0 ? `+${trendDelta}` : trendDelta}
                 </div>
-                <div className="mt-2 text-xs text-dim">相比上一条评分记录</div>
+                <div className="mt-2 text-xs text-dim">Compared with the previous rating record</div>
               </div>
               <div className="rounded-2xl bg-black/4 px-4 py-3 dark:bg-white/[0.04]">
-                <div className="text-xs text-dim">回答分析</div>
+                <div className="text-xs text-dim">Answer analysis</div>
                 <div className="mt-1 text-xl font-semibold">{stats.total_answers || 0}</div>
               </div>
               <div className="rounded-2xl bg-black/4 px-4 py-3 dark:bg-white/[0.04]">
-                <div className="text-xs text-dim">覆盖主题</div>
+                <div className="text-xs text-dim">Cover topic</div>
                 <div className="mt-1 text-xl font-semibold">{domains.length}</div>
               </div>
             </div>
@@ -599,7 +599,7 @@ export default function Profile() {
           <CardContent className="p-5 md:p-6">
             <SectionHeader
               icon={<TrendingUp size={18} />}
-              title="成长趋势"
+              title="growth trend"
             />
             <div className="mt-5 rounded-[24px] border border-border/70 bg-black/[0.02] p-3 dark:bg-white/[0.02] md:p-4">
               <ScoreChart history={scoreHistory} />

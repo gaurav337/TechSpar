@@ -3,9 +3,9 @@
 <img src="images/logo.png" alt="TechSpar" width="520" />
 
 
-**把专项训练、简历面试、JD 备面、实时 Copilot 与录音复盘，串成一个持续进化的技术面试闭环。**
+**Special training, resume interviews, JD interview preparation, real-time Copilot and recording review are strung together into a closed loop of continuously evolving technical interviews.**
 
-[在线 Demo](https://techspar.top/) · [快速开始](#快速开始) · [English](README.en.md)
+[online Demo](https://techspar.top/) · [quick start](#quick start) · [English](README.en.md)
 
 
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-009688.svg)](https://fastapi.tiangolo.com/)
@@ -15,162 +15,162 @@
 [![License](https://img.shields.io/badge/License-CC%20BY--NC%204.0-lightgrey.svg)](LICENSE)
 
 
-![TechSpar 产品总览](images/techspar-overview.png)
+![TechSpar Product Overview](images/techspar-overview.png)
 </div>
 
-> TechSpar 的核心不是某一个单独功能页面。  
-> 它的核心是同一套长期记忆、画像更新和下一轮训练调度机制。
-> 专项训练、简历面试、JD 备面、实时 Copilot 与录音复盘，不是彼此孤立的五个页面，而是围绕同一套长期记忆、掌握度和画像系统协同工作的同一个闭环。
+> The core of TechSpar is not a single feature page.  
+> Its core is the same set of long-term memory, portrait updating and next round of training scheduling mechanisms.
+> Special training, resume interview, JD preparation, real-time Copilot and recording review are not five pages that are isolated from each other, but the same closed loop that works together around the same set of long-term memory, mastery and portrait systems.
 
 ---
 
-## 它不是“再来一组题”
+## it is not“Another set of questions”
 
-大多数 AI 面试产品的问题不在于题不够多，而在于**没有闭环**。
+The problem with most AI interview products is not that there aren’t enough questions;**no closed loop**.
 
-你今天答得差，系统知道。  
-但你明天再来，它又像第一次见你一样重新开始。
+You answered poorly today, and the system knows it.  
+But you come back tomorrow and it starts all over again as if it were the first time I saw you.
 
-TechSpar 要解决的不是“生成更多题”，而是把一次次训练、模拟、实战辅助和复盘连接起来，形成一条持续进化的路径：
+What TechSpar is trying to solve is not“Generate more questions”, but connects training, simulation, actual combat assistance and review to form a path of continuous evolution:
 
-| 传统面试工具 | TechSpar |
+| Traditional interview tools | TechSpar |
 | --- | --- |
-| 场景割裂：刷题、模拟、复盘各做各的 | 专项训练、简历面试、JD 备面、实时 Copilot 与录音复盘共用同一套画像与长期记忆 |
-| 每次开始都像第一次使用 | 每次进入新一轮前都会读取历史掌握度、薄弱点、训练轨迹和上下文 |
-| 训练结果停留在当前会话 | 训练结果会写回画像、掌握度、薄弱点和复习调度 |
-| 很难把“准备阶段”和“真实面试”连接起来 | 从备面、模拟到实战辅助、复盘形成连续链路 |
-| 反馈只对这一次有用 | 每次反馈都会改变下一轮训练重点 |
-| 产品通常只覆盖单一环节 | 覆盖专项训练、简历面试、JD 备面、实时 Copilot 与录音复盘 |
-| 用完即结束 | 训练 -> 评估 -> 画像更新 -> 下轮更精准，形成持续进化闭环 |
+| Scenario separation: practice test, simulation, and review each in its own way | Special training, resume interviews, JD preparation, real-time Copilot and recording review share the same set of portraits and long-term memory |
+| Every time you start using it it’s like the first time | Each time before entering a new round, historical mastery, weak points, training trajectories and context will be read. |
+| Training results stay in the current session | The training results will be written back to the portrait, mastery, weak points and review schedule. |
+| difficult to put“preparation stage”and“real interview”connect up | Form a continuous link from preparation, simulation to actual combat assistance and review |
+| Feedback is only useful this time | Each feedback will change the focus of the next round of training |
+| Products usually only cover a single link | Covers special training, resume interviews, JD preparation, real-time Copilot and recording review |
+| End when used up | training -> Assessment -> Portrait update -> The next round is more accurate, forming a closed loop of continuous evolution. |
 
-> **TechSpar 不是帮你“刷一轮题”，而是帮你建立一整套从备面到复盘、从单次训练到长期提升的技术面试闭环。**
-
----
-
-## 题库为什么是核心设计
-
-很多人会把“题库”理解成一组固定题目列表，但 TechSpar 的题库不是这个意思。
-
-它本质上是一个**动态出题底座**，不是一个“把旧题存起来给你反复刷”的静态题单。
-
-- **核心知识库**：定义这个领域该覆盖哪些知识边界，给出题和评分提供语义参考
-- **高频题库**：标记真实面试里更常出现、更值得优先覆盖的考点
-- **历史训练记录**：记录最近练过什么、哪些题答得差、哪些薄弱点还没补上
-- **长期画像与掌握度**：决定这轮该继续补短板，还是向更难、更广的方向拓展
-
-最终的题目不是“从题库里抽出来”，而是系统综合这些信息后，**为这一轮训练动态生成**。
-
-也就是说：
-
-- 传统题库产品：先有一批固定题，再让你去做
-- TechSpar：先判断你现在最该练什么，再生成这一轮最合适的题
-
-这也是为什么题库在这里不是边缘功能，而是整个闭环里的核心基础设施。
+> **TechSpar is not here to help you“Go through a round of questions”, but to help you establish a complete set of technical interview closed loop from preparation to review, from single training to long-term improvement.**
 
 ---
 
-## 在线体验
+## Why is the question bank the core design?
 
-直接体验：**[https://techspar.top/](https://techspar.top/)**
+Many people will“question bank”It is understood as a fixed list of questions, but TechSpar's question bank does not mean this.
 
-在登录页**注册一个自己的账号**即可开始——每个账号数据互相隔离。首次登录有两步引导，让你填入**自己的** LLM 和 Embedding API Key（演示环境不共享 key，也不会用到别人的）。
+it is essentially a**Dynamic question base**, not one“Save old questions for you to study again and again”static question sheet.
 
-> 没有 key 也能零成本跑通：主 LLM 用 ModelScope 的 `ZhipuAI/GLM-5`，Embedding 用 SiliconFlow 的 `BAAI/bge-large-zh-v1.5`，两家都有免费额度。
+- **core knowledge base**: Define what knowledge boundaries should be covered in this field, and provide semantic reference for questions and scoring.
+- **High frequency question bank**: Mark test points that appear more frequently in real interviews and deserve priority coverage
+- **Historical training records**: Record what you have practiced recently, which questions you answered poorly, and which weak points you have not yet made up for.
+- **Long-term portrait and mastery**: Decide whether you should continue to make up for your shortcomings this round, or expand in a more difficult and broader direction.
+
+The final topic is not“Extracted from question bank”, but after the system synthesizes this information,**Dynamically generated for this round of training**.
+
+That is to say:
+
+- Traditional question bank products: first have a batch of fixed questions, and then let you do them
+- TechSpar: First determine what you should practice most now, and then generate the most appropriate questions for this round
+
+This is why the question bank is not a marginal function here, but the core infrastructure in the entire closed loop.
+
+---
+
+## Online experience
+
+Direct experience:**[https://techspar.top/](https://techspar.top/)**
+
+on the login page**Register an own account**Ready to start——Each account data is isolated from each other. There is a two-step guide for logging in for the first time, allowing you to fill in the**own** LLM and Embedding API Key (the demo environment does not share keys and will not use others' keys).
+
+> It can be run at zero cost without a key: the main LLM uses ModelScope `ZhipuAI/GLM-5`, Embedding uses SiliconFlow `BAAI/bge-large-zh-v1.5`, both have free quotas.
 >
-> 演示环境请不要上传真实简历、真实录音或任何敏感个人信息。
+> Please do not upload real resumes, real recordings, or any sensitive personal information in the presentation environment.
 
 ---
 
-## 这个闭环如何运转
+## How does this closed loop work?
 
-### 1. 训练前：先确定你该练什么
+### 1. Before training: first determine what you should practice
 
-系统不会把你当成“新用户”反复重置，而是先读取已有信息：
+The system will not treat you as“new user”Repeatedly reset, instead reading existing information first:
 
-- **Session Context**：简历、JD、知识库、最近训练记录
-- **Topic Mastery**：领域掌握度、历史薄弱点、练习轨迹
-- **Global Profile**：跨领域强项、弱项、思维模式、沟通风格
+- **Session Context**: Resume, JD, knowledge base, recent training records
+- **Topic Mastery**: Domain mastery, historical weak points, practice track
+- **Global Profile**: Cross-field strengths, weaknesses, thinking patterns, and communication styles
 
-这决定了下一轮问题更像“延续训练”，而不是“重新开始”。
+This determines that the next round of questions will be more like“Continuation training”, instead of“Start over”.
 
-### 2. 训练中：不同入口共享同一条主线
+### 2. During training: different entrances share the same main line
 
-#### 专项强化训练
+#### Special intensive training
 
-围绕某个领域集中训练，优先命中历史薄弱点，并结合掌握度调节难度和发散度。
+Focus on training in a certain area, prioritize historical weak points, and adjust the difficulty and divergence based on mastery.
 
-#### 简历模拟面试
+#### Resume Mock Interview
 
-AI 读取简历，通过 LangGraph 状态机推进完整流程：自我介绍 -> 技术问题 -> 项目深挖 -> 反问环节。
+AI reads the resume and advances the complete process through the LangGraph state machine: self-introduction -> technical issues -> Project digging -> Rhetorical question session.
 
-#### JD 定向备面
+#### JD orientation preparation
 
-输入岗位描述后，系统会先拆解 JD，再围绕岗位要求、简历经历和知识库内容生成更贴近真实岗位的问题。
+After entering the job description, the system will first disassemble the JD, and then generate questions that are closer to the actual position around the job requirements, resume experience and knowledge base content.
 
-#### 实时 Copilot
+#### real time Copilot
 
-先基于 JD、简历和历史画像做预处理，生成提问策略树与高危路径；进入实时模式后，系统持续转写 HR 发言、预测追问方向，并给出回答建议。
+It first performs pre-processing based on JD, resume and historical portraits to generate question strategy trees and high-risk paths; after entering real-time mode, the system continues to transcribe HR statements, predict the direction of questioning, and give answer suggestions.
 
-#### 录音复盘
+#### Recording review
 
-上传面试录音或粘贴面试文本，系统自动转写、结构化 Q&A，并输出逐题分析与改进建议。
+Upload the interview recording or paste the interview text, and the system will automatically transcribe and structure it. Q&A, and output topic-by-topic analysis and improvement suggestions.
 
-### 3. 训练后：不是结束，而是写回系统
+### 3. After training: not ending, but writing back to the system
 
-每次训练结束后，系统不会只给一句总评，而是继续向后推进：
+After each training, the system will not just give a general comment, but will continue to move forward:
 
-- 逐题评估回答质量
-- 提取薄弱点、强项和行为特征
-- 更新领域掌握度与长期画像
-- 用 **SM-2** 调度后续复习
-- 把这次结果带入下一轮训练
+- Evaluate answer quality on a question-by-question basis
+- Extract weaknesses, strengths and behavioral characteristics
+- Update domain mastery and long-term portraits
+- use **SM-2** Schedule follow-up review
+- Bring this result into the next round of training
 
-这意味着：**每次训练都会改变下一次训练。**
-
----
-
-## 每轮结束后你会得到什么
-
-- **逐题评分**：不是只看整体感觉，而是逐题拆开评估
-- **薄弱点提取**：明确知道自己卡在哪，而不是笼统地“回答一般”
-- **掌握度变化**：跟踪某个领域到底是在进步还是原地打转
-- **长期画像更新**：系统会记住你的习惯性问题，而不是下一次重新开始
-- **复习优先级**：会根据遗忘风险安排后续训练重点
-- **参考答案与二次重练入口**：复盘后可以继续对照修正，而不是看完报告就结束
+This means:**Each workout changes the next workout.**
 
 ---
 
-## 适合谁
+## What do you get at the end of each round?
 
-- 正在准备后端、算法、AI 应用、Agent、RAG 等技术岗位面试的人
-- 已经刷了很多题，但训练缺乏连续性和复盘闭环的人
-- 想围绕简历项目和 JD 做更接近真实面试练习的人
-- 想在真实面试前做针对性准备，或在面试中借助实时 Copilot 辅助判断追问方向的人
-- 想长期跟踪自己能力变化，而不是做一次性问答的人
+- **Question-by-question scoring**: Not just looking at the overall feeling, but disassembling and evaluating each topic
+- **Weak point extraction**: Know exactly where you are stuck, rather than generally“Average answer”
+- **Mastery changes**: Track whether a certain field is making progress or spinning around.
+- **Long-term portrait update**: The system will remember your habitual questions instead of starting over again next time
+- **Review priority**: Follow-up training focus will be arranged based on the risk of forgetting.
+- **Reference answers and entrance to retraining for the second time**: After the review, you can continue to make comparisons and corrections instead of ending after reading the report.
 
 ---
 
-## 快速开始
+## Suitable for whom
 
-### 1. 配置环境变量
+- People who are preparing for interviews for technical positions such as back-end, algorithm, AI application, Agent, RAG, etc.
+- People who have solved a lot of questions, but the training lacks continuity and closed-loop review
+- People who want to do more realistic interview exercises around resume projects and JD
+- Those who want to make targeted preparations before the real interview, or use real-time Copilot to help determine the direction of questioning during the interview
+- People who want to track changes in their abilities over a long period of time instead of doing one-time Q&A
+
+---
+
+## quick start
+
+### 1. Configure environment variables
 
 ```bash
 cp .env.example .env
 ```
 
-`.env` 里**不放任何 API Key**——只有启动引导项（管理员账号、`JWT_SECRET`、是否开放注册等）。所有模型与服务密钥都是**每个用户自己的**，登录后在「设置」里填；首次登录会有两步引导带你配好 **LLM + Embedding**（Embedding 必需，简历 / 知识库 / 记忆的向量化都靠它）。
+`.env` inside**don't put any API Key**——Only startup boot items (administrator account,`JWT_SECRET`, whether registration is open, etc.). All model and service keys are**Each user’s own**, fill it in "Settings" after logging in; when logging in for the first time, there will be a two-step guide to guide you through the configuration. **LLM + Embedding**(Embedding required, resume / knowledge base / The vectorization of memory relies on it).
 
-设置页里填什么：
+What to fill in the settings page:
 
-- **LLM**：任意 OpenAI 兼容接口（API Base + Key + Model）。
-- **Embedding**：`api` 模式走兼容接口；或 `local` 模式用本地 HuggingFace 模型（需额外 `pip install -r requirements.local-embedding.txt`）。
+- **LLM**: Any OpenAI compatible interface (API Base + Key + Model).
+- **Embedding**:`api` The mode is compatible with the interface; or `local` mode uses the local HuggingFace model (requires additional `pip install -r requirements.local-embedding.txt`).
 
-没有 key 也能零成本跑通，免费示例（两家都有免费额度，可分开用）：
+You can run through it without a key at zero cost. Free example (both companies have free quotas and can be used separately):
 
-- 主 LLM：ModelScope 的 `ZhipuAI/GLM-5`，Base `https://api-inference.modelscope.cn/v1`，Key 填 ModelScope SDK Token（<https://modelscope.cn/home>）
-- Embedding：SiliconFlow 的 `BAAI/bge-large-zh-v1.5`，Base `https://api.siliconflow.cn/v1`，Key 填 SiliconFlow API Key（<https://cloud.siliconflow.cn/>）
+- Master LLM: ModelScope `ZhipuAI/GLM-5`,Base `https://api-inference.modelscope.cn/v1`, Key fill in ModelScope SDK Token (<https://modelscope.cn/home>)
+- Embedding: SiliconFlow `BAAI/bge-large-zh-v1.5`,Base `https://api.siliconflow.cn/v1`, Key fill in SiliconFlow API Key (<https://cloud.siliconflow.cn/>)
 
-认证默认值如下，不配置也能启动：
+The default values for authentication are as follows and can be started without configuration:
 
 ```env
 JWT_SECRET=change-me-in-production
@@ -180,43 +180,43 @@ DEFAULT_NAME=admin
 ALLOW_REGISTRATION=false
 ```
 
-**可选服务**也都是 per-user，在「设置 → 可选服务 / 声纹识别」按需填，不填则对应功能关闭：
+**Optional services**They are also per-user, in "Settings" → Optional services / "Voiceprint Recognition" is filled in as needed. If not filled in, the corresponding function will be turned off:
 
-- **DashScope**（阿里云百炼，<https://bailian.console.aliyun.com/>，有免费额度）：答题语音输入 / 录音复盘转写 / Copilot 实时语音识别。
-- **Tavily**（<https://tavily.com/>，免费每月 `1,000 credits`）：Copilot 联网搜索公司情报。
-- **阿里云 OSS**：录音复盘上传长音频（答题短语音走同步链路，不需要）。
-- **腾讯云 VPR 声纹识别**（<https://console.cloud.tencent.com/vpr>）：Copilot 自动区分 HR 与候选人音色，不填则手动按钮切换。
+- **DashScope**(Alibaba Cloud Bailian,<https://bailian.console.aliyun.com/>, with free quota): answer voice input / Recording duplication and transcription / Copilot real-time speech recognition.
+- **Tavily**(<https://tavily.com/>, free every month `1,000 credits`): Copilot searches for company information online.
+- **Alibaba Cloud OSS**: Record and replay and upload long audio (short audio for answering questions uses a synchronous link and is not required).
+- **Tencent Cloud VPR voiceprint recognition**(<https://console.cloud.tencent.com/vpr>): Copilot automatically distinguishes between HR and candidate timbres. If left blank, the button will switch manually.
 
-Copilot 不再单独配模型，直接用你的主 LLM。
+Copilot no longer configures models separately, but directly uses your main LLM.
 
-### 2. Docker 启动
+### 2. Docker startup
 
 ```bash
 docker compose up --build
 ```
 
-启动后访问：
+After startup visit:
 
 ```text
 http://localhost
 ```
 
-### 3. 手动启动
+### 3. Manual start
 
-后端：
+Backend:
 
 ```bash
 pip install -r requirements.txt
 uvicorn backend.main:app --reload --port 8000
 ```
 
-如果你要使用本地 embedding，再额外安装：
+If you want to use local embedding, install additionally:
 
 ```bash
 pip install -r requirements.local-embedding.txt
 ```
 
-前端：
+Frontend:
 
 ```bash
 cd frontend
@@ -224,13 +224,13 @@ npm install
 npm run dev
 ```
 
-访问：
+Visit:
 
 ```text
 http://localhost:5173
 ```
 
-登录后可从侧栏进入 `面试 Copilot`，或直接访问：
+After logging in, you can enter from the sidebar `interview Copilot`, or visit directly:
 
 ```text
 http://localhost:5173/copilot
@@ -238,7 +238,7 @@ http://localhost:5173/copilot
 
 ---
 
-## 技术栈
+## technology stack
 
 | Component | Technology |
 | --- | --- |
@@ -250,52 +250,52 @@ http://localhost:5173/copilot
 
 ---
 
-## 项目结构
+## Project structure
 
-为了避免文档继续变成过时快照，这里只保留稳定结构：
+In order to prevent the document from continuing to become an outdated snapshot, only the stable structure is retained here:
 
-- `backend/main.py`：FastAPI 入口和主要接口
-- `backend/graphs/`：简历面试、专项训练、JD 备面、录音复盘、Copilot 预处理等核心流程
-- `backend/copilot/`：实时辅助相关的策略树、方向预测、回答建议、语音流处理
-- `backend/storage/`：会话、Copilot prep 等持久化
-- `frontend/src/pages/`：训练、画像、图谱、题库、Copilot、设置、复盘等页面
-- `frontend/src/api/`、`frontend/src/contexts/`、`frontend/src/hooks/`：接口封装、全局状态和实时交互逻辑
-- `data/users/{user_id}/`：每个用户的画像、简历、知识库、题库、设置与各项 API 密钥（provider.json / voiceprint.json）
-- `docker-compose.yml`、`requirements*.txt`、`.env.example`：部署和运行入口
+- `backend/main.py`: FastAPI entrance and main interface
+- `backend/graphs/`: Core processes such as resume interview, special training, JD preparation, recording review, Copilot pre-processing, etc.
+- `backend/copilot/`: Real-time assistance related strategy tree, direction prediction, answer suggestions, voice stream processing
+- `backend/storage/`: Session, Copilot prep and other persistence
+- `frontend/src/pages/`: Training, portrait, map, question bank, Copilot, settings, review and other pages
+- `frontend/src/api/`,`frontend/src/contexts/`,`frontend/src/hooks/`: Interface encapsulation, global status and real-time interaction logic
+- `data/users/{user_id}/`: Each user’s portrait, resume, knowledge base, question bank, settings and various API keys (provider.json / voiceprint.json)
+- `docker-compose.yml`,`requirements*.txt`,`.env.example`: Deployment and running portal
 
 ---
 
-## 数据迁移（跨电脑同步）
+## Data migration (synchronization across computers)
 
-换机器或重装时，可以在 **设置 → 数据迁移** 卡片里点导出 / 导入；或用 `scripts/` 下的脚本（适合脚本化、批量、跨用户）：
+When changing machines or reinstalling, you can **settings → Data migration** Click Export in the card / Import; or use `scripts/` The following script (suitable for scripting, batch, cross-user):
 
 ```bash
-# 旧机器：导出（生成 techspar-backup-<timestamp>.tar.gz）
+# Old machine: export (generate techspar-backup-<timestamp>.tar.gz)
 python3 scripts/export_data.py
 
-# 新机器：先按 README 部署好，再导入
+# New machine: first deploy according to README, then import
 python3 scripts/import_data.py techspar-backup-<timestamp>.tar.gz
 ```
 
-UI 导入会把归档中的数据全部归到当前登录账户（即使原 `user_id` 不同），适合个人换机；CLI 默认保留原 `user_id`，适合管理员级整库迁移。
+UI import will return all data in the archive to the current login account (even if the original `user_id` different), suitable for personal machine replacement; CLI retains the original `user_id`, suitable for administrator-level entire database migration.
 
-打包内容：`data/interviews.db` + `data/users/<user_id>/`（画像/简历/知识库/题库/训练偏好）。
-**不打包**：`.index_cache/`（导入后会自动重建）、`langgraph_checkpoints*`（运行时状态）、`.env`（只剩 `JWT_SECRET`/管理员账号等引导项，需手工同步；模型密钥已存在 `data/users/` 里随包迁移）。
+Package contents:`data/interviews.db` + `data/users/<user_id>/`(portrait/Resume/knowledge base/question bank/training preferences).
+**Not packed**:`.index_cache/`(It will be automatically rebuilt after importing),`langgraph_checkpoints*`(runtime status),`.env`(only `JWT_SECRET`/Boot items such as administrator accounts need to be synchronized manually; the model key already exists `data/users/` migrating with the package).
 
-可选参数：
-- `--user-id <id>`：仅导出指定用户（多用户部署时使用）
-- `--db-strategy overwrite`：导入时同一 `session_id` 用归档版本覆盖本地（默认保留本地）
-- `--overwrite-files`：导入时覆盖 `data/users/` 已存在的文件（默认保留本地）
+Optional parameters:
+- `--user-id <id>`: Export only specified users (used during multi-user deployment)
+- `--db-strategy overwrite`:Same when importing `session_id` Overwrite local with archived version (leave local by default)
+- `--overwrite-files`: Overwrite when importing `data/users/` Existing files (keep local by default)
 
 ---
 
-## 参与贡献
+## Participate and contribute
 
-这个项目还在持续打磨，很欢迎你一起把它做得更好。
+This project is still being polished, and you are welcome to work together to make it better.
 
-- **用着别扭、发现 bug、有想法**：直接开个 [Issue](https://github.com/AnnaSuSu/TechSpar/issues) 聊，不用拘谨，把场景说清楚就行。
-- **想动手改**：欢迎直接提 PR——修 bug、补文档、加功能、优化体验都可以。小改动直接发；改动比较大，建议先开个 Issue 对一下方向，免得白做。
-- 接入了新的模型 / 服务商、或者跑通了某个部署方式，也很欢迎回来分享一下，让后面的人少踩坑。
+- **Use it to feel awkward, find bugs, and have ideas**: Open it directly [Issue](https://github.com/AnnaSuSu/TechSpar/issues) Chat, don’t be formal, just explain the scene clearly.
+- **Want to change it**: Welcome to submit directly PR——You can fix bugs, add documentation, add features, and optimize the experience. Small changes will be posted directly; if the changes are relatively large, it is recommended to open an Issue first to check the direction to avoid wasting work.
+- Added new models / If you are a service provider or have successfully mastered a certain deployment method, you are welcome to come back and share it so that others behind you will avoid pitfalls.
 
 ---
 
@@ -303,6 +303,6 @@ UI 导入会把归档中的数据全部归到当前登录账户（即使原 `use
 
 CC BY-NC 4.0
 
-## 致谢
+## Acknowledgments
 
-感谢 [LINUX DO](https://linux.do/) 社区的支持。
+Thanks [LINUX DO](https://linux.do/) Community support.

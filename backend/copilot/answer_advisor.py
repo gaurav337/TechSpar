@@ -1,4 +1,4 @@
-"""Answer Coach — 结合策略树 + 完整对话上下文，流式生成回答建议。"""
+"""Answer Coach — Combined strategy tree + Complete conversation context, stream-generated answer suggestions."""
 import logging
 import time
 from collections.abc import AsyncIterator
@@ -91,7 +91,7 @@ def prepare_advice_context(
 
 
 async def stream_advice(prompt: str) -> AsyncIterator[dict]:
-    """流式调用 LLM。yield dict: {"type": "chunk", "text": ...} 或 {"type": "meta", ...}。"""
+    """Streaming calls to LLM.yield dict: {"type": "chunk", "text": ...} or {"type": "meta", ...}."""
     llm = get_copilot_llm(streaming=True)
     logger.info(f"Answer Coach streaming: model={llm.model_name}")
     t0 = time.monotonic()
@@ -99,7 +99,7 @@ async def stream_advice(prompt: str) -> AsyncIterator[dict]:
     first_token_ms = None
     try:
         async for chunk in llm.astream([
-            SystemMessage(content="直接输出答案，不要 JSON 格式"),
+            SystemMessage(content="Output the answer directly, no JSON format is required"),
             HumanMessage(content=prompt),
         ]):
             if chunk.content:

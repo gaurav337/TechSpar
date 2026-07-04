@@ -1,28 +1,28 @@
-# 常见问题 (FAQ)
+# FAQ (FAQ)
 
-### 1. 为什么上传录音后的转写结果不准？
+### 1. Why is the transcription result after uploading the recording inaccurate?
 
-* **先看原始音质**：远场收音、底噪、回声、多人重叠说话，都会明显拉低转写质量。
-* **再看输入方式**：上传录音和浏览器实时录音不是一回事。上传文件转写本身不依赖浏览器麦克风权限。
-* **最后看分析前文本**：转写结果拿到后，建议先快速人工修一遍再开始分析，尤其是公司名、技术名词和英文缩写。
+* **First look at the original sound quality**: Far-field radio, background noise, echo, and multiple people talking overlapping will significantly reduce the transcription quality.
+* **Look at the input method again**: Uploading recordings and browser real-time recording are not the same thing. Uploading file transcoding itself does not rely on browser microphone permissions.
+* **Finally, look at the text before analysis**: After getting the transcription results, it is recommended to quickly manually revise them before starting analysis, especially the company name, technical terms and English abbreviations.
 
-### 2. 生成复盘报告特别慢怎么办？
+### 2. What should I do if the review report is extremely slow to generate?
 
-系统需要读取整轮训练内容并生成结构化评估，等待几十秒是正常现象。如果长时间没有结果，先检查后端日志，再确认模型接口是否可用。
+The system needs to read the entire round of training content and generate a structured evaluation. It is normal to wait for tens of seconds. If there is no result for a long time, check the backend log first, and then confirm whether the model interface is available.
 
-### 3. 录音上传后为什么不能转写？
+### 3. Why can’t the recording be transcribed after it is uploaded?
 
-上传录音转写依赖额外的语音服务配置。如果没有配置 `DASHSCOPE_API_KEY` 和相关 OSS 环境变量，最稳妥的做法是直接粘贴逐字稿文本进行分析。
+Uploading recordings for transcription relies on additional voice service configuration. If not configured `DASHSCOPE_API_KEY` and related OSS environment variables, the safest way is to directly paste the verbatim text for analysis.
 
-### 4. 为什么我看不到注册入口？
+### 4. Why can’t I see the registration entrance?
 
-默认配置下 `ALLOW_REGISTRATION=false`，所以前端不会开放注册入口。如果你要开放注册，需要在 `.env` 里显式开启。
+Under default configuration `ALLOW_REGISTRATION=false`, so the front end will not open the registration entrance. If you want to open registration, you need to `.env` is explicitly enabled.
 
-### 5. 忘记默认账号密码怎么办？
+### 5. What should I do if I forget the default account password?
 
-如果你没有改过 `.env`，默认登录信息是：
+If you haven't changed it `.env`, the default login information is:
 
-* 账号：`admin@techspar.local`
-* 密码：`admin123`
+* Account:`admin@techspar.local`
+* Password:`admin123`
 
-如果这些值已经被部署者改过，就应该使用实际部署环境里的账号，而不是继续套默认值。
+If these values have been changed by the deployer, the account in the actual deployment environment should be used instead of continuing to set the default values.

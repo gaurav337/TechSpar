@@ -65,7 +65,7 @@ def job_prep_preview(req: JobPrepPreviewRequest, user_id: str = Depends(get_curr
     """Analyze a JD and candidate fit before starting targeted practice."""
     jd_text = req.jd_text.strip()
     if len(jd_text) < 50:
-        raise HTTPException(400, "JD 内容太短，无法分析。")
+        raise HTTPException(400, "JD content is too short to analyze.")
 
     try:
         preview = generate_job_prep_preview(
@@ -86,7 +86,7 @@ def job_prep_start(req: JobPrepStartRequest, user_id: str = Depends(get_current_
     """Start a JD-targeted mock interview session."""
     jd_text = req.jd_text.strip()
     if len(jd_text) < 50:
-        raise HTTPException(400, "JD 内容太短，无法生成训练。")
+        raise HTTPException(400, "JD content is too short to generate training.")
 
     preview = req.preview_data if isinstance(req.preview_data, dict) else None
     if not preview:
@@ -114,8 +114,8 @@ def job_prep_start(req: JobPrepStartRequest, user_id: str = Depends(get_current_
     session_id = str(uuid.uuid4())[:8]
     meta = {
         "company": preview.get("company") or (req.company or "").strip(),
-        "position": preview.get("position") or (req.position or "").strip() or "JD 备面",
-        "jd_text": jd_text,  # 完整 JD,供"再次练习"复用,无需重贴
+        "position": preview.get("position") or (req.position or "").strip() or "JD preparation",
+        "jd_text": jd_text,  # Complete JD for"practice again"Reuse, no need to repost
         "use_resume": req.use_resume,
         "preview": preview,
     }
@@ -188,7 +188,7 @@ async def start_interview(req: StartInterviewRequest, user_id: str = Depends(get
         if not target_role:
             target_role = (get_profile(user_id).get("target_role") or "").strip()
         if not target_role:
-            raise HTTPException(400, "请先填写目标岗位")
+            raise HTTPException(400, "Please fill in the target position first")
 
         await update_target_role(user_id, target_role)
 
@@ -346,7 +346,7 @@ async def _run_resume_review(session_id: str, user_id: str):
     try:
         entry = await get_or_restore_resume_graph(session_id, user_id)
         if entry is None:
-            raise RuntimeError("会话状态已失效，无法恢复")
+            raise RuntimeError("Session state has expired and cannot be restored")
 
         graph = entry["graph"]
         config = entry["config"]
@@ -397,7 +397,7 @@ async def _run_resume_review(session_id: str, user_id: str):
         logger.exception("Review generation failed for session %s", session_id)
         update_session_status(
             session_id, STATUS_REVIEW_FAILED,
-            user_id=user_id, review_error=str(exc)[:500] or "未知错误",
+            user_id=user_id, review_error=str(exc)[:500] or "unknown error",
         )
         _task_status[session_id] = {"status": "error", "type": "resume_review"}
 
@@ -424,7 +424,7 @@ def _end_drill_background(session_id, topic, questions, answers, user_id):
             if weak_point and isinstance(score_value, (int, float)):
                 update_weak_point_sr(topic, weak_point, score_value, user_id)
 
-        # 自评 vs 实评的确定性元认知校准(答案里带 confidence 时才会产出 ops)
+        # Deterministic metacognitive calibration of self-assessment vs. actual assessment(It will only be output when the answer contains confidence ops)
         from backend.memory import build_calibration_ops
         calibration_ops = build_calibration_ops(questions, answers, scores)
 
@@ -441,7 +441,7 @@ def _end_drill_background(session_id, topic, questions, answers, user_id):
         logger.exception("Drill review failed for session %s", session_id)
         update_session_status(
             session_id, STATUS_REVIEW_FAILED,
-            user_id=user_id, review_error=str(exc)[:500] or "未知错误",
+            user_id=user_id, review_error=str(exc)[:500] or "unknown error",
         )
         _task_status[session_id] = {"status": "error", "type": "drill_review"}
 
@@ -472,7 +472,7 @@ def _end_jd_prep_background(session_id, questions, answers, preview, meta, user_
         logger.exception("JD prep review failed for session %s", session_id)
         update_session_status(
             session_id, STATUS_REVIEW_FAILED,
-            user_id=user_id, review_error=str(exc)[:500] or "未知错误",
+            user_id=user_id, review_error=str(exc)[:500] or "unknown error",
         )
         _task_status[session_id] = {"status": "error", "type": "jd_review"}
 
@@ -526,7 +526,7 @@ def _dispatch_review(
         topic = (cached or {}).get("topic") or session.get("topic")
         questions = (cached or {}).get("questions") or session.get("questions") or []
         if not topic or not questions:
-            raise HTTPException(400, "会话缺少必要的题目信息，无法生成复盘。")
+            raise HTTPException(400, "The session lacks necessary question information and cannot generate a review.")
         answers = answers_override if answers_override is not None else _extract_answers_from_transcript(
             session.get("transcript", []), questions,
         )
@@ -542,7 +542,7 @@ def _dispatch_review(
         preview = (cached or {}).get("preview") or (session.get("meta") or {}).get("preview") or {}
         meta = (cached or {}).get("meta") or session.get("meta") or {}
         if not questions:
-            raise HTTPException(400, "会话缺少必要的题目信息，无法生成复盘。")
+            raise HTTPException(400, "The session lacks necessary question information and cannot generate a review.")
         answers = answers_override if answers_override is not None else _extract_answers_from_transcript(
             session.get("transcript", []), questions,
         )
@@ -655,9 +655,9 @@ async def generate_session_review(
     if status == STATUS_REVIEWING:
         return {"session_id": session_id, "mode": mode, "status": "pending"}
     if status == STATUS_ONGOING:
-        raise HTTPException(400, "面试尚未结束，请先结束面试再生成复盘。")
+        raise HTTPException(400, "The interview has not ended yet. Please end the interview before generating a review.")
     if status not in (STATUS_ENDED, STATUS_REVIEW_FAILED):
-        raise HTTPException(400, f"当前状态 {status} 不支持重新生成复盘。")
+        raise HTTPException(400, f"Current status {status} Regenerating the disk is not supported.")
 
     return _dispatch_review(session_id, session, user_id, background_tasks)
 
@@ -713,8 +713,8 @@ def _qa_transcript(questions: list, answers: list) -> str:
         ans = answer_map.get(q["id"], "")
         if not ans:
             continue
-        lines.append(f"面试官: {q['question']}")
-        lines.append(f"候选人: {ans}")
+        lines.append(f"interviewer: {q['question']}")
+        lines.append(f"candidate: {ans}")
     return "\n".join(lines)
 
 
@@ -770,11 +770,11 @@ async def _update_job_prep_profile(overall: dict, scores: list, total_questions:
         except (TypeError, ValueError, KeyError):
             pass
 
-    topic = meta.get("position") or "JD 备面"
+    topic = meta.get("position") or "JD preparation"
     summary = overall.get("summary", "")
     role_fit = overall.get("role_fit_summary", "")
     if role_fit:
-        summary = f"{summary}\n\n岗位匹配度判断: {role_fit}".strip()
+        summary = f"{summary}\n\nJudgement of job matching degree: {role_fit}".strip()
 
     behavior_ops = await extract_behavior_ops(transcript, user_id, mode="jd_prep", topic=topic)
 
@@ -831,7 +831,7 @@ async def generate_reference_answer(body: dict, user_id: str = Depends(get_curre
     topics = load_topics(user_id)
     topic_name = topics.get(topic, {}).get("name", topic)
     refs = retrieve_topic_context(topic, question_text, user_id, top_k=3)
-    knowledge_context = "\n\n".join(refs) if refs else "（暂无参考材料）"
+    knowledge_context = "\n\n".join(refs) if refs else "(No reference material yet)"
 
     prompt = REFERENCE_ANSWER_PROMPT.format(
         topic_name=topic_name,

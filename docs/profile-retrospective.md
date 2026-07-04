@@ -1,47 +1,47 @@
-# 我的画像与领域回顾
+# My portrait and field review
 
-`我的画像` 不是资料页，也不是让你手填标签。它是系统根据你已经做过的训练自动沉淀出来的长期视图。
+`my portrait` It’s not an information page, nor does it require you to fill in tags by hand. It is a long-term view that the system automatically precipitates based on the training you have done.
 
-### 画像页主要看什么
+### What to look at on the portrait page
 
-进入左侧导航的 **我的画像** 后，你重点看三类信息：
+Enter the left navigation **my portrait** Finally, you focus on three types of information:
 
-* **整体训练概览**：训练次数、平均分、不同模式的分布
-* **领域掌握度**：哪些主题还在补课区，哪些已经进入稳定区
-* **长期弱点 / 优势**：哪些问题是偶发失误，哪些已经形成模式
+* **Overall training overview**: Training times, average score, distribution of different modes
+* **Domain mastery**: Which topics are still in the make-up area and which ones have entered the stable area?
+* **long term weakness / Advantages**: Which problems are occasional mistakes and which have formed a pattern?
 
-单场复盘回答的是“这次表现怎样”，画像回答的是“你长期到底卡在哪”。
+The answer to a single game review is“How did you perform this time?”, the portrait answered“Where are you stuck in the long run?”.
 
-### 领域详情页是什么
+### What is the field details page?
 
-从画像里点进某个主题后，会进入该领域的详情页。这里不是简单的历史列表，而是把这个主题相关的信息收拢到一起：
+After clicking on a topic from the portrait, you will enter the details page of that field. This is not a simple historical list, but a collection of relevant information on this topic:
 
-* 当前掌握度
-* 训练时间线
-* 最近表现变化
-* 持续薄弱点和稳定优势
-* 领域回顾报告
+* Current mastery
+* Training timeline
+* recent performance changes
+* Sustained weaknesses and stable strengths
+* Domain review report
 
-### 什么是领域回顾
+### What is a field review
 
-领域回顾是基于这个主题的历史训练结果生成的阶段总结，不是单场复盘的重复版。
+The domain review is a stage summary generated based on the historical training results of this topic, and is not a repeated version of a single review.
 
-它更适合回答这些问题：
+It is better suited to answer these questions:
 
-* 这个主题到底是在进步还是反复原地打转？
-* 我一直漏掉的是同一个点，还是每次漏的不一样？
-* 下一轮该继续刷题，还是先回题库补材料？
+* Is this theme making progress or is it going around in circles?
+* Do I keep missing the same point, or do I miss it differently each time?
+* Should I continue to answer questions in the next round, or go back to the question bank to supplement materials?
 
-### 正确使用方式
+### Correct use
 
-1. 先完成几次同主题训练。
-2. 去画像页看这个主题处在补课区、过渡区还是优势区。
-3. 点进领域详情，看最近分数变化和持续薄弱点。
-4. 如果还没有领域回顾，直接在详情页生成。
-5. 用领域回顾决定下一步是继续训练、回题库补内容，还是先换题型。
+1. Complete several training sessions on the same topic first.
+2. Go to the portrait page to see if the topic is in the remedial area, transition area or advantage area.
+3. Click on the area details to see recent score changes and ongoing weak points.
+4. If there is no field review yet, generate it directly on the details page.
+5. Use domain review to decide whether to continue training, return to the question bank to supplement content, or change question types first.
 
-### 使用建议
+### Usage suggestions
 
-* 训练次数太少时，不要对画像结论过度解读。
-* 先看长期重复出现的问题，再看一次性的低分。
-* 领域回顾适合在同一主题练过几轮之后再看，第一次训练就生成，价值通常不高。
+* When the number of training times is too small, do not over-interpret the conclusions of the portrait.
+* Look at long-term recurring problems first, then look at one-time low scores.
+* Domain review is suitable for viewing after several rounds of practice on the same topic. It is generated during the first training and is usually not of high value.

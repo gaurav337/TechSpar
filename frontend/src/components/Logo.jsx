@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 
-// TechSpar 双峰山形标(矢量,无白边)。炭峰跟随 currentColor(浅色主题→近黑、深色背景→近白),
-// 青峰用 --logo-teal:浅色保留原图深青、深色换亮青,避免在近黑背景上糊掉。
+// TechSpar double peak mountain logo(Vector, no white edges). Carbon peak follows currentColor(light theme→Near black, dark background→near white),
+// Qingfeng uses --logo-teal: keep the original dark cyan for the light color, and change the dark cyan to bright cyan to avoid blurring on the near-black background.
 export default function Logo({ className }) {
   return (
     <svg

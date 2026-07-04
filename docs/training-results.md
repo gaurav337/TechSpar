@@ -1,40 +1,40 @@
-# 训练结果怎么看
+# What do you think of the training results?
 
-每次训练结束后，先别只看一个数字。当前系统里至少有两层分数：
+After each training session, don’t just look at one number. There are at least two levels of scores in the current system:
 
-* **单场平均分**：当前这轮训练的结果，通常是 **10 分制**。
-* **长期掌握度**：沉淀在画像里的领域趋势，通常是 **100 分制**。
+* **Average points per game**: The result of the current round of training, usually **10 point scale**.
+* **long term mastery**: Field trends precipitated in the portrait, usually **100 point scale**.
 
-这两个东西不是一回事，不要混着看。
+These two things are not the same thing, don't mix them up.
 
-### 先看什么
+### What to see first
 
-1. **整体评价**
+1. **Overall rating**
 
-   先判断这轮到底是知识不够、表达不清，还是答题结构有问题。
+   First determine whether this round involves insufficient knowledge, unclear expression, or a problem with the answer structure.
 
-2. **逐题复盘**
+2. **Review question by question**
 
-   这是最有价值的部分。对每一道题，重点看：
-   - 你哪里答到了点上
-   - 你漏了哪些关键点
-   - 改进建议是什么
+   This is the most valuable part. For each question, focus on:
+   - Where did you get the answer?
+   - What key points did you miss?
+   - What are the suggestions for improvement?
 
-3. **薄弱点与亮点**
+3. **Weak points and highlights**
 
-   不要把它们当总结语看过去。它们就是下一轮训练的输入。
+   Don't read them as summary statements. They are the inputs for the next round of training.
 
-4. **参考答案**
+4. **Reference answer**
 
-   在专项训练等场景里，可以按题查看参考答案。它更适合拿来对照结构和关键点，不适合照背。
+   In scenarios such as special training, you can view reference answers by question. It is more suitable for comparing structures and key points, not suitable for back photos.
 
-### 不同模式下，重点不一样
+### In different modes, the focus is different
 
-* **简历模拟面试**：重点看技术深度、项目表达、沟通表达、问题解决。
-* **专项强化训练**：重点看逐题得分、遗漏点和参考答案。
-* **JD 定向备面**：除了平均分，还要看岗位匹配判断、优先补强项和高风险追问点。
-* **录音复盘**：重点看表达问题、内容完整度和真实面试中的失误模式。
+* **Resume Mock Interview**: Focus on technical depth, project presentation, communication and problem solving.
+* **Special intensive training**: Focus on question-by-question scores, missing points and reference answers.
+* **JD orientation preparation**: In addition to the average score, it also depends on job matching judgment, priority reinforcement items and high-risk questioning points.
+* **Recording review**: Focus on presentation issues, content completeness, and error patterns in real interviews.
 
-### 最后再看“我的画像”
+### Watch it last“my portrait”
 
-如果某个问题在几轮训练里反复出现，再去 **我的画像** 或 **历史记录** 看它是不是已经形成长期弱项。单场分数只能说明这一次，画像才说明趋势。
+If a certain problem recurs over several rounds of training, try again **my portrait** or **History** See if it has developed long-term weaknesses. The score in a single game can only explain this time, and the portrait can only explain the trend.

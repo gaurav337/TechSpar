@@ -1,17 +1,17 @@
-"""用户声纹配置的 per-user JSON 持久化。
+"""Per-user JSON persistence of user voiceprint configuration.
 
-文件路径：data/users/{user_id}/voiceprint.json
+File path:data/users/{user_id}/voiceprint.json
 
-结构：
+Structure:
 {
   "credentials": { "secret_id": "...", "secret_key": "...", "app_id": "" },
   "enrollment":  { "voice_print_id": "...", "speaker_nick": "...", "enrolled_at": "..." }
 }
 
-两部分都是可选的：
-- 没有 credentials → 声纹功能未启用，UI 回退到手动按钮
-- 有 credentials 但没有 enrollment → 用户已配好凭据，但还没录声纹
-- 两个都有 → 完全启用，实时管线自动识别 role
+Both parts are optional:
+- No credentials → The voiceprint function is not enabled and the UI falls back to the manual button
+- There are credentials but no enrollment → The user has provided credentials but has not yet recorded their voiceprint.
+- Have both → Fully enabled, real-time pipeline automatic identification role
 """
 from __future__ import annotations
 
@@ -52,7 +52,9 @@ def delete(user_id: str) -> None:
 
 
 def get_client(user_id: str) -> VoiceprintClient | None:
-    """从用户配置构造 VoiceprintClient。未配置或凭据不全返回 None。"""
+    """Constructs VoiceprintClient from user configuration. Returns None if not configured or with incomplete credentials."""
+    if settings.high_security_mode:
+        return None
     data = load(user_id)
     creds = (data or {}).get("credentials") or {}
     secret_id = creds.get("secret_id") or ""
@@ -67,14 +69,21 @@ def get_client(user_id: str) -> VoiceprintClient | None:
 
 
 def get_voice_print_id(user_id: str) -> str | None:
-    """读取用户已注册的 VoicePrintId（未注册返回 None）。"""
+    """Read the user's registered VoicePrintId (returns None if not registered)."""
     data = load(user_id)
     enrollment = (data or {}).get("enrollment") or {}
     return enrollment.get("voice_print_id") or None
 
 
 def status_summary(user_id: str) -> dict[str, Any]:
-    """给 GET /api/voiceprint/status 用的状态摘要。"""
+    """give GET /api/voiceprint/Status summary for status."""
+    if settings.high_security_mode:
+        return {
+            "configured": False,
+            "enrolled": False,
+            "enrolled_at": None,
+            "speaker_nick": None,
+        }
     data = load(user_id)
     creds = (data or {}).get("credentials") or {}
     enrollment = (data or {}).get("enrollment") or {}

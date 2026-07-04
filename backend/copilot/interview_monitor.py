@@ -1,6 +1,6 @@
-"""Interview Monitor — 后台 agent，跟踪面试进程和候选人表现。
+"""Interview Monitor — Backend agent, tracks interview progress and candidate performance.
 
-每次 HR+候选人完成一轮交互后触发，评估回答质量、跟踪话题覆盖、给出战略建议。
+every time HR+Triggered after the candidate completes a round of interaction, it evaluates the quality of answers, tracks topic coverage, and gives strategic suggestions.
 """
 import logging
 import json

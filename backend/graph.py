@@ -1,4 +1,4 @@
-"""题目关联图谱 — 从历史 drill 题目构建语义相似度图。"""
+"""Question correlation map — Constructing semantic similarity graphs from historical drill questions."""
 import hashlib
 import json
 import sqlite3

@@ -1,15 +1,15 @@
-"""基于 webrtcvad 的语音段切分器。
+"""Speech segment segmenter based on webrtcvad.
 
-职责：从持续的 16kHz PCM 流里切出"至少 min_speech_ms 的纯语音段"，
-用于异步送入声纹识别（不是给 ASR）。
+Responsibility: Cut out of the continuous 16kHz PCM stream"at least min_speech_Pure speech segment of ms",
+Used to asynchronously feed voiceprint recognition (not to ASR).
 
-不是神经网络——webrtcvad 是 WebRTC 项目的纯 C VAD，<100KB，CPU 开销极低。
+Not a neural network——webrtcvad is a pure C VAD for the WebRTC project,<100KB, extremely low CPU overhead.
 
-切段策略：
-- 每 30ms 一个 frame（webrtcvad 只接受 10/20/30ms 帧）
-- 连续检测到 speech frames，累计 ≥ min_speech_ms 且后续出现 trailing 静音 → yield
-- 硬上限 max_speech_ms → 强制 yield（防止长句永不切）
-- 短于 min_speech_ms 的语音段（如"嗯""好的"）直接丢弃
+Segmentation strategy:
+- One frame every 30ms (webrtcvad only accepts 10/20/30ms frame)
+- Continuously detected speech frames, accumulated ≥ min_speech_ms and trailing silence appears later. → yield
+- Hard cap max_speech_ms → Force yield (to prevent long sentences from never being cut)
+- shorter than min_speech_ms speech segment (e.g."Yeah""OK") discard directly
 """
 from __future__ import annotations
 
@@ -25,7 +25,7 @@ _FRAME_BYTES = _SAMPLE_RATE * _FRAME_MS // 1000 * _BYTES_PER_SAMPLE  # 960 bytes
 
 
 class VADSegmenter:
-    """增量切段器。feed() 返回已切好的语音段列表。"""
+    """Incremental slicer.feed() Returns the list of cut speech segments."""
 
     def __init__(
         self,
@@ -36,12 +36,12 @@ class VADSegmenter:
         aggressiveness: int = 2,
     ):
         if sample_rate != _SAMPLE_RATE:
-            raise ValueError("VADSegmenter 目前只支持 16kHz")
+            raise ValueError("VADSegmenter currently only supports 16kHz")
         try:
             import webrtcvad
         except ImportError as e:
             raise RuntimeError(
-                "webrtcvad 未安装。运行：pip install webrtcvad"
+                "webrtcvad is not installed. Run:pip install webrtcvad"
             ) from e
 
         self._vad = webrtcvad.Vad(aggressiveness)
@@ -50,12 +50,12 @@ class VADSegmenter:
         self._max_speech_frames = max_speech_ms // _FRAME_MS
         self._trailing_silence_frames = trailing_silence_ms // _FRAME_MS
 
-        self._residual = b""                    # 上次 feed 剩下不足一帧的字节
-        self._speech_buf: list[bytes] = []      # 累积的语音帧
-        self._silence_tail = 0                  # 当前累积结尾的静音帧数
+        self._residual = b""                    # There are less than one frame of bytes left in the last feed
+        self._speech_buf: list[bytes] = []      # accumulated speech frames
+        self._silence_tail = 0                  # The number of silent frames at the end of the current accumulation
 
     def feed(self, pcm_chunk: bytes) -> list[bytes]:
-        """喂一段 PCM，返回已切好的语音段（可能 0、1 或多段）。"""
+        """Feed a piece of PCM and return chopped speech segments (possibly 0, 1 or more segments)."""
         segments: list[bytes] = []
         data = self._residual + pcm_chunk
 
@@ -73,7 +73,7 @@ class VADSegmenter:
                 self._speech_buf.append(frame)
                 self._silence_tail = 0
 
-                # 硬上限触发
+                # hard cap trigger
                 if len(self._speech_buf) >= self._max_speech_frames:
                     segments.append(b"".join(self._speech_buf))
                     self._speech_buf.clear()
@@ -81,20 +81,20 @@ class VADSegmenter:
             else:
                 if self._speech_buf:
                     self._silence_tail += 1
-                    # 结尾静音足够久，判断段落结束
+                    # If the silence at the end is long enough, the paragraph is judged to be over.
                     if self._silence_tail >= self._trailing_silence_frames:
                         if len(self._speech_buf) >= self._min_speech_frames:
                             segments.append(b"".join(self._speech_buf))
-                        # 否则丢弃（太短）
+                        # Otherwise discard (too short)
                         self._speech_buf.clear()
                         self._silence_tail = 0
-                # 静音且 buf 为空 → 什么都不做
+                # mute and buf is empty → do nothing
 
         self._residual = data[offset:]
         return segments
 
     def flush(self) -> bytes | None:
-        """流结束时调用，把 buf 里的残余作为一段 yield（如果够长）。"""
+        """Called when the stream ends, using the remainder in buf as a yield (if long enough)."""
         if self._speech_buf and len(self._speech_buf) >= self._min_speech_frames:
             segment = b"".join(self._speech_buf)
             self._speech_buf.clear()

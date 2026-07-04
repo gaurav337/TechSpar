@@ -40,7 +40,7 @@ export default function TaskNotification() {
                   dismissTask(task.id);
                 }}
               >
-                {task.label}完成，点击查看
+                {task.label}Completed, click to view
               </button>
             </>
           )}
@@ -48,7 +48,7 @@ export default function TaskNotification() {
           {task.status === "error" && (
             <>
               <AlertCircle size={18} className="text-destructive shrink-0" />
-              <span className="text-[14px] text-destructive">{task.label}失败</span>
+              <span className="text-[14px] text-destructive">{task.label}failed</span>
             </>
           )}
 

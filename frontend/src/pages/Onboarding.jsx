@@ -15,8 +15,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import Logo from "../components/Logo";
 
-// 首登引导：每个用户都得带自己的 key,这里两步把 LLM + Embedding 配齐。
-// 其余可选服务(语音/搜索/录音上传)留到设置页按需填。
+// First login guide: Each user must bring their own key, here are two steps LLM + Embedding is complete.
+// Other optional services(Voice/Search/Recording upload)Leave it to the settings page to fill in as needed.
 export default function Onboarding() {
   const { setNeedsOnboarding, logout } = useAuth();
   const navigate = useNavigate();
@@ -35,7 +35,7 @@ export default function Onboarding() {
   const [embApiKey, setEmbApiKey] = useState("");
   const [embApiModel, setEmbApiModel] = useState("");
 
-  // 保留 training/services/system,保存时不被覆盖
+  // Reserve training/services/system, will not be overwritten when saving
   const [base, setBase] = useState(null);
 
   useEffect(() => {
@@ -57,7 +57,7 @@ export default function Onboarding() {
   const llmReady = apiKey.trim() && model.trim();
   const embReady = embApiKey.trim() && embApiModel.trim();
 
-  // 进入下一步前先实测 LLM；连不通就拦住，不让继续。
+  // Before entering the next step, test LLM first; if the connection fails, stop it and prevent it from continuing.
   async function handleNext() {
     setTesting(true);
     setError("");

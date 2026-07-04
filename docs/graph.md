@@ -1,36 +1,36 @@
-# 题目图谱
+# Question map
 
-图谱页不是装饰页。它的作用是把你已经做过、已经评分的题目拉到一张关系图里，帮助你决定下一步先补哪一片。
+Map pages are not decoration pages. Its function is to pull the questions you have already done and scored into a relationship diagram to help you decide which piece to complete next.
 
-### 先理解它展示的是什么
+### First understand what it shows
 
-当前图谱是按**训练领域**查看的，不是把所有模式混在一起的总图。
+The current map is according to**training areas**What you are looking at is not the overall picture with all the modes mixed together.
 
-你在图谱里看到的重点是：
+The key points you see in the diagram are:
 
-* 哪些题彼此语义接近
-* 哪些题反复出现低分
-* 哪些 focus area 已经形成一片薄弱区
-* 某道题最近一次出现在哪场复盘里
+* Which questions are semantically close to each other?
+* Which questions repeatedly receive low scores?
+* Which focus areas have formed a weak area
+* Which review session did a certain question last appear in?
 
-### 正确使用方式
+### Correct use
 
-1. 先完成几次 **专项强化训练**，让系统有可评分题目可用。
-2. 进入左侧导航的 **图谱**。
-3. 先切换到某个具体领域，再看这个领域下的题目关系。
-4. 优先用搜索、得分筛选和 focus area 过滤，把范围收窄。
-5. 点击节点后，右侧看题目详情、关联题和最近一次复盘入口。
-6. 先处理红色和橙色节点，再决定要不要回题库补材料或继续专项训练。
+1. Do it a few times first **Special intensive training**, so that the system has gradable questions available.
+2. Enter the left navigation **Atlas**.
+3. First switch to a specific field, and then look at the relationship between questions in this field.
+4. Prioritize search, score filtering and focus area filtering to narrow the scope.
+5. After clicking on the node, you can see the question details, related questions and the latest review entry on the right side.
+6. Deal with the red and orange nodes first, and then decide whether to go back to the question bank to replenish materials or continue special training.
 
-### 当前支持什么，不支持什么
+### What is currently supported and what is not supported
 
-* 当前图谱主要服务于 **已评分的专项训练题**。
-* 如果某个领域还没有可建图的数据，页面会明确提示先去做训练。
-* 图谱重点是帮助你做训练决策，不是替代复盘页本身。
-* 如果你想看完整结论，仍然应该点回对应复盘。
+* The current map mainly serves **Graded specific training questions**.
+* If there is no data that can be mapped in a certain field, the page will clearly prompt you to do training first.
+* The focus of the map is to help you make training decisions, not to replace the review page itself.
+* If you want to see the complete conclusion, you should still click on the corresponding review.
 
-### 怎么用它做决策
+### How to use it to make decisions
 
-* **先补一片，不要只补一个点**：一串彼此关联的低分题，通常说明同一块知识还没讲通。
-* **结合题库看**：图谱定位问题，题库补内容。
-* **结合领域回顾看**：图谱看题级关系，领域回顾看更长时间尺度上的变化。
+* **Make up one piece first, don’t just make up one spot**: A series of low-scoring questions that are related to each other usually means that the same piece of knowledge has not been explained clearly.
+* **Combined with the question bank**: Map positioning problem, question bank supplement content.
+* **Review in conjunction with the field**: Maps look at question-level relationships, and field reviews look at changes on a longer time scale.

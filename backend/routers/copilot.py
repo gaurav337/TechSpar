@@ -30,7 +30,7 @@ async def _update_copilot_profile(fit_report: dict, position: str, user_id: str)
         return
 
     new_weak_points = [
-        {"point": gap["point"], "topic": position or "综合", "source": "predicted"}
+        {"point": gap["point"], "topic": position or "comprehensive", "source": "predicted"}
         for gap in high_risk_gaps if gap.get("point")
     ]
 
@@ -42,7 +42,7 @@ async def _update_copilot_profile(fit_report: dict, position: str, user_id: str)
         topic_mastery={},
         communication={},
         user_id=user_id,
-        session_summary=f"Copilot JD分析: {position}",
+        session_summary=f"Copilot JD Analysis: {position}",
     )
 
 
@@ -54,7 +54,7 @@ async def start_copilot_prep(
     position: str = Form(""),
     user_id: str = Depends(get_current_user),
 ):
-    """启动 Copilot Prep Phase（后台异步执行）。"""
+    """Start Copilot Prep Phase (background asynchronous execution)."""
     prep_id = uuid.uuid4().hex[:12]
     prep_store.create_prep(prep_id, user_id, company, position, jd_text)
 
@@ -87,7 +87,7 @@ async def start_copilot_prep(
 
 @rest_router.get("/copilot/preps")
 async def list_copilot_preps(user_id: str = Depends(get_current_user)):
-    """列出当前用户的所有 Copilot Prep 会话。"""
+    """Lists all Copilot Prep sessions for the current user."""
     rows = prep_store.list_preps(user_id)
     return [
         {
@@ -105,7 +105,7 @@ async def list_copilot_preps(user_id: str = Depends(get_current_user)):
 
 @rest_router.delete("/copilot/prep/{prep_id}")
 async def delete_copilot_prep(prep_id: str, user_id: str = Depends(get_current_user)):
-    """删除一个 Copilot Prep 会话。"""
+    """Delete a Copilot Prep session."""
     if not prep_store.delete_prep(prep_id, user_id):
         raise HTTPException(404, "Prep session not found")
     return {"ok": True}
@@ -113,7 +113,7 @@ async def delete_copilot_prep(prep_id: str, user_id: str = Depends(get_current_u
 
 @rest_router.get("/copilot/prep/{prep_id}")
 async def get_copilot_prep_status(prep_id: str, user_id: str = Depends(get_current_user)):
-    """查询 Copilot Prep 进度和结果。"""
+    """Query Copilot Prep progress and results."""
     data = prep_store.get_prep(prep_id, user_id)
     if not data:
         raise HTTPException(404, "Prep session not found")
@@ -138,7 +138,7 @@ async def get_copilot_prep_status(prep_id: str, user_id: str = Depends(get_curre
 
 @rest_router.get("/copilot/prep/{prep_id}/tree")
 async def get_copilot_strategy_tree(prep_id: str, user_id: str = Depends(get_current_user)):
-    """获取策略树（前端可视化用）。"""
+    """Get the strategy tree (for front-end visualization)."""
     data = prep_store.get_prep(prep_id, user_id)
     if not data or data["status"] != "done" or not data.get("result"):
         raise HTTPException(404, "Prep not ready")
@@ -147,7 +147,7 @@ async def get_copilot_strategy_tree(prep_id: str, user_id: str = Depends(get_cur
 
 @ws_router.websocket("/ws/copilot/{session_id}")
 async def copilot_realtime_ws(ws: WebSocket, session_id: str, token: str = ""):
-    """Copilot 实时面试辅助 WebSocket。"""
+    """Copilot real-time interview assistance WebSocket."""
     from backend.auth import decode_token
     from backend.user_context import set_current_user
 
@@ -190,7 +190,7 @@ async def copilot_realtime_ws(ws: WebSocket, session_id: str, token: str = ""):
                     asyncio.create_task(_run_warmup(ws))
                 except Exception as exc:
                     logger.error("Copilot session init failed: %s", exc, exc_info=True)
-                    await ws.send_json({"type": "error", "message": f"初始化失败: {exc}"})
+                    await ws.send_json({"type": "error", "message": f"Initialization failed: {exc}"})
 
             elif msg_type == "manual" and session:
                 text = msg.get("text", "").strip()
@@ -237,7 +237,7 @@ async def _init_copilot_session(
     *,
     user_id: str | None = None,
 ) -> dict:
-    """初始化 Copilot 实时会话。"""
+    """Initialize a Copilot live session."""
     from backend.copilot import voiceprint_store
     from backend.copilot.strategy_tree import StrategyTreeNavigator
 
@@ -249,7 +249,7 @@ async def _init_copilot_session(
     tree = prep_result.get("question_strategy_tree", {})
 
     navigator = StrategyTreeNavigator(tree)
-    await ws.send_json({"type": "progress", "message": "正在预计算策略树 embedding..."})
+    await ws.send_json({"type": "progress", "message": "Precomputing policy tree embedding..."})
     await navigator.precompute_embeddings()
 
     vp_client = None
@@ -303,14 +303,14 @@ async def _init_copilot_session(
             asr.on_sentence_end = on_sentence_end
             asr.on_error = on_error
             await asr.start()
-            ready_msg = "语音识别 + 声纹自动识别已就绪" if vp_enabled else "语音识别已就绪"
+            ready_msg = "speech recognition + Automatic voiceprint recognition is ready" if vp_enabled else "Voice recognition is ready"
             await ws.send_json({"type": "progress", "message": ready_msg})
         except Exception as exc:
             logger.warning("ASR init failed (will use manual input): %s", exc)
             asr = None
-            await ws.send_json({"type": "progress", "message": "语音识别不可用，请使用手动输入"})
+            await ws.send_json({"type": "progress", "message": "Speech recognition is not available, please use manual input"})
     else:
-        await ws.send_json({"type": "progress", "message": "未配置 DashScope API Key，请使用手动输入"})
+        await ws.send_json({"type": "progress", "message": "DashScope API Key is not configured, please use manual input"})
 
     return {
         "asr": asr,
@@ -324,7 +324,7 @@ async def _init_copilot_session(
 
 
 async def _process_utterance(ws: WebSocket, session: dict, text: str, *, role: str = "hr"):
-    """处理一句话（HR 提问或候选人自述）。"""
+    """Process a sentence (HR question or candidate self-report)."""
     if not session:
         return
 
@@ -409,7 +409,7 @@ async def _process_utterance(ws: WebSocket, session: dict, text: str, *, role: s
 
 
 async def _run_warmup(ws: WebSocket):
-    """连接后自动测一次 LLM 速度。"""
+    """Automatically measure LLM speed after connection."""
     import time
 
     from backend.llm_provider import get_copilot_llm
@@ -419,7 +419,7 @@ async def _run_warmup(ws: WebSocket):
         start = time.monotonic()
         chunk_count = 0
         first_token_ms = None
-        async for chunk in llm.astream([HumanMessage(content="说一个字：好")]):
+        async for chunk in llm.astream([HumanMessage(content="Say one word: good")]):
             if chunk.content:
                 chunk_count += 1
                 if chunk_count == 1:
@@ -433,7 +433,7 @@ async def _run_warmup(ws: WebSocket):
 
 
 async def _run_hr_profiler(ws: WebSocket, session: dict):
-    """后台运行 HR Profiler，完成后推送结果。"""
+    """Run HR Profiler in the background and push the results when completed."""
     from backend.copilot.hr_profiler import analyze_hr
 
     try:
@@ -445,7 +445,7 @@ async def _run_hr_profiler(ws: WebSocket, session: dict):
 
 
 async def _run_interview_monitor(ws: WebSocket, session: dict):
-    """后台运行 Interview Monitor，完成后推送结果。"""
+    """Run Interview Monitor in the background and push the results when completed."""
     from backend.copilot.interview_monitor import analyze_interview
 
     try:

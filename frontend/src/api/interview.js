@@ -388,7 +388,7 @@ export async function updateSettings(payload) {
   return res.json();
 }
 
-// 连接测试：探测「表单里当前填的」配置（尚未保存也能测），返回 { ok, error }
+// Connection test: Detect the "currently filled in form" configuration (it can be tested even if it has not been saved), and return { ok, error }
 export async function testLLMConnection({ api_base, api_key, model }) {
   const res = await authFetch(`${API_BASE}/settings/test-llm`, {
     method: "POST",

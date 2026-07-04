@@ -15,28 +15,28 @@ const PAGE_SIZE = 15;
 const PAGE_CLASS = "flex-1 w-full max-w-[1600px] mx-auto px-4 py-5 md:px-7 md:py-6 xl:px-10 2xl:px-12";
 
 const MODE_BADGES = {
-  resume: { text: "简历面试", variant: "default" },
-  topic_drill: { text: "专项训练", variant: "success" },
-  jd_prep: { text: "JD 备面", variant: "blue" },
-  recording: { text: "录音复盘", variant: "blue" },
+  resume: { text: "resume interview", variant: "default" },
+  topic_drill: { text: "Special training", variant: "success" },
+  jd_prep: { text: "JD preparation", variant: "blue" },
+  recording: { text: "Recording review", variant: "blue" },
 };
 
 const FILTER_OPTIONS = [
-  { key: "all", label: "全部" },
-  { key: "resume", label: "简历面试" },
-  { key: "topic_drill", label: "专项训练" },
-  { key: "jd_prep", label: "JD 备面" },
-  { key: "recording", label: "录音复盘" },
+  { key: "all", label: "All" },
+  { key: "resume", label: "resume interview" },
+  { key: "topic_drill", label: "Special training" },
+  { key: "jd_prep", label: "JD preparation" },
+  { key: "recording", label: "Recording review" },
 ];
 
 // Session lifecycle → UI affordances. Ongoing sessions with no review yet are
 // shown distinctly from review-failed ones so users can take the right action.
 const STATUS_META = {
-  reviewed: { label: "已复盘", tone: "success", icon: CircleCheck },
-  reviewing: { label: "复盘生成中", tone: "info", icon: LoaderCircle, spin: true },
-  review_failed: { label: "总结失败", tone: "danger", icon: CircleAlert },
-  ended: { label: "待复盘", tone: "warn", icon: RotateCw },
-  ongoing: { label: "未完成", tone: "warn", icon: Play },
+  reviewed: { label: "Reviewed", tone: "success", icon: CircleCheck },
+  reviewing: { label: "The review is being generated", tone: "info", icon: LoaderCircle, spin: true },
+  review_failed: { label: "Summary failed", tone: "danger", icon: CircleAlert },
+  ended: { label: "To be reviewed", tone: "warn", icon: RotateCw },
+  ongoing: { label: "Not completed", tone: "warn", icon: Play },
 };
 
 const STATUS_TONE_STYLE = {
@@ -128,8 +128,8 @@ export default function History() {
     try {
       await retryReview(session.session_id);
       const label = session.mode === "resume"
-        ? "简历面试复盘生成中"
-        : session.mode === "jd_prep" ? "JD 备面复盘生成中" : "专项训练复盘生成中";
+        ? "Resume interview review is being generated"
+        : session.mode === "jd_prep" ? "JD backup copy is being generated" : "Special training review is being generated";
       const type = session.mode === "resume"
         ? "resume_review"
         : session.mode === "jd_prep" ? "jd_review" : "drill_review";
@@ -141,7 +141,7 @@ export default function History() {
           : s
       ));
     } catch (err) {
-      alert("重新生成失败: " + err.message);
+      alert("Regeneration failed: " + err.message);
     } finally {
       setRetrying((prev) => {
         const next = { ...prev };
@@ -167,7 +167,7 @@ export default function History() {
       setTotal((prev) => Math.max(0, prev - 1));
       setPendingDelete(null);
     } catch (error) {
-      alert("删除失败: " + error.message);
+      alert("Delete failed: " + error.message);
     } finally {
       setIsDeleting(false);
     }
@@ -195,19 +195,19 @@ export default function History() {
       <div className={PAGE_CLASS}>
         <div className="flex flex-col gap-2.5 xl:flex-row xl:items-end xl:justify-between">
           <div className="min-w-0">
-            <div className="text-3xl font-display font-bold tracking-tight md:text-[38px]">历史记录</div>
+            <div className="text-3xl font-display font-bold tracking-tight md:text-[38px]">History</div>
             <div className="mt-1 max-w-2xl text-sm leading-6 text-dim">
-              按模式和领域快速回看训练记录，重点保留时间和评分这两类核心信息。
+              Quickly review training records by mode and field, focusing on retaining the two core information of time and score.
             </div>
           </div>
 
           <div className="grid gap-2 sm:grid-cols-3 xl:min-w-[520px]">
-            <HistorySummaryChip label="总记录" value={total} hint="累计完成" />
-            <HistorySummaryChip label="当前列表" value={sessions.length} hint="本页已加载" />
+            <HistorySummaryChip label="total records" value={total} hint="Cumulative completion" />
+            <HistorySummaryChip label="Current list" value={sessions.length} hint="This page has been loaded" />
             <HistorySummaryChip
-              label="筛选状态"
-              value={hasFilters ? "已生效" : "无条件"}
-              hint={hasFilters ? `${activeFilterCount} 项条件` : "当前显示全部记录"}
+              label="filter status"
+              value={hasFilters ? "Already effective" : "unconditionally"}
+              hint={hasFilters ? `${activeFilterCount} conditions` : "Currently showing all records"}
               valueClassName={hasFilters ? "text-primary" : "text-text"}
             />
           </div>
@@ -219,7 +219,7 @@ export default function History() {
               <div className="min-w-0 rounded-[20px] border border-border/75 bg-background/55 p-3.5 md:p-4">
                 <div className="mb-3 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-dim/80">
                   <Filter size={13} />
-                  模式筛选
+                  Pattern filtering
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {FILTER_OPTIONS.map((option) => (
@@ -241,21 +241,21 @@ export default function History() {
 
               <div className="rounded-[20px] border border-border/75 bg-background/65 p-3.5 md:p-4">
                 <div className="mb-3 flex items-center justify-between gap-3">
-                  <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-dim/80">领域筛选</div>
+                  <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-dim/80">Field filter</div>
                   <div className="text-[11px] text-dim/70">
-                    {showTopicFilter ? "可进一步收窄记录" : "当前模式下不可用"}
+                    {showTopicFilter ? "Records can be further narrowed" : "Not available in current mode"}
                   </div>
                 </div>
 
                 {showTopicFilter ? (
                   <label className="flex items-center justify-between gap-3 rounded-2xl border border-border/80 bg-background/80 px-3 py-3 text-sm">
-                    <span className="shrink-0 text-dim">领域</span>
+                    <span className="shrink-0 text-dim">field</span>
                     <select
                       className="min-w-0 flex-1 bg-transparent text-right text-text outline-none"
                       value={topicFilter}
                       onChange={(event) => handleTopicChange(event.target.value)}
                     >
-                      <option value="all">全部领域</option>
+                      <option value="all">All areas</option>
                       {topics.map((topic) => (
                         <option key={topic} value={topic}>{topic}</option>
                       ))}
@@ -263,7 +263,7 @@ export default function History() {
                   </label>
                 ) : (
                   <div className="rounded-2xl border border-dashed border-border/75 bg-background/60 px-3 py-3 text-sm text-dim">
-                    当前模式下没有额外的领域筛选项。
+                    There are no additional field filters in the current mode.
                   </div>
                 )}
 
@@ -281,7 +281,7 @@ export default function History() {
                         setTopicFilter("all");
                       }}
                     >
-                      清空筛选
+                      Clear filter
                     </Button>
                   )}
                 </div>
@@ -298,16 +298,16 @@ export default function History() {
                   {hasFilters ? <Filter size={22} /> : <CalendarDays size={22} />}
                 </div>
                 <div className="mt-4 text-base font-semibold text-text">
-                  {hasFilters ? "没有匹配的记录" : "还没有历史记录"}
+                  {hasFilters ? "No matching records" : "No history yet"}
                 </div>
                 <p className="mt-2 text-sm leading-6 text-dim">
                   {hasFilters
-                    ? "调整模式或领域筛选后，再试一次。"
-                    : "开始一场新的模拟面试后，这里会沉淀你的时间线和评分变化。"}
+                    ? "After adjusting the mode or field filtering, try again."
+                    : "After starting a new mock interview, your timeline and scoring changes will be recorded here."}
                 </p>
                 {!hasFilters && (
                   <Button variant="gradient" className="mt-5" onClick={() => navigate("/")}>
-                    去首页开始面试
+                    Go to the homepage to start the interview
                   </Button>
                 )}
               </div>
@@ -317,10 +317,10 @@ export default function History() {
           <>
             <div className="mt-3 flex items-center justify-between gap-3 border-b border-border/70 pb-2">
               <div className="flex items-center gap-2">
-                <div className="text-sm font-semibold">复盘列表</div>
+                <div className="text-sm font-semibold">Review list</div>
                 {hasFilters && (
                   <Badge variant="outline" className="rounded-full px-2.5 py-0.5 text-[11px]">
-                    已筛选
+                    filtered
                   </Badge>
                 )}
               </div>
@@ -328,10 +328,10 @@ export default function History() {
                 {isRefreshing ? (
                   <span className="inline-flex items-center gap-1.5">
                     <LoaderCircle size={14} className="animate-spin" />
-                    更新中
+                    Updating
                   </span>
                 ) : (
-                  `显示 ${sessions.length} / ${total}`
+                  `show ${sessions.length} / ${total}`
                 )}
               </div>
             </div>
@@ -362,7 +362,7 @@ export default function History() {
                 onClick={() => runHistoryQuery({ offset: sessions.length, reset: false })}
                 disabled={loadingMore}
               >
-                {loadingMore ? "加载中..." : `加载更多 (${sessions.length}/${total})`}
+                {loadingMore ? "Loading..." : `load more (${sessions.length}/${total})`}
               </Button>
             )}
           </>
@@ -402,7 +402,7 @@ function HistorySummaryChip({ label, value, hint, valueClassName = "text-primary
 
 function HistoryRow({ session, onOpen, onDelete, onRetry, retrying }) {
   const badge = MODE_BADGES[session.mode] || MODE_BADGES.resume;
-  const title = session.meta?.position || session.topic || "综合";
+  const title = session.meta?.position || session.topic || "comprehensive";
   const subtitle = session.meta?.company || "";
   const createdDate = session.created_at?.slice(0, 10);
   const compactSessionId = formatSessionId(session.session_id);
@@ -473,19 +473,19 @@ function HistoryRow({ session, onOpen, onDelete, onRetry, retrying }) {
               <button
                 type="button"
                 className="inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-[12px] font-medium text-primary transition-colors hover:bg-primary/10 disabled:opacity-60"
-                title="重新生成复盘"
+                title="Regenerate the review"
                 onClick={(event) => onRetry(event, session)}
                 disabled={retrying}
               >
                 <RotateCw size={13} className={retrying ? "animate-spin" : ""} />
-                {retrying ? "重试中" : "重新生成"}
+                {retrying ? "Retrying" : "Regenerate"}
               </button>
             )}
             <button
               type="button"
               className="rounded-lg p-2 text-dim opacity-75 transition-colors hover:bg-red/8 hover:text-red hover:opacity-100"
-              title="删除"
-              aria-label="删除这条历史记录"
+              title="Delete"
+              aria-label="Delete this history"
               onClick={(event) => onDelete(event, session)}
             >
               <Trash2 size={14} />
@@ -517,9 +517,9 @@ function StatusBadge({ status }) {
 }
 
 function buildFilterSummary(modeFilter, topicFilter) {
-  const modeLabel = FILTER_OPTIONS.find((item) => item.key === modeFilter)?.label || "全部";
-  if (modeFilter === "all" && topicFilter === "all") return "无筛选条件";
-  if (topicFilter !== "all" && modeFilter === "all") return `全部模式 / ${topicFilter}`;
+  const modeLabel = FILTER_OPTIONS.find((item) => item.key === modeFilter)?.label || "All";
+  if (modeFilter === "all" && topicFilter === "all") return "No filters";
+  if (topicFilter !== "all" && modeFilter === "all") return `All modes / ${topicFilter}`;
   if (topicFilter !== "all") return `${modeLabel} / ${topicFilter}`;
   return modeLabel;
 }
@@ -528,7 +528,7 @@ function ScorePill({ score }) {
   if (score == null) {
     return (
       <Badge variant="secondary" className="min-w-[72px] justify-center rounded-full px-3 py-1 text-[12px]">
-        未评分
+        Not rated
       </Badge>
     );
   }
@@ -585,9 +585,9 @@ function formatSessionId(sessionId) {
 
 function DeleteConfirmDialog({ session, open, deleting, onConfirm, onOpenChange }) {
   const badge = session ? (MODE_BADGES[session.mode] || MODE_BADGES.resume) : MODE_BADGES.resume;
-  const title = session?.meta?.position || session?.topic || "这条记录";
+  const title = session?.meta?.position || session?.topic || "this record";
   const subtitle = session?.meta?.company || "";
-  const createdDate = session?.created_at?.slice(0, 10) || "未知";
+  const createdDate = session?.created_at?.slice(0, 10) || "unknown";
 
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
@@ -603,10 +603,10 @@ function DeleteConfirmDialog({ session, open, deleting, onConfirm, onOpenChange 
               </div>
 
               <Dialog.Title className="mt-4 text-[24px] font-display font-semibold tracking-tight">
-                删除这条记录？
+                Delete this record?
               </Dialog.Title>
               <Dialog.Description className="mt-1 text-sm leading-6 text-dim">
-                删除后，这场复盘会从历史记录中移除，无法恢复。
+                After deletion, the review will be removed from the history and cannot be restored.
               </Dialog.Description>
 
               <div className="mt-5 rounded-[22px] border border-border/80 bg-background/80 p-4">
@@ -619,8 +619,8 @@ function DeleteConfirmDialog({ session, open, deleting, onConfirm, onOpenChange 
                 <div className="mt-3 text-base font-semibold text-text">{title}</div>
 
                 <div className="mt-3 grid gap-2 sm:grid-cols-2">
-                  <DeleteMetaItem icon={<CalendarDays size={12} />} label="面试时间" value={createdDate} />
-                  <DeleteMetaItem icon={<Hash size={12} />} label="记录 ID" value={formatSessionId(session?.session_id)} />
+                  <DeleteMetaItem icon={<CalendarDays size={12} />} label="Interview time" value={createdDate} />
+                  <DeleteMetaItem icon={<Hash size={12} />} label="record ID" value={formatSessionId(session?.session_id)} />
                 </div>
 
                 {(subtitle || session?.session_id) && (
@@ -636,9 +636,9 @@ function DeleteConfirmDialog({ session, open, deleting, onConfirm, onOpenChange 
               </div>
 
               <div className="mt-4 rounded-[18px] border border-red/12 bg-red/6 px-3.5 py-3">
-                <div className="text-sm font-medium text-text">危险操作</div>
+                <div className="text-sm font-medium text-text">Dangerous operation</div>
                 <div className="mt-1 text-sm leading-6 text-dim">
-                  删除后不会进入回收站，也不会保留这场记录的评分和复盘入口。
+                  After deletion, it will not be entered into the recycle bin, and the scoring and review entries for this record will not be retained.
                 </div>
               </div>
 
@@ -649,7 +649,7 @@ function DeleteConfirmDialog({ session, open, deleting, onConfirm, onOpenChange 
                   onClick={() => onOpenChange(false)}
                   disabled={deleting}
                 >
-                  取消
+                  Cancel
                 </Button>
                 <Button
                   variant="destructive"
@@ -660,10 +660,10 @@ function DeleteConfirmDialog({ session, open, deleting, onConfirm, onOpenChange 
                   {deleting ? (
                     <>
                       <LoaderCircle size={14} className="animate-spin" />
-                      删除中
+                      Deleting
                     </>
                   ) : (
-                    "确认删除"
+                    "Confirm deletion"
                   )}
                 </Button>
               </div>
